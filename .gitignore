@@ -153,7 +153,7 @@ fabric.properties
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
 
 # Thumbnails
 ._*
@@ -345,3 +345,9 @@ gradle-app.setting
 *.hprof
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,intellij,node,angular,gradle
+
+# Git worktrees
+.worktrees/
+
+# Superpowers brainstorm sessions
+.superpowers/
