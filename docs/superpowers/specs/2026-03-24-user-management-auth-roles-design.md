@@ -86,6 +86,8 @@ CREATE TABLE users (
     role                  VARCHAR(20)  NOT NULL,          -- ADMIN | MODERATOR | USER
     force_password_change BOOLEAN      NOT NULL DEFAULT TRUE,
     enabled               BOOLEAN      NOT NULL DEFAULT TRUE,
+    profile_picture_path  VARCHAR(512)          ,         -- relative path on disk, nullable
+    linkedin_url          VARCHAR(512)          ,         -- nullable
     created_at            TIMESTAMP    NOT NULL DEFAULT now(),
     updated_at            TIMESTAMP    NOT NULL DEFAULT now()
 );
@@ -97,6 +99,8 @@ CREATE TABLE users (
 - `enabled`: soft-delete — admins deactivate accounts rather than deleting them.
 - UUID primary key: avoids sequential ID enumeration.
 - `updated_at`: updated automatically via a JPA `@PreUpdate` lifecycle hook on the `User` entity (not a database trigger).
+- `profile_picture_path`: stores the relative file path on disk (e.g. `uploads/avatars/<uuid>.jpg`). The actual file is served at `/api/users/{id}/avatar`. Nullable — users without a picture return `null`.
+- `linkedin_url`: nullable free-text URL. Validated on write to ensure it starts with `https://linkedin.com/` or `https://www.linkedin.com/`.
 
 ---
 
@@ -123,11 +127,13 @@ CREATE TABLE users (
   "role": "ADMIN",
   "forcePasswordChange": false,
   "enabled": true,
+  "profilePictureUrl": "/api/users/<uuid>/avatar",
+  "linkedinUrl": "https://linkedin.com/in/john",
   "createdAt": "2026-03-24T10:00:00Z",
   "updatedAt": "2026-03-24T10:00:00Z"
 }
 ```
-`password` is never included in any response.
+`password` is never included in any response. `profilePictureUrl` and `linkedinUrl` are `null` when not set.
 
 **`UserPage`** (returned by `GET /api/users`):
 ```json
@@ -187,9 +193,22 @@ Default pagination: `?page=0&size=20`. Supports `?sort=username,asc`.
 
 ### Profile (any authenticated user)
 
-| Method | Path | Response |
-|--------|------|----------|
-| `GET` | `/api/users/me` | `UserResponse` |
+| Method | Path | Body | Response |
+|--------|------|------|----------|
+| `GET` | `/api/users/me` | — | `UserResponse` |
+| `PUT` | `/api/users/me` | `{ linkedinUrl? }` | `UserResponse` |
+| `POST` | `/api/users/me/avatar` | `multipart/form-data` (`file`) | `UserResponse` |
+| `DELETE` | `/api/users/me/avatar` | — | `UserResponse` (with `profilePictureUrl: null`) |
+| `GET` | `/api/users/{id}/avatar` | — | image file (binary) |
+
+**Avatar upload rules:**
+- Accepted MIME types: `image/jpeg`, `image/png`, `image/webp`.
+- Maximum file size: **5 MB**. Returns `413 Payload Too Large` if exceeded.
+- Files are stored in a configurable directory (default: `./uploads/avatars/`) named `<user-uuid>.<ext>`. The old file is deleted when a new one is uploaded.
+- `GET /api/users/{id}/avatar` is **public** (no JWT required) so avatars can be displayed in shared contexts without authentication.
+
+**`PUT /api/users/me` — field rules:**
+- `linkedinUrl`: optional; if provided, must start with `https://linkedin.com/` or `https://www.linkedin.com/`. Send `null` to clear.
 
 `GET /api/users/{id}` is ADMIN-only with no self-access exception. Non-admin users must use `GET /api/users/me` to retrieve their own profile.
 
@@ -226,7 +245,7 @@ ai-chat-frontend/src/app/
 │   │   ├── force-password-change.guard.ts   (redirects to /change-password if forcePasswordChange=true)
 │   │   └── role.guard.ts                    (blocks access by insufficient role)
 │   └── api/
-│       └── user-api.service.ts              (HTTP calls to /api/users)
+│       └── user-api.service.ts              (HTTP calls to /api/users, avatar upload)
 ├── layout/
 │   └── shell/
 │       └── shell.component.ts               (left sidebar + <router-outlet>)
@@ -235,6 +254,8 @@ ai-chat-frontend/src/app/
 │   │   └── login.component.ts
 │   ├── change-password/
 │   │   └── change-password.component.ts
+│   ├── profile/
+│   │   └── profile.component.ts             (edit own LinkedIn URL + upload/delete avatar)
 │   └── users/
 │       ├── user-list.component.ts
 │       └── user-form.component.ts           (create + edit)
@@ -251,6 +272,7 @@ ai-chat-frontend/src/app/
 | `/users` | `UserListComponent` | `AuthGuard` + `ForcePasswordChangeGuard` + `RoleGuard(ADMIN)` |
 | `/users/new` | `UserFormComponent` | `AuthGuard` + `ForcePasswordChangeGuard` + `RoleGuard(ADMIN)` |
 | `/users/:id/edit` | `UserFormComponent` | `AuthGuard` + `ForcePasswordChangeGuard` + `RoleGuard(ADMIN)` |
+| `/profile` | `ProfileComponent` | `AuthGuard` + `ForcePasswordChangeGuard` |
 
 **`ForcePasswordChangeGuard`:** If the decoded JWT contains `forcePasswordChange: true`, this guard redirects any route (other than `/change-password`) to `/change-password`. This ensures users cannot access the application until they set a personal password after admin account creation.
 
@@ -298,7 +320,7 @@ Flyway manages all schema changes. `spring.jpa.hibernate.ddl-auto` is set to `va
 
 Migration files live at `src/main/resources/db/migration/`:
 ```
-V1__create_users_table.sql
+V1__create_users_table.sql      (includes profile_picture_path and linkedin_url columns)
 ```
 
 ### application.properties
@@ -314,6 +336,10 @@ spring.flyway.locations=classpath:db/migration
 
 jwt.secret=${JWT_SECRET}
 jwt.expiration-ms=86400000
+
+app.upload.avatar-dir=./uploads/avatars
+spring.servlet.multipart.max-file-size=5MB
+spring.servlet.multipart.max-request-size=5MB
 ```
 
 **Secret management:** All sensitive values are injected via environment variables. The values must never be committed to version control. For local development, set them in a `.env` file or shell profile. `.env` must be listed in `.gitignore`.
@@ -339,6 +365,9 @@ jwt.expiration-ms=86400000
 | Username/email already exists | `409 Conflict` | `{ error: "Username already taken" }` |
 | Last admin demotion/disable | `409 Conflict` | `{ error: "Cannot remove the last admin account" }` |
 | Validation failure | `400 Bad Request` | `{ errors: [...] }` |
+| Avatar file too large (>5 MB) | `413 Payload Too Large` | `{ error: "File exceeds maximum size of 5MB" }` |
+| Avatar unsupported MIME type | `415 Unsupported Media Type` | `{ error: "Unsupported file type. Allowed: JPEG, PNG, WebP" }` |
+| Invalid LinkedIn URL | `400 Bad Request` | `{ errors: ["linkedinUrl must be a valid LinkedIn profile URL"] }` |
 
 ---
 
