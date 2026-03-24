@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "users")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor(access = AccessLevel.PACKAGE) @Builder
 public class User {
 
     @Id
