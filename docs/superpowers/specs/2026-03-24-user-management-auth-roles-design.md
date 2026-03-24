@@ -50,6 +50,21 @@ Browser → Angular SPA → Spring Boot REST API (/api/**)
                             └── Controllers          (@PreAuthorize role checks)
 ```
 
+### Required Dependencies
+
+The existing `build.gradle.kts` skeleton must be updated before implementation:
+
+- **Remove:** `spring-boot-starter-data-rest` — this auto-exposes JPA repositories as HAL endpoints and conflicts with hand-written controllers. Replace with `spring-boot-starter-web`.
+- **Add:**
+  ```kotlin
+  implementation("org.springframework.boot:spring-boot-starter-web")
+  implementation("org.springframework.boot:spring-boot-starter-security")
+  implementation("org.springframework.boot:spring-boot-starter-flyway")
+  implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+  runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
+  runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
+  ```
+
 ### Build Integration
 
 Angular is built with `ng build` (output to `dist/`). The Gradle build copies the Angular output into `src/main/resources/static/` before packaging the Spring Boot jar. Spring Boot serves:
@@ -140,7 +155,8 @@ Default pagination: `?page=0&size=20`. Supports `?sort=username,asc`.
 |------|----------|
 | `{ currentPassword, newPassword }` | `{ token, forcePasswordChange: false }` |
 
-The caller is identified from the JWT `sub` claim. On success, `force_password_change` is set to `false` in the database and a new token (with `forcePasswordChange: false`) is returned so the client can replace the stored token without re-logging in. The response shape matches the login response.
+- `newPassword`: required, minimum 8 characters.
+- The caller is identified from the JWT `sub` claim. On success, `force_password_change` is set to `false` in the database and a new token (with `forcePasswordChange: false`) is returned so the client can replace the stored token without re-logging in. The response shape matches the login response.
 
 ### User Management (ADMIN only)
 
@@ -153,9 +169,17 @@ The caller is identified from the JWT `sub` claim. On success, `force_password_c
 | `DELETE` | `/api/users/{id}` | — | `204 No Content` (sets `enabled=false`) |
 
 **`POST /api/users` — field rules:**
-- `password`: required, minimum 8 characters. This is the temporary password the admin assigns; `force_password_change` is always set to `true` on creation.
-- `username`: immutable after creation. The `PUT` endpoint does not accept `username` — this is intentional, not an omission.
-- Hard delete is permanently out of scope. User records are never physically deleted; `enabled=false` is the only removal mechanism.
+- `username`: required, 3–50 characters. Immutable after creation — `PUT` does not accept `username`.
+- `email`: required, valid email format.
+- `password`: required, minimum 8 characters. Admin-assigned temporary password; `force_password_change` is always set to `true` on creation.
+- `role`: required, must be one of `ADMIN`, `MODERATOR`, `USER`.
+
+**`PUT /api/users/{id}` — field rules:**
+- `email`: optional; if provided, must be valid email format.
+- `role`: optional; if provided, must be one of `ADMIN`, `MODERATOR`, `USER`.
+- `enabled`: optional boolean. Setting to `false` deactivates the account (subject to last-admin protection below).
+- At least one field must be present; an empty body returns `400 Bad Request`.
+- `DELETE /api/users/{id}` on an already-disabled user returns `204 No Content` (idempotent).
 
 **Admin self-modification rules:**
 - An ADMIN cannot change their own `role` or set their own `enabled` to `false` via `PUT /api/users/{id}` or `DELETE /api/users/{id}`.
@@ -166,6 +190,8 @@ The caller is identified from the JWT `sub` claim. On success, `force_password_c
 | Method | Path | Response |
 |--------|------|----------|
 | `GET` | `/api/users/me` | `UserResponse` |
+
+`GET /api/users/{id}` is ADMIN-only with no self-access exception. Non-admin users must use `GET /api/users/me` to retrieve their own profile.
 
 ### JWT Token Structure
 
@@ -181,6 +207,8 @@ The caller is identified from the JWT `sub` claim. On success, `force_password_c
 ```
 
 Token expiry: **24 hours**. No refresh token — re-login on expiry.
+
+**`forcePasswordChange` authority:** The JWT claim is authoritative — the backend filter reads from the token, not the database. If an admin sets `force_password_change=true` on a user with an active token, the change takes effect when their current token expires (up to 24 hours). This lag is accepted as a deliberate simplicity trade-off.
 
 ---
 
@@ -278,7 +306,7 @@ V1__create_users_table.sql
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/aichat
 spring.datasource.username=aichat
-spring.datasource.password=aichat
+spring.datasource.password=${DB_PASSWORD}
 spring.jpa.hibernate.ddl-auto=validate
 
 spring.flyway.enabled=true
@@ -288,7 +316,15 @@ jwt.secret=${JWT_SECRET}
 jwt.expiration-ms=86400000
 ```
 
-**Secret management:** `jwt.secret` is injected via the `JWT_SECRET` environment variable. The value must never be committed to version control. For local development, set it in a `.env` file or shell profile. `.env` must be listed in `.gitignore`.
+**Secret management:** All sensitive values are injected via environment variables. The values must never be committed to version control. For local development, set them in a `.env` file or shell profile. `.env` must be listed in `.gitignore`.
+
+```properties
+# Environment variables required at runtime:
+# DB_PASSWORD    → spring.datasource.password
+# JWT_SECRET     → jwt.secret (256-bit random value)
+```
+
+**CORS (development only):** Angular's dev server runs on `localhost:4200` while Spring Boot runs on `localhost:8080`. A Spring `@Profile("dev")` `WebMvcConfigurer` must add a CORS mapping permitting `http://localhost:4200`. This is not needed in production (same origin).
 
 ---
 
