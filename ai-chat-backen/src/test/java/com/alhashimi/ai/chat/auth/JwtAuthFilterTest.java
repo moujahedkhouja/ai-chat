@@ -1,10 +1,11 @@
 package com.alhashimi.ai.chat.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -23,7 +24,9 @@ class JwtAuthFilterTest {
     @Mock
     private TokenService tokenService;
 
-    @InjectMocks
+    @Spy
+    private ObjectMapper objectMapper;
+
     private JwtAuthFilter jwtAuthFilter;
 
     private static final String VALID_TOKEN = "valid.jwt.token";
@@ -31,6 +34,7 @@ class JwtAuthFilterTest {
 
     @BeforeEach
     void setUp() {
+        jwtAuthFilter = new JwtAuthFilter(tokenService, objectMapper);
         SecurityContextHolder.clearContext();
     }
 
@@ -117,19 +121,18 @@ class JwtAuthFilterTest {
     @Test
     void doFilterInternal_withForcePasswordChange_andChangePasswordPath_setsAuthAndProceeds() throws Exception {
         // Arrange: valid token with forcePasswordChange=true
-        String token = "valid.jwt.token";
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setMethod("POST");
-        request.setServletPath("/api/auth/change-password");
-        request.addHeader("Authorization", "Bearer " + token);
+        request.setServletPath(JwtAuthFilter.CHANGE_PASSWORD_PATH);
+        request.addHeader("Authorization", "Bearer " + VALID_TOKEN);
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockFilterChain filterChain = new MockFilterChain();
 
-        when(tokenService.isTokenValid(token)).thenReturn(true);
-        when(tokenService.extractUserId(token)).thenReturn(UUID.fromString("00000000-0000-0000-0000-000000000001"));
-        when(tokenService.extractUsername(token)).thenReturn("john");
-        when(tokenService.extractRole(token)).thenReturn("USER");
-        when(tokenService.extractForcePasswordChange(token)).thenReturn(true);
+        when(tokenService.isTokenValid(VALID_TOKEN)).thenReturn(true);
+        when(tokenService.extractUserId(VALID_TOKEN)).thenReturn(USER_ID);
+        when(tokenService.extractUsername(VALID_TOKEN)).thenReturn("john");
+        when(tokenService.extractRole(VALID_TOKEN)).thenReturn("USER");
+        when(tokenService.extractForcePasswordChange(VALID_TOKEN)).thenReturn(true);
 
         // Act
         jwtAuthFilter.doFilter(request, response, filterChain);

@@ -20,11 +20,14 @@ import java.util.UUID;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final TokenService tokenService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    static final String CHANGE_PASSWORD_PATH = "/api/auth/change-password";
 
-    public JwtAuthFilter(TokenService tokenService) {
+    private final TokenService tokenService;
+    private final ObjectMapper objectMapper;
+
+    public JwtAuthFilter(TokenService tokenService, ObjectMapper objectMapper) {
         this.tokenService = tokenService;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -55,8 +58,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (forcePasswordChange) {
             String method = request.getMethod();
             String path = request.getServletPath();
-            boolean isChangePasswordRequest = "POST".equalsIgnoreCase(method)
-                    && "/api/auth/change-password".equals(path);
+            boolean isChangePasswordRequest = "POST".equals(method)
+                    && CHANGE_PASSWORD_PATH.equals(path);
 
             if (!isChangePasswordRequest) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
