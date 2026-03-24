@@ -5,6 +5,7 @@ import com.alhashimi.ai.chat.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.UUID;
 
@@ -27,19 +28,11 @@ class TokenServiceTest {
         testUser = User.builder()
                 .username("john")
                 .email("john@example.com")
-                .password("secret")
+                .password("hashed")
                 .role(Role.ADMIN)
                 .forcePasswordChange(false)
                 .build();
-
-        // Manually set an ID since there is no JPA context in unit tests
-        try {
-            var idField = User.class.getDeclaredField("id");
-            idField.setAccessible(true);
-            idField.set(testUser, UUID.fromString("00000000-0000-0000-0000-000000000001"));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        testUser.setId(UUID.fromString("00000000-0000-0000-0000-000000000001"));
     }
 
     @Test
@@ -78,5 +71,19 @@ class TokenServiceTest {
         TokenService expiredTokenService = new TokenService(TEST_SECRET, -1000L);
         String token = expiredTokenService.generateToken(testUser);
         assertThat(expiredTokenService.isTokenValid(token)).isFalse();
+    }
+
+    @Test
+    void isTokenValid_returnsFalseForTamperedToken() {
+        // Create a service with different key bytes (all 0x01 instead of 0x00)
+        byte[] differentKeyBytes = new byte[32];
+        Arrays.fill(differentKeyBytes, (byte) 0x01);
+        TokenService otherService = new TokenService(
+                Base64.getEncoder().encodeToString(differentKeyBytes),
+                EXPIRATION_MS
+        );
+        String token = tokenService.generateToken(testUser);
+        // Token issued by tokenService should not be valid for otherService
+        assertThat(otherService.isTokenValid(token)).isFalse();
     }
 }

@@ -10,10 +10,15 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
 public class TokenService {
+
+    private static final String CLAIM_USERNAME = "username";
+    private static final String CLAIM_ROLE = "role";
+    private static final String CLAIM_FORCE_PASSWORD_CHANGE = "forcePasswordChange";
 
     private final SecretKey signingKey;
     private final long expirationMs;
@@ -27,12 +32,13 @@ public class TokenService {
     }
 
     public String generateToken(User user) {
+        Objects.requireNonNull(user.getId(), "User must be persisted before generating a token");
         long now = System.currentTimeMillis();
         return Jwts.builder()
                 .subject(user.getId().toString())
-                .claim("username", user.getUsername())
-                .claim("role", user.getRole().name())
-                .claim("forcePasswordChange", user.isForcePasswordChange())
+                .claim(CLAIM_USERNAME, user.getUsername())
+                .claim(CLAIM_ROLE, user.getRole().name())
+                .claim(CLAIM_FORCE_PASSWORD_CHANGE, user.isForcePasswordChange())
                 .issuedAt(new Date(now))
                 .expiration(new Date(now + expirationMs))
                 .signWith(signingKey)
@@ -44,22 +50,22 @@ public class TokenService {
     }
 
     public String extractUsername(String token) {
-        return parseClaims(token).get("username", String.class);
+        return parseClaims(token).get(CLAIM_USERNAME, String.class);
     }
 
     public String extractRole(String token) {
-        return parseClaims(token).get("role", String.class);
+        return parseClaims(token).get(CLAIM_ROLE, String.class);
     }
 
     public boolean extractForcePasswordChange(String token) {
-        return parseClaims(token).get("forcePasswordChange", Boolean.class);
+        return parseClaims(token).get(CLAIM_FORCE_PASSWORD_CHANGE, Boolean.class);
     }
 
     public boolean isTokenValid(String token) {
         try {
             parseClaims(token);
             return true;
-        } catch (Exception e) {
+        } catch (io.jsonwebtoken.JwtException e) {
             return false;
         }
     }
