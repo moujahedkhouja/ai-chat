@@ -113,4 +113,31 @@ class JwtAuthFilterTest {
         // Filter chain must NOT have been called
         assertThat(filterChain.getRequest()).isNull();
     }
+
+    @Test
+    void doFilterInternal_withForcePasswordChange_andChangePasswordPath_setsAuthAndProceeds() throws Exception {
+        // Arrange: valid token with forcePasswordChange=true
+        String token = "valid.jwt.token";
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setMethod("POST");
+        request.setServletPath("/api/auth/change-password");
+        request.addHeader("Authorization", "Bearer " + token);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        MockFilterChain filterChain = new MockFilterChain();
+
+        when(tokenService.isTokenValid(token)).thenReturn(true);
+        when(tokenService.extractUserId(token)).thenReturn(UUID.fromString("00000000-0000-0000-0000-000000000001"));
+        when(tokenService.extractUsername(token)).thenReturn("john");
+        when(tokenService.extractRole(token)).thenReturn("USER");
+        when(tokenService.extractForcePasswordChange(token)).thenReturn(true);
+
+        // Act
+        jwtAuthFilter.doFilter(request, response, filterChain);
+
+        // Assert: authentication was set and filter chain was invoked
+        assertThat(SecurityContextHolder.getContext().getAuthentication()).isNotNull();
+        assertThat(SecurityContextHolder.getContext().getAuthentication().getName()).isEqualTo("john");
+        assertThat(response.getStatus()).isEqualTo(200); // not 403
+        assertThat(filterChain.getRequest()).isNotNull(); // filterChain.doFilter was called
+    }
 }

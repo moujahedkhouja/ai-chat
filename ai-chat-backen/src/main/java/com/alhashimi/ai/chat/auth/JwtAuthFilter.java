@@ -51,19 +51,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String role = tokenService.extractRole(token);
         boolean forcePasswordChange = tokenService.extractForcePasswordChange(token);
 
-        var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
-        var authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
-
-        // Store forcePasswordChange and userId as details
-        var details = new JwtAuthDetails(
-                new WebAuthenticationDetailsSource().buildDetails(request),
-                forcePasswordChange,
-                userId
-        );
-        authentication.setDetails(details);
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
         // Enforce forcePasswordChange: block all requests except POST /api/auth/change-password
         if (forcePasswordChange) {
             String method = request.getMethod();
@@ -80,6 +67,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 return;
             }
         }
+
+        var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+        var authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
+
+        // Store forcePasswordChange and userId as details
+        var details = new JwtAuthDetails(
+                new WebAuthenticationDetailsSource().buildDetails(request),
+                forcePasswordChange,
+                userId
+        );
+        authentication.setDetails(details);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
     }
