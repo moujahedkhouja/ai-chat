@@ -8,6 +8,6 @@ CREATE TABLE users (
     enabled               BOOLEAN      NOT NULL DEFAULT TRUE,
     profile_picture_path  VARCHAR(512),
     linkedin_url          VARCHAR(512),
-    created_at            TIMESTAMP    NOT NULL DEFAULT now(),
-    updated_at            TIMESTAMP    NOT NULL DEFAULT now()
+    created_at            TIMESTAMPTZ  NOT NULL DEFAULT now(),
+    updated_at            TIMESTAMPTZ  NOT NULL DEFAULT now()
 );
