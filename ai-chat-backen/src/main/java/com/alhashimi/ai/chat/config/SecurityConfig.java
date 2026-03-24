@@ -3,6 +3,7 @@ package com.alhashimi.ai.chat.config;
 import com.alhashimi.ai.chat.auth.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -35,8 +36,8 @@ public class SecurityConfig {
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints
-                .requestMatchers("POST", "/api/auth/login").permitAll()
-                .requestMatchers("GET", "/api/users/{id}/avatar").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/users/{id}/avatar").permitAll()
                 // All other /api/** require authentication
                 .requestMatchers("/api/**").authenticated()
                 // Angular SPA — permit everything else
