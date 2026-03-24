@@ -163,4 +163,33 @@ class AuthControllerTest {
         assertThat(changeResponse.getBody().token()).isNotBlank();
         assertThat(changeResponse.getBody().forcePasswordChange()).isFalse();
     }
+
+    @Test
+    void changePassword_withWrongCurrentPassword_returns400() {
+        // Create a user and login to get a token
+        createUser("testuser2", "password123", true, false);
+
+        // Login to get token
+        ResponseEntity<AuthResponse> loginResponse = restClient.post()
+                .uri("/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new LoginRequest("testuser2", "password123"))
+                .retrieve()
+                .toEntity(AuthResponse.class);
+
+        assertThat(loginResponse.getStatusCode().value()).isEqualTo(200);
+        String token = loginResponse.getBody().token();
+
+        // Try change-password with wrong current password
+        ResponseEntity<Map<String, String>> response = restClient.post()
+                .uri("/api/auth/change-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + token)
+                .body(new ChangePasswordRequest("wrongpassword", "newpassword123"))
+                .retrieve()
+                .toEntity(new ParameterizedTypeReference<Map<String, String>>() {});
+
+        assertThat(response.getStatusCode().value()).isEqualTo(400);
+        assertThat(response.getBody()).containsEntry("error", "Current password is incorrect");
+    }
 }
