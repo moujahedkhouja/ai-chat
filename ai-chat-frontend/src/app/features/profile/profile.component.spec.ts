@@ -52,7 +52,7 @@ describe('ProfileComponent', () => {
     expect(component.errorMessage).toBe('');
 
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.value')?.textContent?.trim()).toBe('testuser');
+    expect(compiled.querySelector('.profile-username')?.textContent?.trim()).toBe('testuser');
   });
 
   it('should show success message on save', () => {
