@@ -238,4 +238,16 @@ class UserControllerTest {
         assertThat(response.getBody().get("id")).isEqualTo(regularUserId.toString());
         assertThat(response.getBody().get("username")).isEqualTo("regularuser");
     }
+
+    @Test
+    void getUser_asRegularUser_accessingOtherUser_returns403() {
+        // A regular user must NOT be able to read another user's profile
+        ResponseEntity<Map> response = restClient.get()
+                .uri("/api/users/" + adminUserId)
+                .header("Cookie", userCookie)
+                .retrieve()
+                .toEntity(Map.class);
+
+        assertThat(response.getStatusCode().value()).isEqualTo(403);
+    }
 }
