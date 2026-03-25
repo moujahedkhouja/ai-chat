@@ -1,6 +1,43 @@
-<div class="shell-layout">
-  <app-sidebar></app-sidebar>
-  <main class="main-content">
-    <router-outlet></router-outlet>
-  </main>
+<div class="shell">
+  <!-- Desktop icon sidebar -->
+  <app-sidebar class="shell-sidebar"></app-sidebar>
+
+  <!-- Right panel: top bar + content -->
+  <div class="shell-panel">
+    <header class="top-bar">
+      <div class="top-bar-left">
+        <div class="app-logo">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <rect width="18" height="18" rx="5" fill="url(#logo-grad)"/>
+            <rect x="4" y="4" width="4" height="4" rx="1" fill="white"/>
+            <rect x="10" y="4" width="4" height="4" rx="1" fill="white" opacity="0.7"/>
+            <rect x="4" y="10" width="4" height="4" rx="1" fill="white" opacity="0.7"/>
+            <rect x="10" y="10" width="4" height="4" rx="1" fill="white" opacity="0.4"/>
+            <defs>
+              <linearGradient id="logo-grad" x1="0" y1="0" x2="18" y2="18">
+                <stop stop-color="#6366f1"/>
+                <stop offset="1" stop-color="#8b5cf6"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <span class="top-bar-greeting">Welcome back, {{ username }}</span>
+      </div>
+      <div class="top-bar-right">
+        <button class="icon-btn" type="button" title="Notifications">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M9 2a5 5 0 0 1 5 5v3l1.5 2.5H2.5L4 10V7a5 5 0 0 1 5-5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M7 14.5a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="shell-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+
+  <!-- Mobile bottom tab bar -->
+  <app-bottom-tab-bar class="shell-bottom-nav"></app-bottom-tab-bar>
 </div>
