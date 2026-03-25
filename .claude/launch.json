@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Angular Frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["start", "--prefix", "ai-chat-frontend"],
+      "port": 4200
+    },
+    {
+      "name": "Spring Boot Backend",
+      "runtimeExecutable": "./ai-chat-backen/gradlew",
+      "runtimeArgs": ["-p", "ai-chat-backen", "bootRun"],
+      "port": 8080
+    },
+    {
+      "name": "PostgreSQL (Docker)",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "up"],
+      "port": 5432
+    }
+  ]
+}
