@@ -18,7 +18,7 @@ The codebase has several Spring Security issues across three severity levels:
 - `UserController.getUser` and `AvatarController.uploadAvatar` use the SpEL expression `authentication.name == #id.toString()` which compares the **username string** against a **UUID string** — always false; user self-access is permanently broken
 
 **Design issues:**
-- `JwtAuthFilter` calls `TokenService` four separate times per request, parsing the JWT four times
+- `JwtAuthFilter` calls `TokenService` **five** separate times per request: one `isTokenValid()` call plus four individual `extract*()` calls, each parsing the JWT signature independently
 - `AuthController.me` fetches the user from the DB even though all needed data is already in the JWT principal
 - `SecurityConfig` has no `exceptionHandling` — 401/403 responses are HTML, not JSON
 - `SecurityConfig` declares an unused `AuthenticationManager` bean
@@ -46,17 +46,32 @@ public record JwtPrincipal(UUID userId, String username, String role, boolean fo
 record TokenClaims(UUID userId, String username, String role, boolean forcePasswordChange) {}
 ```
 
-**`TokenService`** gets a new `extractAll(String token) → TokenClaims` method that parses the JWT signature **once** and returns all four fields. The existing individual `extract*` methods are retained (used in tests).
+**`TokenService`** gets a new `extractAll(String token) → TokenClaims` method that:
+1. Calls `parseClaims(token)` once (throwing `JwtException` on invalid/expired tokens)
+2. Extracts all four fields from the resulting `Claims` object
+3. Returns a `TokenClaims` record
 
-**`JwtAuthFilter`** is updated to call `tokenService.extractAll(token)` once, then build a `JwtPrincipal` from the result:
+This replaces both the `isTokenValid()` check and the four individual `extract*()` calls in the filter — the single `parseClaims` call inside `extractAll` serves as validation. The filter catches `JwtException` to handle invalid tokens. The existing individual `extract*` methods are **retained** (they are used directly in unit tests).
+
+**`JwtAuthFilter`** is updated to replace the `isTokenValid()` + four `extract*()` calls with a single `try/catch` around `tokenService.extractAll(token)`:
 
 ```java
-TokenClaims claims = tokenService.extractAll(token);
+TokenClaims claims;
+try {
+    claims = tokenService.extractAll(token);
+} catch (io.jsonwebtoken.JwtException e) {
+    filterChain.doFilter(request, response);
+    return;
+}
 // use claims.forcePasswordChange() for the force-change check
+var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + claims.role()));
 var authentication = new UsernamePasswordAuthenticationToken(
     new JwtPrincipal(claims.userId(), claims.username(), claims.role(), claims.forcePasswordChange()),
     null, authorities);
+SecurityContextHolder.getContext().setAuthentication(authentication);
 ```
+
+Note: `JwtAuthFilter` currently compiles correctly — it does not reference `JwtAuthDetails`. Its only changes are the `extractAll` optimisation and building the now-four-arg `JwtPrincipal`.
 
 ---
 
@@ -101,7 +116,10 @@ public ResponseEntity<?> me(@AuthenticationPrincipal JwtPrincipal principal) {
 
 ### Section 3 — `SecurityConfig` Hardening + SpEL Fixes
 
-**JSON error responses** — add `exceptionHandling` with `ObjectMapper` injected into `SecurityConfig`:
+**JSON error responses** — add `exceptionHandling` with `ObjectMapper` injected into `SecurityConfig`.
+`AuthenticationEntryPoint.commence` and `AccessDeniedHandler.handle` both declare `throws IOException`,
+so `IOException` from `res.getWriter()` and `objectMapper.writeValue()` propagates naturally through
+the interface declaration — no try-catch needed inside the lambdas:
 
 ```java
 .exceptionHandling(ex -> ex
@@ -120,13 +138,14 @@ public ResponseEntity<?> me(@AuthenticationPrincipal JwtPrincipal principal) {
 
 **Remove unused bean** — delete the `authenticationManager(AuthenticationConfiguration)` bean method from `SecurityConfig`.
 
-**SpEL self-access fix** — `authentication.principal` is now a `JwtPrincipal`, so the correct expression uses `.userId`:
+**SpEL self-access fix** — `authentication.principal` is a `JwtPrincipal` record, so the fix uses
+`.userId` and `.equals()` for value comparison (SpEL `==` is reference equality, not value equality):
 
 - `UserController.getUser`:
-  `@PreAuthorize("hasAnyRole('ADMIN','MODERATOR') or authentication.principal.userId.toString() == #id.toString()")`
+  `@PreAuthorize("hasAnyRole('ADMIN','MODERATOR') or authentication.principal.userId.toString().equals(#id.toString())")`
 
 - `AvatarController.uploadAvatar`:
-  `@PreAuthorize("hasRole('ADMIN') or authentication.principal.userId.toString() == #id.toString()")`
+  `@PreAuthorize("hasRole('ADMIN') or authentication.principal.userId.toString().equals(#id.toString())")`
 
 ---
 
@@ -137,7 +156,7 @@ public ResponseEntity<?> me(@AuthenticationPrincipal JwtPrincipal principal) {
 | `auth/JwtPrincipal.java` | Add `role` and `forcePasswordChange` fields |
 | `auth/TokenClaims.java` | New package-private record |
 | `auth/TokenService.java` | Add `extractAll()` method |
-| `auth/JwtAuthFilter.java` | Use `extractAll()` once; build full `JwtPrincipal` |
+| `auth/JwtAuthFilter.java` | Replace `isTokenValid` + four `extract*` calls with single `extractAll`; build four-arg `JwtPrincipal` |
 | `auth/AuthController.java` | Fix `changePassword` + `me`; inject `cookieSecure`; remove stale import |
 | `config/SecurityConfig.java` | Add `exceptionHandling`; remove unused `AuthenticationManager` bean; inject `ObjectMapper` |
 | `user/UserController.java` | Fix SpEL self-access expression |
@@ -148,6 +167,7 @@ public ResponseEntity<?> me(@AuthenticationPrincipal JwtPrincipal principal) {
 ## Testing Notes
 
 - `JwtAuthFilterTest` checks `auth.getName()` — still works because `JwtPrincipal.getName()` returns `username`
-- `JwtAuthFilterTest` will need updating: the `JwtPrincipal` constructor call in assertions gains two new args (`role`, `forcePasswordChange`)
-- The existing individual `extract*` methods in `TokenService` are retained, so `TokenServiceTest` (if any) is unaffected
-- `AuthController` integration tests for `/me` should no longer expect a DB interaction
+- **`JwtAuthFilterTest` stubs must be updated:** once `JwtAuthFilter` uses `extractAll()`, the four individual `when(tokenService.extract*(…))` stubs in each test must be replaced with a single `when(tokenService.extractAll(…)).thenReturn(new TokenClaims(…))` stub. Leaving the old stubs in place will cause them to be uncalled and potentially trigger Mockito strict-stub failures.
+- The existing individual `extract*` methods in `TokenService` are retained, so any `TokenServiceTest` tests are unaffected.
+- **Add a new `UserControllerTest.getUser_asSelf_returns200` test** to prove the SpEL fix works — set up an authenticated user whose `JwtPrincipal.userId` matches the path `{id}` and assert a `200` response. Without this, the bug could be re-introduced silently.
+- **`AuthController.me` no-DB verification:** the `/me` endpoint no longer calls `UserRepository`. In a `@SpringBootTest` integration test this is invisible from the outside; verify by code inspection that no `userRepository` call remains in the `me` method. If a stricter assertion is desired, spy on `UserRepository` and assert zero interactions.
