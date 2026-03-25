@@ -38,3 +38,6 @@ out/
 
 .env
 uploads/
+
+# Angular build output copied by Gradle
+src/main/resources/static/
