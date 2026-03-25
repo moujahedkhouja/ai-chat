@@ -61,6 +61,16 @@ public class TokenService {
         return parseClaims(token).get(CLAIM_FORCE_PASSWORD_CHANGE, Boolean.class);
     }
 
+    public TokenClaims extractAll(String token) {
+        var claims = parseClaims(token);
+        return new TokenClaims(
+                UUID.fromString(claims.getSubject()),
+                claims.get(CLAIM_USERNAME, String.class),
+                claims.get(CLAIM_ROLE, String.class),
+                claims.get(CLAIM_FORCE_PASSWORD_CHANGE, Boolean.class)
+        );
+    }
+
     public boolean isTokenValid(String token) {
         try {
             parseClaims(token);

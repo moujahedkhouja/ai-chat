@@ -2,6 +2,7 @@ package com.alhashimi.ai.chat.auth;
 
 import com.alhashimi.ai.chat.role.Role;
 import com.alhashimi.ai.chat.user.User;
+import com.alhashimi.ai.chat.auth.TokenClaims;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -71,6 +72,18 @@ class TokenServiceTest {
         TokenService expiredTokenService = new TokenService(TEST_SECRET, -1000L);
         String token = expiredTokenService.generateToken(testUser);
         assertThat(expiredTokenService.isTokenValid(token)).isFalse();
+    }
+
+    @Test
+    void extractAll_returnsAllClaims() {
+        String token = tokenService.generateToken(testUser);
+
+        TokenClaims claims = tokenService.extractAll(token);
+
+        assertThat(claims.userId()).isEqualTo(testUser.getId());
+        assertThat(claims.username()).isEqualTo("john");
+        assertThat(claims.role()).isEqualTo("ADMIN");
+        assertThat(claims.forcePasswordChange()).isFalse();
     }
 
     @Test
