@@ -16,6 +16,7 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent,
         canActivate: [forcePasswordChangeGuard] },
+      { path: 'profile', loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent), canActivate: [forcePasswordChangeGuard] },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
