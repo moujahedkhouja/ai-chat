@@ -1,0 +1,20 @@
+export interface UserResponse {
+  id: string;
+  username: string;
+  email: string;
+  role: 'ADMIN' | 'MODERATOR' | 'USER';
+  enabled: boolean;
+  forcePasswordChange: boolean;
+  profilePicturePath: string | null;
+  linkedinUrl: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UserPage {
+  content: UserResponse[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+}
