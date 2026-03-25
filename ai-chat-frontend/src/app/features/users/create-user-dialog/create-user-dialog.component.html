@@ -1,49 +1,47 @@
-<div class="create-user-form">
-  <h2>Create New User</h2>
-
-  @if (error) {
-    <div class="error-message">{{ error }}</div>
-  }
-
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <label for="username">Username</label>
-      <input id="username" type="text" formControlName="username" placeholder="Username" />
-      @if (form.get('username')?.invalid && form.get('username')?.touched) {
-        <span class="field-error">Username must be at least 3 characters</span>
-      }
-    </div>
-
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input id="email" type="email" formControlName="email" placeholder="Email" />
-      @if (form.get('email')?.invalid && form.get('email')?.touched) {
-        <span class="field-error">Valid email is required</span>
-      }
-    </div>
-
-    <div class="form-group">
-      <label for="temporaryPassword">Temporary Password</label>
-      <input id="temporaryPassword" type="password" formControlName="temporaryPassword" placeholder="Temporary Password" />
-      @if (form.get('temporaryPassword')?.invalid && form.get('temporaryPassword')?.touched) {
-        <span class="field-error">Password must be at least 8 characters</span>
-      }
-    </div>
-
-    <div class="form-group">
-      <label for="role">Role</label>
-      <select id="role" formControlName="role">
-        <option value="USER">USER</option>
-        <option value="MODERATOR">MODERATOR</option>
-        <option value="ADMIN">ADMIN</option>
-      </select>
-    </div>
-
-    <div class="form-actions">
-      <button type="button" (click)="onCancel()" class="btn-secondary">Cancel</button>
-      <button type="submit" [disabled]="form.invalid || loading" class="btn-primary">
-        {{ loading ? 'Creating...' : 'Create User' }}
+<div class="dialog-overlay" (click)="onCancel()">
+  <div class="dialog" (click)="$event.stopPropagation()">
+    <div class="dialog-header">
+      <h2 class="dialog-title">Create User</h2>
+      <button class="dialog-close" type="button" (click)="onCancel()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
     </div>
-  </form>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="dialog-form">
+      <div class="field">
+        <label class="field-label" for="d-username">Username</label>
+        <input id="d-username" class="field-input" type="text" formControlName="username" placeholder="e.g. john_doe" autocomplete="off"/>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="d-email">Email</label>
+        <input id="d-email" class="field-input" type="email" formControlName="email" placeholder="e.g. john@example.com" autocomplete="off"/>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="d-password">Temporary Password</label>
+        <input id="d-password" class="field-input" type="password" formControlName="temporaryPassword" placeholder="Min. 8 characters" autocomplete="new-password"/>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="d-role">Role</label>
+        <select id="d-role" class="field-input" formControlName="role">
+          <option value="USER">User</option>
+          <option value="MODERATOR">Moderator</option>
+          <option value="ADMIN">Admin</option>
+        </select>
+      </div>
+
+      @if (error) {
+        <p class="error-message">{{ error }}</p>
+      }
+
+      <div class="dialog-actions">
+        <button class="btn-ghost" type="button" (click)="onCancel()">Cancel</button>
+        <button class="btn-primary" type="submit" [disabled]="loading">
+          @if (loading) { Creating... } @else { Create User }
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
