@@ -7,7 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -66,8 +66,8 @@ public class AuthController {
 
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest request,
-                                            HttpServletResponse httpResponse) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                                            HttpServletResponse httpResponse,
+                                            Authentication authentication) {
         if (!(authentication != null && authentication.getDetails() instanceof JwtAuthDetails details)) {
             return ResponseEntity.status(401).body(Map.of("error", INVALID_CREDENTIALS_ERROR));
         }
@@ -106,8 +106,7 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<?> me() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<?> me(@AuthenticationPrincipal Authentication authentication) {
         if (!(authentication != null && authentication.getDetails() instanceof JwtAuthDetails details)) {
             return ResponseEntity.status(401).body(Map.of("error", INVALID_CREDENTIALS_ERROR));
         }
