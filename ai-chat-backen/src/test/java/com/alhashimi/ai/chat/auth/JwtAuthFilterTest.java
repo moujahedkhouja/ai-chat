@@ -1,6 +1,7 @@
 package com.alhashimi.ai.chat.auth;
 
 import tools.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,11 +43,8 @@ class JwtAuthFilterTest {
     @Test
     void doFilterInternal_withValidToken_setsAuthentication() throws Exception {
         // Arrange
-        when(tokenService.isTokenValid(VALID_TOKEN)).thenReturn(true);
-        when(tokenService.extractUserId(VALID_TOKEN)).thenReturn(USER_ID);
-        when(tokenService.extractUsername(VALID_TOKEN)).thenReturn("john");
-        when(tokenService.extractRole(VALID_TOKEN)).thenReturn("ADMIN");
-        when(tokenService.extractForcePasswordChange(VALID_TOKEN)).thenReturn(false);
+        when(tokenService.extractAll(VALID_TOKEN))
+                .thenReturn(new TokenClaims(USER_ID, "john", "ADMIN", false));
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         Cookie cookie = new Cookie("auth_token", VALID_TOKEN);
@@ -73,7 +71,8 @@ class JwtAuthFilterTest {
     @Test
     void doFilterInternal_withInvalidToken_doesNotSetAuthentication() throws Exception {
         // Arrange
-        when(tokenService.isTokenValid("bad.token")).thenReturn(false);
+        when(tokenService.extractAll("bad.token"))
+                .thenThrow(new JwtException("invalid"));
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         Cookie cookie = new Cookie("auth_token", "bad.token");
@@ -115,11 +114,8 @@ class JwtAuthFilterTest {
     @Test
     void doFilterInternal_withForcePasswordChange_andNonChangePasswordPath_returns403() throws Exception {
         // Arrange
-        when(tokenService.isTokenValid(VALID_TOKEN)).thenReturn(true);
-        when(tokenService.extractUserId(VALID_TOKEN)).thenReturn(USER_ID);
-        when(tokenService.extractUsername(VALID_TOKEN)).thenReturn("john");
-        when(tokenService.extractRole(VALID_TOKEN)).thenReturn("USER");
-        when(tokenService.extractForcePasswordChange(VALID_TOKEN)).thenReturn(true);
+        when(tokenService.extractAll(VALID_TOKEN))
+                .thenReturn(new TokenClaims(USER_ID, "john", "USER", true));
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         Cookie cookie = new Cookie("auth_token", VALID_TOKEN);
@@ -151,11 +147,8 @@ class JwtAuthFilterTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockFilterChain filterChain = new MockFilterChain();
 
-        when(tokenService.isTokenValid(VALID_TOKEN)).thenReturn(true);
-        when(tokenService.extractUserId(VALID_TOKEN)).thenReturn(USER_ID);
-        when(tokenService.extractUsername(VALID_TOKEN)).thenReturn("john");
-        when(tokenService.extractRole(VALID_TOKEN)).thenReturn("USER");
-        when(tokenService.extractForcePasswordChange(VALID_TOKEN)).thenReturn(true);
+        when(tokenService.extractAll(VALID_TOKEN))
+                .thenReturn(new TokenClaims(USER_ID, "john", "USER", true));
 
         // Act
         jwtAuthFilter.doFilter(request, response, filterChain);

@@ -1,6 +1,7 @@
 package com.alhashimi.ai.chat.auth;
 
 import tools.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -15,7 +16,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -50,18 +50,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (!tokenService.isTokenValid(token)) {
+        TokenClaims claims;
+        try {
+            claims = tokenService.extractAll(token);
+        } catch (JwtException e) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        UUID userId = tokenService.extractUserId(token);
-        String username = tokenService.extractUsername(token);
-        String role = tokenService.extractRole(token);
-        boolean forcePasswordChange = tokenService.extractForcePasswordChange(token);
-
         // Enforce forcePasswordChange: block all requests except POST /api/auth/change-password
-        if (forcePasswordChange) {
+        if (claims.forcePasswordChange()) {
             String method = request.getMethod();
             String path = request.getServletPath();
             boolean isChangePasswordRequest = "POST".equals(method)
@@ -77,8 +75,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
         }
 
-        var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
-        var authentication = new UsernamePasswordAuthenticationToken(new JwtPrincipal(userId, username), null, authorities);
+        var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + claims.role()));
+        var authentication = new UsernamePasswordAuthenticationToken(
+                new JwtPrincipal(claims.userId(), claims.username(), claims.role(), claims.forcePasswordChange()),
+                null, authorities);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
