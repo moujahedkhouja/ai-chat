@@ -182,4 +182,43 @@ class UserServiceTest {
 
         verify(userRepository).delete(user);
     }
+
+    @Test
+    void updateAvatar_withValidId_setsProfilePicturePathAndSaves() {
+        UUID id = UUID.randomUUID();
+        User user = User.builder().username("john").email("john@example.com")
+            .password("encoded").role(Role.USER).build();
+        user.setId(id);
+        String newPath = "/uploads/avatars/john.jpg";
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        UserResponse response = userService.updateAvatar(id, newPath);
+
+        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+        verify(userRepository).save(captor.capture());
+        assertThat(captor.getValue().getProfilePicturePath()).isEqualTo(newPath);
+    }
+
+    @Test
+    void updateUser_withPartialRequest_onlyUpdatesNonNullFields() {
+        UUID id = UUID.randomUUID();
+        User user = User.builder().username("john").email("original@example.com")
+            .password("encoded").role(Role.USER).build();
+        user.setId(id);
+
+        // Only update linkedinUrl — all other fields are null
+        UpdateUserRequest request = new UpdateUserRequest(null, null, null, "https://linkedin.com/in/john");
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        UserResponse response = userService.updateUser(id, request);
+
+        // Email and role should be unchanged
+        assertThat(response.email()).isEqualTo("original@example.com");
+        assertThat(response.role()).isEqualTo(Role.USER);
+        assertThat(response.linkedinUrl()).isEqualTo("https://linkedin.com/in/john");
+    }
 }
