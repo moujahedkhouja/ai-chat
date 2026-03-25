@@ -53,7 +53,7 @@ class AvatarStorageServiceTest {
 
         assertThatThrownBy(() -> avatarStorageService.store(userId, file))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("image");
+                .hasMessageContaining("Unsupported file type");
     }
 
     @Test
