@@ -39,6 +39,7 @@ export class AuthService {
       return true;
     }
     try {
+      
       const payload = this.parseToken(token);
       if (!payload || !payload.exp) {
         return true;

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { UserResponse, UserPage } from '../models/user.model';
+import { UserResponse, UserPage, CreateUserRequest } from '../models/user.model';
 
 export interface UpdateUserRequest {
   linkedinUrl?: string | null;
@@ -30,5 +30,13 @@ export class UserService {
 
   listUsers(page: number = 0, size: number = 20): Observable<UserPage> {
     return this.http.get<UserPage>(`/api/users?page=${page}&size=${size}`);
+  }
+
+  createUser(request: CreateUserRequest): Observable<UserResponse> {
+    return this.http.post<UserResponse>('/api/users', request);
+  }
+
+  deleteUser(id: string): Observable<void> {
+    return this.http.delete<void>(`/api/users/${id}`);
   }
 }

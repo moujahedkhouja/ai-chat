@@ -1,0 +1,64 @@
+<div class="users-container">
+  <div class="page-header">
+    <h1>User Management</h1>
+    @if (isAdmin && !showCreateForm) {
+      <button (click)="showCreateForm = true" class="btn-primary">+ Create User</button>
+    }
+  </div>
+
+  @if (showCreateForm) {
+    <app-create-user-dialog
+      (userCreated)="onUserCreated($event)"
+      (cancelled)="showCreateForm = false">
+    </app-create-user-dialog>
+  }
+
+  @if (errorMessage) {
+    <div class="error-message">{{ errorMessage }}</div>
+  }
+
+  @if (loading) {
+    <div class="loading">Loading users...</div>
+  }
+
+  <table class="users-table">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Status</th>
+        <th>Created</th>
+        @if (isAdmin) {
+          <th>Actions</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (user of users; track user.id) {
+        <tr>
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+          <td><span class="role-badge">{{ user.role }}</span></td>
+          <td>
+            <span [class]="user.enabled ? 'status-active' : 'status-inactive'">
+              {{ user.enabled ? 'Active' : 'Disabled' }}
+            </span>
+          </td>
+          <td>{{ user.createdAt | date:'shortDate' }}</td>
+          @if (isAdmin) {
+            <td>
+              <button (click)="onDeleteUser(user.id)" class="btn-danger">Delete</button>
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <div class="pagination">
+    <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 0">Previous</button>
+    <span>Page {{ currentPage + 1 }} of {{ totalPages }}</span>
+    <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage >= totalPages - 1">Next</button>
+  </div>
+</div>

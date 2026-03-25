@@ -1,3 +1,10 @@
+export interface CreateUserRequest {
+  username: string;
+  email: string;
+  temporaryPassword: string;
+  role: 'ADMIN' | 'MODERATOR' | 'USER';
+}
+
 export interface UserResponse {
   id: string;
   username: string;
