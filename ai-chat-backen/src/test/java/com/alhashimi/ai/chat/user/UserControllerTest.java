@@ -58,6 +58,7 @@ class UserControllerTest {
     private String adminCookie;
     private String userCookie;
     private UUID adminUserId;
+    private UUID regularUserId;
 
     /**
      * Extract the auth_token value from a Set-Cookie header.
@@ -106,7 +107,7 @@ class UserControllerTest {
         adminCookie = "auth_token=" + extractTokenFromCookie(adminCookieHeaders.get(0));
 
         // Create a regular user
-        userRepository.save(User.builder()
+        User regularUser = userRepository.save(User.builder()
                 .username("regularuser")
                 .email("regular@example.com")
                 .password(passwordEncoder.encode("Regular1234"))
@@ -114,6 +115,7 @@ class UserControllerTest {
                 .enabled(true)
                 .forcePasswordChange(false)
                 .build());
+        regularUserId = regularUser.getId();
 
         ResponseEntity<Map> userLoginResponse = restClient.post()
                 .uri("/api/auth/login")
@@ -220,5 +222,20 @@ class UserControllerTest {
                 .toEntity(Void.class);
 
         assertThat(response.getStatusCode().value()).isEqualTo(204);
+    }
+
+    @Test
+    void getUser_asSelf_returns200() {
+        // A regular user should be able to read their own profile
+        ResponseEntity<Map> response = restClient.get()
+                .uri("/api/users/" + regularUserId)
+                .header("Cookie", userCookie)
+                .retrieve()
+                .toEntity(Map.class);
+
+        assertThat(response.getStatusCode().value()).isEqualTo(200);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().get("id")).isEqualTo(regularUserId.toString());
+        assertThat(response.getBody().get("username")).isEqualTo("regularuser");
     }
 }

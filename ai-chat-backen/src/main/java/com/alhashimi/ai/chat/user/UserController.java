@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR') or authentication.name == #id.toString()")
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR') or authentication.principal.userId.toString().equals(#id.toString())")
     public ResponseEntity<UserResponse> getUser(@PathVariable UUID id) {
         UserResponse response = userService.getUser(id);
         return ResponseEntity.ok(response);

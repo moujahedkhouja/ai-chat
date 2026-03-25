@@ -27,7 +27,7 @@ public class AvatarController {
     }
 
     @PostMapping("/{id}/avatar")
-    @PreAuthorize("hasRole('ADMIN') or authentication.name == #id.toString()")
+    @PreAuthorize("hasRole('ADMIN') or authentication.principal.userId.toString().equals(#id.toString())")
     public ResponseEntity<UserResponse> uploadAvatar(
             @PathVariable UUID id,
             @RequestParam("file") MultipartFile file) throws IOException {
