@@ -1,0 +1,52 @@
+.sidebar {
+  width: 240px;
+  min-width: 240px;
+  background: #1e293b;
+  color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0;
+
+  .sidebar-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #334155;
+
+    .username { display: block; font-weight: 600; }
+    .role-badge {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+  }
+
+  .nav-list {
+    list-style: none;
+    padding: 0.5rem 0;
+    margin: 0;
+    flex: 1;
+
+    li a {
+      display: block;
+      padding: 0.75rem 1.5rem;
+      color: #cbd5e1;
+      text-decoration: none;
+
+      &:hover, &.active { background: #334155; color: #f8fafc; }
+    }
+  }
+
+  .sidebar-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #334155;
+
+    button {
+      width: 100%;
+      padding: 0.5rem;
+      background: #dc2626;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  }
+}

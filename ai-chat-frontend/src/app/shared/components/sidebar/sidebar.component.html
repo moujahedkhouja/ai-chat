@@ -1,0 +1,18 @@
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <span class="username">{{ username }}</span>
+    <span class="role-badge">{{ role }}</span>
+  </div>
+
+  <ul class="nav-list">
+    <li><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
+    @if (isAdminOrModerator) {
+      <li><a routerLink="/users" routerLinkActive="active">Users</a></li>
+    }
+    <li><a routerLink="/profile" routerLinkActive="active">Profile</a></li>
+  </ul>
+
+  <div class="sidebar-footer">
+    <button (click)="logout()">Logout</button>
+  </div>
+</nav>
