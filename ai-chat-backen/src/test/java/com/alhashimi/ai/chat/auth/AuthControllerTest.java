@@ -291,5 +291,6 @@ class AuthControllerTest {
                 .toEntity(new ParameterizedTypeReference<Map<String, String>>() {});
 
         assertThat(response.getStatusCode().value()).isEqualTo(401);
+        assertThat(response.getBody()).containsEntry("error", "Unauthorized");
     }
 }
