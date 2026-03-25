@@ -1,1 +1,49 @@
-/* You can add global styles to this file, and also import other style files */
+/* Design tokens — Dark Pro theme */
+:root {
+  --color-bg: #0f1117;
+  --color-surface: #13151f;
+  --color-card: #1a1d27;
+  --color-border: #1e2235;
+
+  --color-accent: #6366f1;
+  --color-accent-2: #8b5cf6;
+  --color-accent-muted: rgba(99, 102, 241, 0.15);
+  --color-accent-border: rgba(99, 102, 241, 0.3);
+
+  --color-text: #e2e8f0;
+  --color-text-muted: #64748b;
+  --color-text-subtle: #475569;
+
+  --color-danger: #ef4444;
+  --color-success: #22c55e;
+
+  --gradient-accent: linear-gradient(135deg, #6366f1, #8b5cf6);
+
+  --sidebar-width: 60px;
+  --topbar-height: 52px;
+  --bottombar-height: 56px;
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
