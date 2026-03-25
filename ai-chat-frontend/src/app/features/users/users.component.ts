@@ -40,8 +40,8 @@ export class UsersComponent implements OnInit {
     this.userService.listUsers(this.currentPage, this.pageSize).subscribe({
       next: (page) => {
         this.users = page.content;
-        this.totalElements = page.totalElements;
-        this.totalPages = page.totalPages;
+        this.totalElements = page.page.totalElements;
+        this.totalPages = page.page.totalPages;
         this.loading = false;
       },
       error: () => {

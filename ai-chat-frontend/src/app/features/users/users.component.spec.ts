@@ -20,10 +20,12 @@ const mockUser: UserResponse = {
 
 const mockPage: UserPage = {
   content: [mockUser],
-  totalElements: 1,
-  totalPages: 1,
-  size: 20,
-  number: 0
+  page: {
+    totalElements: 1,
+    totalPages: 1,
+    size: 20,
+    number: 0
+  }
 };
 
 describe('UsersComponent', () => {

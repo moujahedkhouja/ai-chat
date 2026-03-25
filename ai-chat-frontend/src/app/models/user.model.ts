@@ -20,8 +20,10 @@ export interface UserResponse {
 
 export interface UserPage {
   content: UserResponse[];
-  totalElements: number;
-  totalPages: number;
-  size: number;
-  number: number;
+  page: {
+    totalElements: number;
+    totalPages: number;
+    size: number;
+    number: number;
+  };
 }

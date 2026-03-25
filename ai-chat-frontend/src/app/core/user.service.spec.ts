@@ -76,10 +76,12 @@ describe('UserService', () => {
   it('should list users with pagination', () => {
     const mockPage: UserPage = {
       content: [mockUser],
-      totalElements: 1,
-      totalPages: 1,
-      size: 20,
-      number: 0
+      page: {
+        totalElements: 1,
+        totalPages: 1,
+        size: 20,
+        number: 0
+      }
     };
 
     service.listUsers(0, 20).subscribe(page => {
