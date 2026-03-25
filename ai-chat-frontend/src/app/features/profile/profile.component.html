@@ -1,51 +1,62 @@
-<div class="profile-container">
-  <h1>My Profile</h1>
+<div class="profile-page">
+  <div class="page-header">
+    <h1 class="page-title">Profile</h1>
+  </div>
+
+  @if (errorMessage) {
+    <div class="alert-error">{{ errorMessage }}</div>
+  }
 
   @if (successMessage) {
-    <div class="success-message">{{ successMessage }}</div>
-  }
-  @if (errorMessage) {
-    <div class="error-message">{{ errorMessage }}</div>
+    <div class="alert-success">{{ successMessage }}</div>
   }
 
   @if (user) {
     <div class="profile-card">
-      <!-- Avatar section -->
       <div class="avatar-section">
-        <img [src]="getAvatarUrl() || 'assets/default-avatar.svg'"
-             alt="Profile picture" class="avatar">
-        <label class="avatar-upload-btn">
-          {{ avatarUploading ? 'Uploading...' : 'Change Photo' }}
-          <input type="file" accept="image/*" (change)="onAvatarChange($event)" hidden>
+        <label class="avatar-upload" title="Click to upload avatar">
+          @if (getAvatarUrl()) {
+            <img [src]="getAvatarUrl()" [alt]="user.username" class="avatar-img"/>
+          } @else {
+            <div class="avatar-initials">{{ user.username.charAt(0).toUpperCase() }}</div>
+          }
+          <div class="avatar-overlay">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 12l3-3 2 2 4-5 3 4" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="1" y="1" width="16" height="16" rx="3" stroke="white" stroke-width="1.6"/></svg>
+          </div>
+          <input type="file" accept="image/*" class="avatar-file-input" (change)="onAvatarChange($event)" [disabled]="avatarUploading"/>
         </label>
-      </div>
-
-      <!-- Profile info -->
-      <div class="profile-info">
-        <div class="info-row">
-          <span class="label">Username</span>
-          <span class="value">{{ user.username }}</span>
-        </div>
-        <div class="info-row">
-          <span class="label">Role</span>
-          <span class="role-badge">{{ user.role }}</span>
-        </div>
-        <div class="info-row">
-          <span class="label">Email</span>
-          <span class="value">{{ user.email }}</span>
+        <div class="avatar-info">
+          <span class="profile-username">{{ user.username }}</span>
+          <span class="role-badge" [class]="user.role.toLowerCase()">{{ user.role }}</span>
         </div>
       </div>
 
-      <!-- Editable form -->
-      <form [formGroup]="form" (ngSubmit)="onSave()">
-        <div class="form-group">
-          <label for="linkedinUrl">LinkedIn URL</label>
-          <input id="linkedinUrl" type="url" formControlName="linkedinUrl"
-                 placeholder="https://linkedin.com/in/username">
+      <div class="divider"></div>
+
+      <div class="info-section">
+        <div class="info-row">
+          <span class="info-label">Email</span>
+          <span class="info-value">{{ user.email }}</span>
         </div>
-        <button type="submit" [disabled]="loading">
-          {{ loading ? 'Saving...' : 'Save Changes' }}
-        </button>
+        <div class="info-row">
+          <span class="info-label">User ID</span>
+          <span class="info-value info-mono">{{ user.id }}</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <form [formGroup]="form" (ngSubmit)="onSave()" class="edit-section">
+        <div class="field">
+          <label class="field-label" for="linkedin">LinkedIn URL</label>
+          <input id="linkedin" class="field-input" type="url" formControlName="linkedinUrl" placeholder="https://linkedin.com/in/yourname"/>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-primary" type="submit" [disabled]="loading">
+            @if (loading) { Saving... } @else { Save Changes }
+          </button>
+        </div>
       </form>
     </div>
   }

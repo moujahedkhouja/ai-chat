@@ -1,89 +1,147 @@
-.create-user-form {
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 300;
 
-  h2 {
-    margin-top: 0;
-    margin-bottom: 1.25rem;
-    font-size: 1.125rem;
-    color: #1e293b;
+  @media (min-width: 640px) {
+    align-items: center;
+    padding: 16px;
   }
 }
 
-.form-group {
+.dialog {
+  width: 100%;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  overflow: hidden;
+
+  @media (min-width: 640px) {
+    max-width: 480px;
+    border-radius: var(--radius-xl);
+  }
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dialog-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.dialog-close {
+  width: 28px;
+  height: 28px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.15s;
+
+  &:hover { color: var(--color-text); }
+}
+
+.dialog-form {
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  margin-bottom: 1rem;
-
-  label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #374151;
-    margin-bottom: 0.25rem;
-  }
-
-  input,
-  select {
-    padding: 0.5rem 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    color: #111827;
-
-    &:focus {
-      outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-    }
-  }
+  gap: 14px;
 }
 
-.field-error {
-  font-size: 0.75rem;
-  color: #dc2626;
-  margin-top: 0.25rem;
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.field-input {
+  height: 40px;
+  padding: 0 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s;
+
+  &::placeholder { color: var(--color-text-subtle); }
+  &:focus { border-color: var(--color-accent); }
+
+  option {
+    background: var(--color-card);
+    color: var(--color-text);
+  }
 }
 
 .error-message {
-  background: #fee2e2;
-  color: #dc2626;
-  padding: 0.75rem;
-  border-radius: 4px;
-  margin-bottom: 1rem;
-  font-size: 0.875rem;
+  font-size: 12px;
+  color: var(--color-danger);
+  padding: 7px 10px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-sm);
 }
 
-.form-actions {
+.dialog-actions {
   display: flex;
-  gap: 0.75rem;
+  gap: 8px;
   justify-content: flex-end;
-  margin-top: 1.25rem;
+  margin-top: 4px;
 }
 
 .btn-primary {
-  padding: 0.5rem 1rem;
-  background: #3b82f6;
-  color: white;
+  height: 36px;
+  padding: 0 16px;
+  background: var(--gradient-accent);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 0.875rem;
+  transition: opacity 0.15s;
 
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+  &:hover:not(:disabled) { opacity: 0.9; }
 }
 
-.btn-secondary {
-  padding: 0.5rem 1rem;
-  background: white;
-  color: #374151;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
+.btn-ghost {
+  height: 36px;
+  padding: 0 14px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-size: 13px;
   cursor: pointer;
-  font-size: 0.875rem;
+  transition: color 0.15s, border-color 0.15s;
+
+  &:hover {
+    color: var(--color-text);
+    border-color: var(--color-text-muted);
+  }
 }

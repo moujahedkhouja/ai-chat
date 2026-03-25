@@ -69,7 +69,7 @@ describe('UsersComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const createButton = compiled.querySelector('.btn-primary') as HTMLButtonElement;
     expect(createButton).toBeTruthy();
-    expect(createButton.textContent?.trim()).toBe('+ Create User');
+    expect(createButton.textContent?.trim()).toContain('New User');
 
     createButton.click();
     fixture.detectChanges();
