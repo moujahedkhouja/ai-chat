@@ -1,10 +1,15 @@
 .login-page {
   min-height: 100dvh;
   display: flex;
+  flex-direction: column;
   align-items: stretch;
   background: var(--color-bg);
   position: relative;
   overflow: hidden;
+
+  @media (min-width: 900px) {
+    flex-direction: row;
+  }
 }
 
 /* Floating background blobs */
@@ -17,19 +22,21 @@
   z-index: 0;
 }
 
-/* ── Left branding panel (desktop only) ── */
+/* ── Brand panel — top on mobile, left on desktop ── */
 .login-brand {
-  display: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px 28px;
+  position: relative;
+  z-index: 1;
 
   @media (min-width: 900px) {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
     flex: 1;
+    align-items: flex-start;
     padding: 48px 56px;
-    position: relative;
-    z-index: 1;
+    justify-content: center;
   }
 }
 
@@ -37,7 +44,11 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
+
+  @media (min-width: 900px) {
+    margin-bottom: 24px;
+  }
 }
 
 .brand-name {
@@ -48,24 +59,42 @@
 }
 
 .brand-tagline {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 400;
   color: var(--color-text-muted);
   line-height: 1.6;
-  margin-bottom: 40px;
-  max-width: 280px;
+  margin-bottom: 20px;
+  text-align: center;
+
+  @media (min-width: 900px) {
+    font-size: 18px;
+    margin-bottom: 40px;
+    text-align: left;
+    max-width: 280px;
+  }
 }
 
 .brand-illustration {
-  width: 100%;
-  max-width: 340px;
-  margin-bottom: 36px;
+  width: 200px;
+  max-width: 100%;
+  margin-bottom: 20px;
+
+  @media (min-width: 900px) {
+    width: 100%;
+    max-width: 340px;
+    margin-bottom: 36px;
+  }
 }
 
 .brand-features {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  justify-content: center;
+
+  @media (min-width: 900px) {
+    justify-content: flex-start;
+  }
 }
 
 .feature-pill {
@@ -87,7 +116,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 32px 24px;
+  padding: 28px 24px 40px;
   position: relative;
   z-index: 1;
 
@@ -97,25 +126,8 @@
     background: var(--color-surface);
     border-left: 1px solid var(--color-border);
     padding: 48px 44px;
+    min-height: 100dvh;
   }
-}
-
-/* Mobile-only logo (hidden on desktop where brand panel shows it) */
-.login-logo-mobile {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 28px;
-
-  @media (min-width: 900px) {
-    display: none;
-  }
-}
-
-.login-app-name {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--color-text);
 }
 
 .login-title {
@@ -153,7 +165,7 @@
 .field-input {
   height: 44px;
   padding: 0 12px;
-  background: var(--color-surface);
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   color: var(--color-text);
@@ -161,6 +173,10 @@
   font-family: inherit;
   outline: none;
   transition: border-color 0.15s;
+
+  @media (min-width: 900px) {
+    background: var(--color-card);
+  }
 
   &::placeholder {
     color: var(--color-text-subtle);

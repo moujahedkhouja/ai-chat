@@ -16,4 +16,8 @@ export class BottomTabBarComponent {
     const role = this.authService.getRole();
     return role === 'ADMIN' || role === 'MODERATOR';
   }
+
+  logout(): void {
+    this.authService.logout().subscribe();
+  }
 }

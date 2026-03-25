@@ -42,3 +42,14 @@
   font-weight: 500;
   letter-spacing: 0.2px;
 }
+
+.tab-logout {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+
+  &:hover {
+    color: var(--color-danger);
+  }
+}
