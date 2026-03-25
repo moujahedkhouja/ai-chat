@@ -4,9 +4,9 @@ import com.alhashimi.ai.chat.user.User;
 import com.alhashimi.ai.chat.user.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
@@ -30,13 +30,16 @@ public class AuthController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
+    private final boolean cookieSecure;
 
     public AuthController(UserRepository userRepository,
                           PasswordEncoder passwordEncoder,
-                          TokenService tokenService) {
+                          TokenService tokenService,
+                          @Value("${app.cookie.secure:false}") boolean cookieSecure) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenService = tokenService;
+        this.cookieSecure = cookieSecure;
     }
 
     @PostMapping("/login")
@@ -67,11 +70,11 @@ public class AuthController {
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest request,
                                             HttpServletResponse httpResponse,
-                                            Authentication authentication) {
-        if (!(authentication != null && authentication.getDetails() instanceof JwtAuthDetails details)) {
+                                            @AuthenticationPrincipal JwtPrincipal principal) {
+        if (principal == null) {
             return ResponseEntity.status(401).body(Map.of("error", INVALID_CREDENTIALS_ERROR));
         }
-        UUID userId = details.getUserId();
+        UUID userId = principal.userId();
 
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
@@ -106,29 +109,22 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<?> me(@AuthenticationPrincipal Authentication authentication) {
-        if (!(authentication != null && authentication.getDetails() instanceof JwtAuthDetails details)) {
+    public ResponseEntity<?> me(@AuthenticationPrincipal JwtPrincipal principal) {
+        if (principal == null) {
             return ResponseEntity.status(401).body(Map.of("error", INVALID_CREDENTIALS_ERROR));
         }
-
-        UUID userId = details.getUserId();
-        User user = userRepository.findById(userId).orElse(null);
-        if (user == null) {
-            return ResponseEntity.status(401).build();
-        }
-
         return ResponseEntity.ok(new AuthResponse(
-            user.getId().toString(),
-            user.getUsername(),
-            user.getRole().name(),
-            user.isForcePasswordChange()
+            principal.userId().toString(),
+            principal.username(),
+            principal.role(),
+            principal.forcePasswordChange()
         ));
     }
 
     private ResponseCookie buildAuthCookie(String token, int maxAge) {
         return ResponseCookie.from("auth_token", token)
             .httpOnly(true)
-            .secure(false) // set true in production profile; false allows dev over HTTP
+            .secure(cookieSecure)
             .sameSite("Strict")
             .path("/")
             .maxAge(maxAge)
