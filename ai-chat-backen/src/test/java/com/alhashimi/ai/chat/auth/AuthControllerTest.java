@@ -22,6 +22,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -81,12 +82,25 @@ class AuthControllerTest {
                 .build());
     }
 
+    /**
+     * Extract the auth_token cookie value from a Set-Cookie header value.
+     */
+    private String extractTokenFromCookie(String setCookieHeader) {
+        for (String part : setCookieHeader.split(";")) {
+            String trimmed = part.trim();
+            if (trimmed.startsWith("auth_token=")) {
+                return trimmed.substring("auth_token=".length());
+            }
+        }
+        return null;
+    }
+
     // -----------------------------------------------------------------------
     // Tests
     // -----------------------------------------------------------------------
 
     @Test
-    void login_withValidCredentials_returnsToken() {
+    void login_withValidCredentials_setsAuthCookieAndReturnsUserInfo() {
         createUser("alice", "secret123", true, false);
 
         ResponseEntity<AuthResponse> response = restClient.post()
@@ -98,8 +112,16 @@ class AuthControllerTest {
 
         assertThat(response.getStatusCode().value()).isEqualTo(200);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().token()).isNotBlank();
+        assertThat(response.getBody().username()).isEqualTo("alice");
+        assertThat(response.getBody().role()).isEqualTo("USER");
+        assertThat(response.getBody().userId()).isNotBlank();
         assertThat(response.getBody().forcePasswordChange()).isFalse();
+
+        List<String> setCookieHeaders = response.getHeaders().get("Set-Cookie");
+        assertThat(setCookieHeaders).isNotNull().isNotEmpty();
+        String setCookieHeader = setCookieHeaders.get(0);
+        assertThat(setCookieHeader).contains("auth_token=");
+        assertThat(setCookieHeader).containsIgnoringCase("HttpOnly");
     }
 
     @Test
@@ -133,11 +155,11 @@ class AuthControllerTest {
     }
 
     @Test
-    void changePassword_withValidToken_updatesPasswordAndReturnsNewToken() {
+    void changePassword_withValidCookie_updatesPasswordAndSetsNewCookie() {
         // 1. Create a user with forcePasswordChange = true
         createUser("diana", "oldPassword1", true, true);
 
-        // 2. Login to get the token
+        // 2. Login to get the auth cookie
         ResponseEntity<AuthResponse> loginResponse = restClient.post()
                 .uri("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -146,30 +168,35 @@ class AuthControllerTest {
                 .toEntity(AuthResponse.class);
 
         assertThat(loginResponse.getStatusCode().value()).isEqualTo(200);
-        String token = loginResponse.getBody().token();
-        assertThat(token).isNotBlank();
+        List<String> setCookieHeaders = loginResponse.getHeaders().get("Set-Cookie");
+        assertThat(setCookieHeaders).isNotNull().isNotEmpty();
+        String authCookieHeader = setCookieHeaders.get(0);
+        String tokenValue = extractTokenFromCookie(authCookieHeader);
+        assertThat(tokenValue).isNotBlank();
 
-        // 3. Change password using the token
+        // 3. Change password using the cookie
         ResponseEntity<AuthResponse> changeResponse = restClient.post()
                 .uri("/api/auth/change-password")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + token)
+                .header("Cookie", "auth_token=" + tokenValue)
                 .body(new ChangePasswordRequest("oldPassword1", "newPassword1"))
                 .retrieve()
                 .toEntity(AuthResponse.class);
 
         assertThat(changeResponse.getStatusCode().value()).isEqualTo(200);
         assertThat(changeResponse.getBody()).isNotNull();
-        assertThat(changeResponse.getBody().token()).isNotBlank();
         assertThat(changeResponse.getBody().forcePasswordChange()).isFalse();
+
+        List<String> changeCookieHeaders = changeResponse.getHeaders().get("Set-Cookie");
+        assertThat(changeCookieHeaders).isNotNull().isNotEmpty();
+        assertThat(changeCookieHeaders.get(0)).contains("auth_token=");
     }
 
     @Test
     void changePassword_withWrongCurrentPassword_returns400() {
-        // Create a user and login to get a token
+        // Create a user and login to get a cookie
         createUser("testuser2", "password123", true, false);
 
-        // Login to get token
         ResponseEntity<AuthResponse> loginResponse = restClient.post()
                 .uri("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -178,13 +205,15 @@ class AuthControllerTest {
                 .toEntity(AuthResponse.class);
 
         assertThat(loginResponse.getStatusCode().value()).isEqualTo(200);
-        String token = loginResponse.getBody().token();
+        List<String> setCookieHeaders = loginResponse.getHeaders().get("Set-Cookie");
+        assertThat(setCookieHeaders).isNotNull().isNotEmpty();
+        String tokenValue = extractTokenFromCookie(setCookieHeaders.get(0));
 
         // Try change-password with wrong current password
         ResponseEntity<Map<String, String>> response = restClient.post()
                 .uri("/api/auth/change-password")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + token)
+                .header("Cookie", "auth_token=" + tokenValue)
                 .body(new ChangePasswordRequest("wrongpassword", "newpassword123"))
                 .retrieve()
                 .toEntity(new ParameterizedTypeReference<Map<String, String>>() {});
@@ -206,5 +235,62 @@ class AuthControllerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(org.springframework.http.HttpStatus.OK);
         assertThat(response.getBody().forcePasswordChange()).isTrue();
+    }
+
+    @Test
+    void logout_clearsCookie() {
+        ResponseEntity<Void> response = restClient.post()
+                .uri("/api/auth/logout")
+                .retrieve()
+                .toEntity(Void.class);
+
+        assertThat(response.getStatusCode().value()).isEqualTo(200);
+        List<String> setCookieHeaders = response.getHeaders().get("Set-Cookie");
+        assertThat(setCookieHeaders).isNotNull().isNotEmpty();
+        String setCookieHeader = setCookieHeaders.get(0);
+        assertThat(setCookieHeader).contains("auth_token=");
+        assertThat(setCookieHeader).containsIgnoringCase("Max-Age=0");
+    }
+
+    @Test
+    void me_withValidCookie_returnsUserInfo() {
+        createUser("frank", "password123", true, false);
+
+        // Login to get cookie
+        ResponseEntity<AuthResponse> loginResponse = restClient.post()
+                .uri("/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new LoginRequest("frank", "password123"))
+                .retrieve()
+                .toEntity(AuthResponse.class);
+
+        assertThat(loginResponse.getStatusCode().value()).isEqualTo(200);
+        List<String> setCookieHeaders = loginResponse.getHeaders().get("Set-Cookie");
+        assertThat(setCookieHeaders).isNotNull().isNotEmpty();
+        String tokenValue = extractTokenFromCookie(setCookieHeaders.get(0));
+
+        // Call /api/auth/me with the cookie
+        ResponseEntity<AuthResponse> meResponse = restClient.get()
+                .uri("/api/auth/me")
+                .header("Cookie", "auth_token=" + tokenValue)
+                .retrieve()
+                .toEntity(AuthResponse.class);
+
+        assertThat(meResponse.getStatusCode().value()).isEqualTo(200);
+        assertThat(meResponse.getBody()).isNotNull();
+        assertThat(meResponse.getBody().username()).isEqualTo("frank");
+        assertThat(meResponse.getBody().role()).isEqualTo("USER");
+        assertThat(meResponse.getBody().forcePasswordChange()).isFalse();
+    }
+
+    @Test
+    void me_withoutCookie_returnsUnauthorized() {
+        ResponseEntity<Map<String, String>> response = restClient.get()
+                .uri("/api/auth/me")
+                .retrieve()
+                .toEntity(new ParameterizedTypeReference<Map<String, String>>() {});
+
+        // Spring Security returns 403 for unauthenticated access to authenticated endpoints in stateless mode
+        assertThat(response.getStatusCode().value()).isIn(401, 403);
     }
 }

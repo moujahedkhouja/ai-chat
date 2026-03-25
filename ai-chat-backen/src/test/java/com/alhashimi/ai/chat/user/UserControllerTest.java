@@ -19,6 +19,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -53,10 +54,23 @@ class UserControllerTest {
 
     private RestClient restClient;
 
-    // Tokens for different roles
-    private String adminToken;
-    private String userToken;
+    // Cookie values for different roles
+    private String adminCookie;
+    private String userCookie;
     private UUID adminUserId;
+
+    /**
+     * Extract the auth_token value from a Set-Cookie header.
+     */
+    private String extractTokenFromCookie(String setCookieHeader) {
+        for (String part : setCookieHeader.split(";")) {
+            String trimmed = part.trim();
+            if (trimmed.startsWith("auth_token=")) {
+                return trimmed.substring("auth_token=".length());
+            }
+        }
+        return null;
+    }
 
     @BeforeEach
     void setUp() {
@@ -69,7 +83,7 @@ class UserControllerTest {
                 })
                 .build();
 
-        // Create an admin user and obtain token
+        // Create an admin user
         User adminUser = userRepository.save(User.builder()
                 .username("admin")
                 .email("admin@example.com")
@@ -80,17 +94,19 @@ class UserControllerTest {
                 .build());
         adminUserId = adminUser.getId();
 
-        // Login as admin
+        // Login as admin — get cookie
         ResponseEntity<Map> adminLoginResponse = restClient.post()
                 .uri("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("username", "admin", "password", "Admin1234"))
                 .retrieve()
                 .toEntity(Map.class);
-        adminToken = (String) adminLoginResponse.getBody().get("token");
+        List<String> adminCookieHeaders = adminLoginResponse.getHeaders().get("Set-Cookie");
+        assertThat(adminCookieHeaders).isNotNull().isNotEmpty();
+        adminCookie = "auth_token=" + extractTokenFromCookie(adminCookieHeaders.get(0));
 
-        // Create a regular user and obtain token
-        User regularUser = userRepository.save(User.builder()
+        // Create a regular user
+        userRepository.save(User.builder()
                 .username("regularuser")
                 .email("regular@example.com")
                 .password(passwordEncoder.encode("Regular1234"))
@@ -105,7 +121,9 @@ class UserControllerTest {
                 .body(Map.of("username", "regularuser", "password", "Regular1234"))
                 .retrieve()
                 .toEntity(Map.class);
-        userToken = (String) userLoginResponse.getBody().get("token");
+        List<String> userCookieHeaders = userLoginResponse.getHeaders().get("Set-Cookie");
+        assertThat(userCookieHeaders).isNotNull().isNotEmpty();
+        userCookie = "auth_token=" + extractTokenFromCookie(userCookieHeaders.get(0));
     }
 
     @Test
@@ -119,7 +137,7 @@ class UserControllerTest {
 
         ResponseEntity<Map> response = restClient.post()
                 .uri("/api/users")
-                .header("Authorization", "Bearer " + adminToken)
+                .header("Cookie", adminCookie)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .retrieve()
@@ -142,7 +160,7 @@ class UserControllerTest {
 
         ResponseEntity<Map> response = restClient.post()
                 .uri("/api/users")
-                .header("Authorization", "Bearer " + userToken)
+                .header("Cookie", userCookie)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .retrieve()
@@ -155,7 +173,7 @@ class UserControllerTest {
     void listUsers_asAdmin_returns200WithUserPage() {
         ResponseEntity<Map> response = restClient.get()
                 .uri("/api/users?page=0&size=20")
-                .header("Authorization", "Bearer " + adminToken)
+                .header("Cookie", adminCookie)
                 .retrieve()
                 .toEntity(Map.class);
 
@@ -173,7 +191,7 @@ class UserControllerTest {
     void getUser_asAdmin_returns200() {
         ResponseEntity<Map> response = restClient.get()
                 .uri("/api/users/" + adminUserId)
-                .header("Authorization", "Bearer " + adminToken)
+                .header("Cookie", adminCookie)
                 .retrieve()
                 .toEntity(Map.class);
 
@@ -197,7 +215,7 @@ class UserControllerTest {
 
         ResponseEntity<Void> response = restClient.delete()
                 .uri("/api/users/" + userToDelete.getId())
-                .header("Authorization", "Bearer " + adminToken)
+                .header("Cookie", adminCookie)
                 .retrieve()
                 .toEntity(Void.class);
 

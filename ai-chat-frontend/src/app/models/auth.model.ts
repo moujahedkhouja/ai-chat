@@ -8,7 +8,12 @@ export interface ChangePasswordRequest {
   newPassword: string;
 }
 
-export interface AuthResponse {
-  token: string;
+export interface CurrentUser {
+  userId: string;
+  username: string;
+  role: 'ADMIN' | 'MODERATOR' | 'USER';
   forcePasswordChange: boolean;
 }
+
+// AuthResponse from backend (no token)
+export interface AuthResponse extends CurrentUser {}

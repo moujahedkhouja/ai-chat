@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { LoginComponent } from './login.component';
 import { AuthService } from '../../auth/auth.service';
-import { AuthResponse } from '../../models/auth.model';
+import { CurrentUser } from '../../models/auth.model';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -40,7 +40,7 @@ describe('LoginComponent', () => {
   });
 
   it('should navigate to dashboard on successful login (forcePasswordChange=false)', () => {
-    const response: AuthResponse = { token: 'fake-token', forcePasswordChange: false };
+    const response: CurrentUser = { userId: '1', username: 'user', role: 'USER', forcePasswordChange: false };
     authServiceSpy.login.and.returnValue(of(response));
 
     component.form.setValue({ username: 'user', password: 'pass' });

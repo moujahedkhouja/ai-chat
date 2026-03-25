@@ -1,6 +1,7 @@
 package com.alhashimi.ai.chat.auth;
 
 import tools.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,7 +49,8 @@ class JwtAuthFilterTest {
         when(tokenService.extractForcePasswordChange(VALID_TOKEN)).thenReturn(false);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("Authorization", "Bearer " + VALID_TOKEN);
+        Cookie cookie = new Cookie("auth_token", VALID_TOKEN);
+        request.setCookies(cookie);
         request.setMethod("GET");
         request.setServletPath("/api/some-endpoint");
 
@@ -74,7 +76,8 @@ class JwtAuthFilterTest {
         when(tokenService.isTokenValid("bad.token")).thenReturn(false);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("Authorization", "Bearer bad.token");
+        Cookie cookie = new Cookie("auth_token", "bad.token");
+        request.setCookies(cookie);
         request.setMethod("GET");
         request.setServletPath("/api/some-endpoint");
 
@@ -92,6 +95,24 @@ class JwtAuthFilterTest {
     }
 
     @Test
+    void doFilterInternal_withNoCookie_doesNotSetAuthentication() throws Exception {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setMethod("GET");
+        request.setServletPath("/api/some-endpoint");
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        MockFilterChain filterChain = new MockFilterChain();
+
+        // Act
+        jwtAuthFilter.doFilter(request, response, filterChain);
+
+        // Assert
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        assertThat(auth).isNull();
+        assertThat(filterChain.getRequest()).isNotNull();
+    }
+
+    @Test
     void doFilterInternal_withForcePasswordChange_andNonChangePasswordPath_returns403() throws Exception {
         // Arrange
         when(tokenService.isTokenValid(VALID_TOKEN)).thenReturn(true);
@@ -101,7 +122,8 @@ class JwtAuthFilterTest {
         when(tokenService.extractForcePasswordChange(VALID_TOKEN)).thenReturn(true);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("Authorization", "Bearer " + VALID_TOKEN);
+        Cookie cookie = new Cookie("auth_token", VALID_TOKEN);
+        request.setCookies(cookie);
         request.setMethod("GET");
         request.setServletPath("/api/chat");
 
@@ -124,7 +146,8 @@ class JwtAuthFilterTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setMethod("POST");
         request.setServletPath(JwtAuthFilter.CHANGE_PASSWORD_PATH);
-        request.addHeader("Authorization", "Bearer " + VALID_TOKEN);
+        Cookie cookie = new Cookie("auth_token", VALID_TOKEN);
+        request.setCookies(cookie);
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockFilterChain filterChain = new MockFilterChain();
 

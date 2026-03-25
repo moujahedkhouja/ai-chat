@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { ChangePasswordComponent } from './change-password.component';
 import { AuthService } from '../../auth/auth.service';
-import { AuthResponse } from '../../models/auth.model';
+import { CurrentUser } from '../../models/auth.model';
 
 describe('ChangePasswordComponent', () => {
   let component: ChangePasswordComponent;
@@ -42,7 +42,7 @@ describe('ChangePasswordComponent', () => {
   });
 
   it('should navigate to dashboard on success', () => {
-    const response: AuthResponse = { token: 'new-token', forcePasswordChange: false };
+    const response: CurrentUser = { userId: '1', username: 'testuser', role: 'USER', forcePasswordChange: false };
     authServiceSpy.changePassword.and.returnValue(of(response));
 
     component.form.setValue({
