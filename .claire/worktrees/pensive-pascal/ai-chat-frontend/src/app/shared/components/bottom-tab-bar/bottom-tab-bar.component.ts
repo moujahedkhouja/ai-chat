@@ -1,0 +1,19 @@
+import { Component } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../../auth/auth.service';
+
+@Component({
+  selector: 'app-bottom-tab-bar',
+  standalone: true,
+  imports: [RouterLink, RouterLinkActive],
+  templateUrl: './bottom-tab-bar.component.html',
+  styleUrl: './bottom-tab-bar.component.scss'
+})
+export class BottomTabBarComponent {
+  constructor(private authService: AuthService) {}
+
+  get isAdminOrModerator(): boolean {
+    const role = this.authService.getRole();
+    return role === 'ADMIN' || role === 'MODERATOR';
+  }
+}
