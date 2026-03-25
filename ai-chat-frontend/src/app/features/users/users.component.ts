@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../../core/user.service';
 import { AuthService } from '../../auth/auth.service';
@@ -9,7 +8,7 @@ import { CreateUserDialogComponent } from './create-user-dialog/create-user-dial
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, DatePipe, CreateUserDialogComponent, ReactiveFormsModule],
+  imports: [CreateUserDialogComponent, ReactiveFormsModule],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss'
 })
