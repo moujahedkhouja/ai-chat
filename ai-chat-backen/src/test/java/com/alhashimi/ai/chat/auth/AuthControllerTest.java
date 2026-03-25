@@ -192,4 +192,19 @@ class AuthControllerTest {
         assertThat(response.getStatusCode().value()).isEqualTo(400);
         assertThat(response.getBody()).containsEntry("error", "Current password is incorrect");
     }
+
+    @Test
+    void login_withForcePasswordChangeUser_returnsForcePasswordChangeTrue() {
+        createUser("evan", "password123", true, true); // forcePasswordChange = true
+
+        ResponseEntity<AuthResponse> response = restClient.post()
+                .uri("/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new LoginRequest("evan", "password123"))
+                .retrieve()
+                .toEntity(AuthResponse.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(org.springframework.http.HttpStatus.OK);
+        assertThat(response.getBody().forcePasswordChange()).isTrue();
+    }
 }
