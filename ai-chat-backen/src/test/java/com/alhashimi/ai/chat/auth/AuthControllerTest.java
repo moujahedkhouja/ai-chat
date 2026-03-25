@@ -290,7 +290,6 @@ class AuthControllerTest {
                 .retrieve()
                 .toEntity(new ParameterizedTypeReference<Map<String, String>>() {});
 
-        // Spring Security returns 403 for unauthenticated access to authenticated endpoints in stateless mode
-        assertThat(response.getStatusCode().value()).isIn(401, 403);
+        assertThat(response.getStatusCode().value()).isEqualTo(401);
     }
 }
