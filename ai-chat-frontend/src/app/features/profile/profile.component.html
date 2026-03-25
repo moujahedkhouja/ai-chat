@@ -1,0 +1,52 @@
+<div class="profile-container">
+  <h1>My Profile</h1>
+
+  @if (successMessage) {
+    <div class="success-message">{{ successMessage }}</div>
+  }
+  @if (errorMessage) {
+    <div class="error-message">{{ errorMessage }}</div>
+  }
+
+  @if (user) {
+    <div class="profile-card">
+      <!-- Avatar section -->
+      <div class="avatar-section">
+        <img [src]="getAvatarUrl() || 'assets/default-avatar.svg'"
+             alt="Profile picture" class="avatar">
+        <label class="avatar-upload-btn">
+          {{ avatarUploading ? 'Uploading...' : 'Change Photo' }}
+          <input type="file" accept="image/*" (change)="onAvatarChange($event)" hidden>
+        </label>
+      </div>
+
+      <!-- Profile info -->
+      <div class="profile-info">
+        <div class="info-row">
+          <span class="label">Username</span>
+          <span class="value">{{ user.username }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Role</span>
+          <span class="role-badge">{{ user.role }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Email</span>
+          <span class="value">{{ user.email }}</span>
+        </div>
+      </div>
+
+      <!-- Editable form -->
+      <form [formGroup]="form" (ngSubmit)="onSave()">
+        <div class="form-group">
+          <label for="linkedinUrl">LinkedIn URL</label>
+          <input id="linkedinUrl" type="url" formControlName="linkedinUrl"
+                 placeholder="https://linkedin.com/in/username">
+        </div>
+        <button type="submit" [disabled]="loading">
+          {{ loading ? 'Saving...' : 'Save Changes' }}
+        </button>
+      </form>
+    </div>
+  }
+</div>
