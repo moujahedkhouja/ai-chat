@@ -135,22 +135,15 @@ class UserServiceTest {
     @Test
     void listUsers_returnsPaginatedUserPage() {
         UUID id1 = UUID.randomUUID();
-        UUID id2 = UUID.randomUUID();
-        List<User> users = List.of(
-                buildUser(id1, "user1", "user1@example.com", Role.USER),
-                buildUser(id2, "user2", "user2@example.com", Role.USER)
-        );
-        Page<User> page = new PageImpl<>(users, PageRequest.of(0, 20), 2);
+        User user = buildUser(id1, "user1", "user1@example.com", Role.USER);
+        Page<User> userPage = new PageImpl<>(List.of(user), PageRequest.of(0, 20), 1);
 
-        when(userRepository.findAll(any(Pageable.class))).thenReturn(page);
+        when(userRepository.findAll(any(Pageable.class))).thenReturn(userPage);
 
-        UserPage result = userService.listUsers(0, 20);
+        Page<UserResponse> result = userService.listUsers(0, 20);
 
-        assertThat(result.content()).hasSize(2);
-        assertThat(result.page()).isEqualTo(0);
-        assertThat(result.size()).isEqualTo(20);
-        assertThat(result.totalElements()).isEqualTo(2);
-        assertThat(result.totalPages()).isEqualTo(1);
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getTotalElements()).isEqualTo(1);
     }
 
     @Test

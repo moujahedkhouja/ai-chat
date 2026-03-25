@@ -162,10 +162,11 @@ class UserControllerTest {
         assertThat(response.getStatusCode().value()).isEqualTo(200);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody()).containsKey("content");
-        assertThat(response.getBody()).containsKey("page");
-        assertThat(response.getBody()).containsKey("size");
+        assertThat(((java.util.List<?>) response.getBody().get("content"))).isNotNull();
         assertThat(response.getBody()).containsKey("totalElements");
         assertThat(response.getBody()).containsKey("totalPages");
+        assertThat(response.getBody()).containsKey("size");
+        assertThat(response.getBody()).containsKey("number");
     }
 
     @Test

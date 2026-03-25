@@ -1,6 +1,7 @@
 package com.alhashimi.ai.chat.user;
 
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,10 +28,10 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
-    public ResponseEntity<UserPage> listUsers(
+    public ResponseEntity<Page<UserResponse>> listUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        UserPage userPage = userService.listUsers(page, size);
+        Page<UserResponse> userPage = userService.listUsers(page, size);
         return ResponseEntity.ok(userPage);
     }
 

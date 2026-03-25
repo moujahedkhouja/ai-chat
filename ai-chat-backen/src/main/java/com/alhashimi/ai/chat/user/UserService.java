@@ -2,11 +2,11 @@ package com.alhashimi.ai.chat.user;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -49,18 +49,10 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserPage listUsers(int page, int size) {
-        Page<User> userPage = userRepository.findAll(PageRequest.of(page, size));
-        List<UserResponse> content = userPage.getContent().stream()
-                .map(UserResponse::from)
-                .toList();
-        return new UserPage(
-                content,
-                userPage.getNumber(),
-                userPage.getSize(),
-                userPage.getTotalElements(),
-                userPage.getTotalPages()
-        );
+    public Page<UserResponse> listUsers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.findAll(pageable)
+                .map(UserResponse::from);
     }
 
     public UserResponse updateUser(UUID id, UpdateUserRequest request) {
