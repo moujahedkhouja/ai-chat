@@ -1,14 +1,123 @@
 <div class="login-page">
-  <div class="login-card">
-    <div class="login-logo">
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <rect width="32" height="32" rx="9" fill="url(#lg-grad)"/>
-        <rect x="7" y="7" width="7" height="7" rx="2" fill="white"/>
-        <rect x="18" y="7" width="7" height="7" rx="2" fill="white" opacity="0.7"/>
-        <rect x="7" y="18" width="7" height="7" rx="2" fill="white" opacity="0.7"/>
-        <rect x="18" y="18" width="7" height="7" rx="2" fill="white" opacity="0.4"/>
+
+  <!-- Decorative background blobs -->
+  <svg class="bg-blobs" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle cx="160" cy="120" r="220" fill="url(#blob1)"/>
+    <circle cx="680" cy="480" r="180" fill="url(#blob2)"/>
+    <circle cx="720" cy="80" r="100" fill="url(#blob3)"/>
+    <defs>
+      <radialGradient id="blob1" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#6366f1" stop-opacity="0.15"/>
+        <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="blob2" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.12"/>
+        <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="blob3" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#6366f1" stop-opacity="0.08"/>
+        <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+  </svg>
+
+  <!-- Left panel — branding & illustration (desktop only) -->
+  <div class="login-brand">
+    <!-- Large logo mark -->
+    <div class="brand-logo">
+      <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="72" height="72" rx="20" fill="url(#brand-grad)"/>
+        <rect x="14" y="14" width="16" height="16" rx="4" fill="white"/>
+        <rect x="42" y="14" width="16" height="16" rx="4" fill="white" opacity="0.75"/>
+        <rect x="14" y="42" width="16" height="16" rx="4" fill="white" opacity="0.75"/>
+        <rect x="42" y="42" width="16" height="16" rx="4" fill="white" opacity="0.4"/>
         <defs>
-          <linearGradient id="lg-grad" x1="0" y1="0" x2="32" y2="32">
+          <linearGradient id="brand-grad" x1="0" y1="0" x2="72" y2="72" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#6366f1"/>
+            <stop offset="1" stop-color="#8b5cf6"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="brand-name">AI Chat</span>
+    </div>
+
+    <p class="brand-tagline">Your intelligent workspace,<br/>always ready.</p>
+
+    <!-- Abstract AI network illustration -->
+    <svg class="brand-illustration" viewBox="0 0 340 280" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- Connection lines -->
+      <line x1="170" y1="140" x2="80" y2="80" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.3"/>
+      <line x1="170" y1="140" x2="260" y2="80" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.3"/>
+      <line x1="170" y1="140" x2="80" y2="200" stroke="#8b5cf6" stroke-width="1.5" stroke-opacity="0.3"/>
+      <line x1="170" y1="140" x2="260" y2="200" stroke="#8b5cf6" stroke-width="1.5" stroke-opacity="0.3"/>
+      <line x1="170" y1="140" x2="170" y2="40" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.25"/>
+      <line x1="170" y1="140" x2="170" y2="240" stroke="#8b5cf6" stroke-width="1.5" stroke-opacity="0.25"/>
+      <line x1="80" y1="80" x2="260" y2="80" stroke="#6366f1" stroke-width="1" stroke-opacity="0.15"/>
+      <line x1="80" y1="200" x2="260" y2="200" stroke="#8b5cf6" stroke-width="1" stroke-opacity="0.15"/>
+      <line x1="80" y1="80" x2="80" y2="200" stroke="#6366f1" stroke-width="1" stroke-opacity="0.12"/>
+      <line x1="260" y1="80" x2="260" y2="200" stroke="#8b5cf6" stroke-width="1" stroke-opacity="0.12"/>
+      <!-- Outer nodes -->
+      <circle cx="80" cy="80" r="8" fill="#1e2235" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.6"/>
+      <circle cx="260" cy="80" r="8" fill="#1e2235" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.6"/>
+      <circle cx="80" cy="200" r="8" fill="#1e2235" stroke="#8b5cf6" stroke-width="1.5" stroke-opacity="0.6"/>
+      <circle cx="260" cy="200" r="8" fill="#1e2235" stroke="#8b5cf6" stroke-width="1.5" stroke-opacity="0.6"/>
+      <circle cx="170" cy="40" r="6" fill="#1e2235" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.4"/>
+      <circle cx="170" cy="240" r="6" fill="#1e2235" stroke="#8b5cf6" stroke-width="1.5" stroke-opacity="0.4"/>
+      <!-- Inner dot highlights -->
+      <circle cx="80" cy="80" r="3" fill="#818cf8"/>
+      <circle cx="260" cy="80" r="3" fill="#818cf8"/>
+      <circle cx="80" cy="200" r="3" fill="#a78bfa"/>
+      <circle cx="260" cy="200" r="3" fill="#a78bfa"/>
+      <circle cx="170" cy="40" r="2.5" fill="#818cf8" opacity="0.7"/>
+      <circle cx="170" cy="240" r="2.5" fill="#a78bfa" opacity="0.7"/>
+      <!-- Central node -->
+      <circle cx="170" cy="140" r="28" fill="url(#center-grad)" opacity="0.15"/>
+      <circle cx="170" cy="140" r="18" fill="url(#center-grad)" opacity="0.2"/>
+      <circle cx="170" cy="140" r="10" fill="url(#center-grad)"/>
+      <circle cx="170" cy="140" r="4" fill="white" opacity="0.9"/>
+      <!-- Pulse ring -->
+      <circle cx="170" cy="140" r="36" stroke="url(#pulse-grad)" stroke-width="1" stroke-opacity="0.25" stroke-dasharray="4 4"/>
+      <defs>
+        <linearGradient id="center-grad" x1="152" y1="122" x2="188" y2="158" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#6366f1"/>
+          <stop offset="1" stop-color="#8b5cf6"/>
+        </linearGradient>
+        <linearGradient id="pulse-grad" x1="134" y1="104" x2="206" y2="176" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#6366f1"/>
+          <stop offset="1" stop-color="#8b5cf6"/>
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <!-- Feature pills -->
+    <div class="brand-features">
+      <span class="feature-pill">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="#818cf8" stroke-width="1.3"/><path d="M4 6l1.5 1.5L8 4" stroke="#818cf8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Secure
+      </span>
+      <span class="feature-pill">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="3" width="10" height="7" rx="1.5" stroke="#818cf8" stroke-width="1.3"/><path d="M4 3V2.5a2 2 0 0 1 4 0V3" stroke="#818cf8" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Private
+      </span>
+      <span class="feature-pill">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v2M6 9v2M1 6h2M9 6h2M2.5 2.5l1.4 1.4M8.1 8.1l1.4 1.4M9.5 2.5L8.1 3.9M3.9 8.1L2.5 9.5" stroke="#818cf8" stroke-width="1.3" stroke-linecap="round"/></svg>
+        AI-Powered
+      </span>
+    </div>
+  </div>
+
+  <!-- Right panel — login form -->
+  <div class="login-card">
+    <!-- Mobile-only logo -->
+    <div class="login-logo-mobile">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <rect width="36" height="36" rx="10" fill="url(#mob-grad)"/>
+        <rect x="8" y="8" width="8" height="8" rx="2" fill="white"/>
+        <rect x="20" y="8" width="8" height="8" rx="2" fill="white" opacity="0.7"/>
+        <rect x="8" y="20" width="8" height="8" rx="2" fill="white" opacity="0.7"/>
+        <rect x="20" y="20" width="8" height="8" rx="2" fill="white" opacity="0.4"/>
+        <defs>
+          <linearGradient id="mob-grad" x1="0" y1="0" x2="36" y2="36">
             <stop stop-color="#6366f1"/>
             <stop offset="1" stop-color="#8b5cf6"/>
           </linearGradient>
@@ -22,7 +131,10 @@
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form">
       <div class="field">
-        <label class="field-label" for="username">Username</label>
+        <label class="field-label" for="username">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="vertical-align:-1px;margin-right:4px;"><circle cx="6.5" cy="4.5" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M1 12c0-2.761 2.462-4.5 5.5-4.5S12 9.239 12 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Username
+        </label>
         <input
           id="username"
           class="field-input"
@@ -34,7 +146,10 @@
       </div>
 
       <div class="field">
-        <label class="field-label" for="password">Password</label>
+        <label class="field-label" for="password">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="vertical-align:-1px;margin-right:4px;"><rect x="1.5" y="5" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 5V4a2.5 2.5 0 0 1 5 0v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="6.5" cy="8.5" r="1" fill="currentColor"/></svg>
+          Password
+        </label>
         <input
           id="password"
           class="field-input"
@@ -50,7 +165,13 @@
       }
 
       <button class="btn-primary" type="submit" [disabled]="loading">
-        @if (loading) { Signing in... } @else { Sign in }
+        @if (loading) {
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="spin"><circle cx="8" cy="8" r="6" stroke="white" stroke-width="2" stroke-opacity="0.3"/><path d="M8 2a6 6 0 0 1 6 6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          Signing in...
+        } @else {
+          Sign in
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        }
       </button>
     </form>
   </div>
