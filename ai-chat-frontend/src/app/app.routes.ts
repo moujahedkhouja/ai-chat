@@ -8,16 +8,15 @@ import { forcePasswordChangeGuard } from './auth/guards/force-password-change.gu
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: 'change-password', component: ChangePasswordComponent, canActivate: [authGuard] },
   {
     path: '',
     component: ShellComponent,
     canActivate: [authGuard],
     children: [
-      { path: 'dashboard', component: DashboardComponent,
-        canActivate: [forcePasswordChangeGuard] },
+      { path: 'dashboard', component: DashboardComponent, canActivate: [forcePasswordChangeGuard] },
       { path: 'profile', loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent), canActivate: [forcePasswordChangeGuard] },
       { path: 'users', loadComponent: () => import('./features/users/users.component').then(m => m.UsersComponent), canActivate: [forcePasswordChangeGuard] },
+      { path: 'change-password', component: ChangePasswordComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
