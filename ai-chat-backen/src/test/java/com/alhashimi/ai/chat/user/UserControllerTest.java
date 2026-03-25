@@ -185,7 +185,8 @@ class UserControllerTest {
         assertThat(((java.util.List<?>) response.getBody().get("content"))).isNotNull();
         // PagedModel (VIA_DTO) nests pagination metadata under a "page" key
         assertThat(response.getBody()).containsKey("page");
-        Map<?, ?> pageMeta = (Map<?, ?>) response.getBody().get("page");
+        @SuppressWarnings("unchecked")
+        Map<String, Object> pageMeta = (Map<String, Object>) response.getBody().get("page");
         assertThat(pageMeta).containsKey("totalElements");
         assertThat(pageMeta).containsKey("totalPages");
         assertThat(pageMeta).containsKey("size");
