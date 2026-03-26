@@ -5,7 +5,7 @@
   width: var(--sidebar-width);
   height: 100dvh;
   background: #091422;
-  border-inline-end: 1px solid rgba(200, 147, 76, 0.1);
+  border-inline-end: 1px solid rgba(0, 201, 167, 0.10);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -44,7 +44,7 @@
 
   &:hover {
     color: rgba(240, 232, 216, 0.75);
-    background: rgba(200, 147, 76, 0.08);
+    background: rgba(0, 201, 167, 0.08);
   }
 
   &.active {
@@ -67,12 +67,39 @@
   padding-top: 8px;
 }
 
+.lang-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: rgba(0, 201, 167, 0.08);
+  border: 1px solid rgba(0, 201, 167, 0.16);
+  color: rgba(221, 232, 245, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+
+  &:hover {
+    color: var(--color-accent);
+    background: rgba(0, 201, 167, 0.14);
+    border-color: rgba(0, 201, 167, 0.30);
+  }
+}
+
+.lang-label {
+  font-family: var(--f-display);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
 .theme-btn {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(200, 147, 76, 0.08);
-  border: 1px solid rgba(200, 147, 76, 0.12);
+  background: rgba(0, 201, 167, 0.08);
+  border: 1px solid rgba(0, 201, 167, 0.12);
   color: rgba(240, 232, 216, 0.40);
   display: flex;
   align-items: center;
@@ -82,7 +109,7 @@
 
   &:hover {
     color: var(--color-accent);
-    background: rgba(200, 147, 76, 0.14);
+    background: rgba(0, 201, 167, 0.14);
   }
 }
 
@@ -91,8 +118,8 @@
   height: 36px;
   border-radius: 50%;
   background: var(--gradient-accent);
-  border: 2px solid rgba(200, 147, 76, 0.25);
-  color: #0c0a06;
+  border: 2px solid rgba(0, 201, 167, 0.25);
+  color: #04100d;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;

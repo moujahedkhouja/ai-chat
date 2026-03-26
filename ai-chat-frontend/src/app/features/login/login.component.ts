@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
 import { LoginRequest } from '../../models/auth.model';
+import { LanguageService } from '../../core/language.service';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +21,13 @@ export class LoginComponent {
 
   error = '';
   loading = false;
+  showPassword = false;
   readonly isRtl = inject(DOCUMENT).documentElement.dir === 'rtl';
+  readonly langService = inject(LanguageService);
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
 
   constructor(private authService: AuthService, private router: Router) {}
 

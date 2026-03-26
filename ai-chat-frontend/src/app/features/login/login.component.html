@@ -1,5 +1,21 @@
 <div class="login-page">
 
+  <!-- ── Language toggle ── -->
+  <button
+    class="lang-toggle"
+    type="button"
+    (click)="langService.toggle()"
+    [title]="langService.isArabic ? 'Switch to English' : 'التبديل إلى العربية'"
+  >
+    <span class="lang-toggle-label">{{ langService.isArabic ? 'EN' : 'AR' }}</span>
+    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+      <circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" stroke-width="1.2"/>
+      <path d="M6.5 1C6.5 1 4.5 3.5 4.5 6.5s2 5.5 2 5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M6.5 1C6.5 1 8.5 3.5 8.5 6.5s-2 5.5-2 5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M1 6.5h11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>
+  </button>
+
   <!-- ── Hero Panel (left LTR / right RTL) ── -->
   <aside class="login-hero" aria-hidden="true">
 
@@ -117,11 +133,11 @@
         </div>
 
         <!-- Password -->
-        <div class="field">
+        <div class="field field--password">
           <input
             id="password"
             class="field-input"
-            type="password"
+            [type]="showPassword ? 'text' : 'password'"
             formControlName="password"
             placeholder=" "
             autocomplete="current-password"
@@ -129,6 +145,29 @@
           <label class="field-label" for="password">
             {{ isRtl ? 'كلمة المرور' : 'Password' }}
           </label>
+          <button
+            class="field-eye-btn"
+            type="button"
+            (click)="togglePassword()"
+            [title]="showPassword ? (isRtl ? 'إخفاء كلمة المرور' : 'Hide password') : (isRtl ? 'إظهار كلمة المرور' : 'Show password')"
+            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+          >
+            @if (showPassword) {
+              <!-- Eye-off (hide) -->
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M2 2l12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M6.5 6.6A2 2 0 0 0 6 8a2 2 0 0 0 2 2 2 2 0 0 0 1.4-.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M4.1 4.2C2.8 5.1 1.8 6.4 1.5 8c.8 3.2 4 5 6.5 5 1.3 0 2.6-.4 3.6-1.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M11.9 11C13 10.1 13.8 9.1 14.5 8c-.8-3.2-4-5-6.5-5-.8 0-1.5.2-2.2.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            } @else {
+              <!-- Eye (show) -->
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M1.5 8C2.3 4.8 5 3 8 3s5.7 1.8 6.5 5c-.8 3.2-3.5 5-6.5 5S2.3 11.2 1.5 8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+            }
+          </button>
         </div>
 
         @if (error) {

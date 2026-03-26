@@ -17,7 +17,7 @@
 
   &:focus-within {
     border-color: var(--color-accent-border);
-    box-shadow: 0 0 0 3px rgba(200, 147, 76, 0.10);
+    box-shadow: 0 0 0 3px rgba(0, 201, 167, 0.10);
   }
 }
 
@@ -66,7 +66,7 @@
   }
 
   &:hover:not(:disabled) {
-    box-shadow: 0 3px 14px rgba(200, 147, 76, 0.38);
+    box-shadow: 0 3px 14px rgba(0, 201, 167, 0.38);
     transform: scale(1.06);
   }
 }
