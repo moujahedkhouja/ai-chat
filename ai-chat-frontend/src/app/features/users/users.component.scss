@@ -292,3 +292,127 @@
   font-family: var(--f-body);
   color: var(--color-text-muted);
 }
+
+.action-btns {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.btn-password-icon {
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-subtle);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+
+  &:hover {
+    color: var(--color-accent);
+    background: rgba(0, 201, 167, 0.08);
+    border-color: rgba(0, 201, 167, 0.2);
+  }
+}
+
+/* Delete confirmation modal */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+  padding: 16px;
+}
+
+.confirm-dialog {
+  background: var(--color-card);
+  border: 1px solid rgba(224, 96, 96, 0.25);
+  border-radius: var(--radius-xl);
+  padding: 28px 24px 20px;
+  max-width: 340px;
+  width: 100%;
+  text-align: center;
+  animation: dialog-rise 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+@keyframes dialog-rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.confirm-icon {
+  width: 48px;
+  height: 48px;
+  background: rgba(224, 96, 96, 0.12);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  color: var(--color-danger);
+}
+
+.confirm-title {
+  font-family: var(--f-display);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 8px;
+}
+
+:host-context([dir="rtl"]) .confirm-title {
+  font-family: var(--f-arabic);
+}
+
+.confirm-text {
+  font-size: 13px;
+  font-family: var(--f-body);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin-bottom: 20px;
+
+  strong { color: var(--color-text); font-weight: 600; }
+}
+
+:host-context([dir="rtl"]) .confirm-text {
+  font-family: var(--f-arabic);
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.btn-delete {
+  height: 38px;
+  padding: 0 20px;
+  background: rgba(224, 96, 96, 0.15);
+  border: 1px solid rgba(224, 96, 96, 0.35);
+  border-radius: var(--radius-sm);
+  color: var(--color-danger);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--f-body);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: rgba(224, 96, 96, 0.25);
+    border-color: rgba(224, 96, 96, 0.5);
+  }
+}
+
+:host-context([dir="rtl"]) .btn-delete {
+  font-family: var(--f-arabic);
+}
