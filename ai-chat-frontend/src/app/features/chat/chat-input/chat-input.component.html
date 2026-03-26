@@ -1,0 +1,25 @@
+<div class="input-wrap">
+  <div class="input-bar">
+    <textarea
+      #textarea
+      class="input-textarea"
+      [(ngModel)]="value"
+      (keydown)="onKeydown($event)"
+      (input)="onInput()"
+      placeholder="Message AI..."
+      rows="1"
+    ></textarea>
+    <button
+      class="send-btn"
+      type="button"
+      (click)="submit()"
+      [disabled]="!value.trim()"
+      title="Send (Enter)"
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M14.5 1.5L1 6l5 2.5 2.5 5L14.5 1.5Z" fill="currentColor"/>
+      </svg>
+    </button>
+  </div>
+  <p class="input-hint">Enter to send · Shift+Enter for new line</p>
+</div>
