@@ -254,4 +254,58 @@ class UserControllerTest {
 
         assertThat(response.getStatusCode().value()).isEqualTo(403);
     }
+
+    @Test
+    void resetPassword_asAdmin_returns204() {
+        ResponseEntity<Void> response = restClient.post()
+                .uri("/api/users/" + regularUserId + "/reset-password")
+                .header("Cookie", adminCookie)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("newPassword", "NewPassword1"))
+                .retrieve()
+                .toEntity(Void.class);
+
+        assertThat(response.getStatusCode().value()).isEqualTo(204);
+    }
+
+    @Test
+    void resetPassword_asNonAdmin_returns403() {
+        ResponseEntity<Void> response = restClient.post()
+                .uri("/api/users/" + regularUserId + "/reset-password")
+                .header("Cookie", userCookie)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("newPassword", "NewPassword1"))
+                .retrieve()
+                .toEntity(Void.class);
+
+        assertThat(response.getStatusCode().value()).isEqualTo(403);
+    }
+
+    @Test
+    void resetPassword_invalidUserId_returns404() {
+        UUID nonExistentId = UUID.randomUUID();
+
+        ResponseEntity<Map> response = restClient.post()
+                .uri("/api/users/" + nonExistentId + "/reset-password")
+                .header("Cookie", adminCookie)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("newPassword", "NewPassword1"))
+                .retrieve()
+                .toEntity(Map.class);
+
+        assertThat(response.getStatusCode().value()).isEqualTo(404);
+    }
+
+    @Test
+    void resetPassword_shortPassword_returns400() {
+        ResponseEntity<Map> response = restClient.post()
+                .uri("/api/users/" + regularUserId + "/reset-password")
+                .header("Cookie", adminCookie)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("newPassword", "short"))
+                .retrieve()
+                .toEntity(Map.class);
+
+        assertThat(response.getStatusCode().value()).isEqualTo(400);
+    }
 }
