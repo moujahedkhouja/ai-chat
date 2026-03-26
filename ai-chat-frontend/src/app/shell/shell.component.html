@@ -21,13 +21,46 @@
             </defs>
           </svg>
         </div>
-        <span class="top-bar-greeting">Welcome back, {{ username }}</span>
+        <span class="top-bar-greeting">{{ 'topbar.greeting' | t }}, {{ username }}</span>
       </div>
       <div class="top-bar-right">
-        <button class="icon-btn" type="button" title="Notifications">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M9 2a5 5 0 0 1 5 5v3l1.5 2.5H2.5L4 10V7a5 5 0 0 1 5-5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-            <path d="M7 14.5a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <!-- Language toggle -->
+        <button
+          class="icon-btn lang-btn"
+          type="button"
+          [title]="lang.current === 'en' ? 'Switch to Arabic' : 'التبديل إلى الإنجليزية'"
+          (click)="lang.toggle()"
+          [class.rtl-active]="lang.isRtl"
+        >
+          <span class="lang-label">{{ lang.current === 'en' ? 'AR' : 'EN' }}</span>
+        </button>
+
+        <!-- Theme toggle -->
+        <button
+          class="icon-btn theme-btn"
+          type="button"
+          [title]="theme.isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+          (click)="theme.toggle()"
+        >
+          @if (theme.isDark) {
+            <!-- Sun icon for light mode -->
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M11.89 4.11l1.06-1.06M3.05 12.95l1.06-1.06" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          } @else {
+            <!-- Moon icon for dark mode -->
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M13.5 10a6 6 0 0 1-8-8 6 6 0 1 0 8 8Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          }
+        </button>
+
+        <!-- Notifications -->
+        <button class="icon-btn" type="button" [title]="'topbar.notifications' | t">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 2a4.5 4.5 0 0 1 4.5 4.5v2.7l1.25 2H2.25L3.5 9.2V6.5A4.5 4.5 0 0 1 8 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M6.5 13.5a1.5 1.5 0 0 0 3 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
         </button>
       </div>
