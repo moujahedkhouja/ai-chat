@@ -46,7 +46,7 @@
               <td class="actions-cell">
                 @if (isAdmin) {
                   <div class="action-btns">
-                    <button class="btn-password-icon" type="button" title="Change password"
+                    <button class="btn-password-icon" type="button" title="Change password" aria-label="Change password"
                       (click)="userToChangePassword = user">
                       <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
                         <rect x="2" y="7" width="12" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/>
@@ -54,7 +54,7 @@
                         <circle cx="8" cy="11" r="1" fill="currentColor"/>
                       </svg>
                     </button>
-                    <button class="btn-danger-icon" type="button" title="Delete user"
+                    <button class="btn-danger-icon" type="button" title="Delete user" aria-label="Delete user"
                       (click)="onDeleteUser(user)">
                       <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                         <path d="M1 3h12M5 3V2h4v1M2 3l1 9h8l1-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -81,7 +81,7 @@
           </div>
           @if (isAdmin) {
             <div class="action-btns">
-              <button class="btn-password-icon" type="button" title="Change password"
+              <button class="btn-password-icon" type="button" title="Change password" aria-label="Change password"
                 (click)="userToChangePassword = user">
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
                   <rect x="2" y="7" width="12" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/>
@@ -89,7 +89,7 @@
                   <circle cx="8" cy="11" r="1" fill="currentColor"/>
                 </svg>
               </button>
-              <button class="btn-danger-icon" type="button" title="Delete user"
+              <button class="btn-danger-icon" type="button" title="Delete user" aria-label="Delete user"
                 (click)="onDeleteUser(user)">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                   <path d="M1 3h12M5 3V2h4v1M2 3l1 9h8l1-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>

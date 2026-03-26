@@ -121,7 +121,7 @@
 
     &:last-child {
       text-align: end;
-      width: 48px;
+      width: 80px;
     }
   }
 
@@ -414,5 +414,27 @@
 }
 
 :host-context([dir="rtl"]) .btn-delete {
+  font-family: var(--f-arabic);
+}
+
+.btn-ghost {
+  height: 38px;
+  padding: 0 14px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-family: var(--f-body);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+
+  &:hover {
+    color: var(--color-text);
+    border-color: var(--color-accent-border);
+  }
+}
+
+:host-context([dir="rtl"]) .btn-ghost {
   font-family: var(--f-arabic);
 }
