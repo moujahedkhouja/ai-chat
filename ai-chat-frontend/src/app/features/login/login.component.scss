@@ -1,31 +1,31 @@
 // ─── Google Fonts ─────────────────────────────────────────────────────────────
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 :host {
   // Dark (default)
   --c-page:          #0c0f14;
   --c-hero-a:        #091422;
-  --c-hero-b:        #0d1f14;
-  --c-gold:          #c8934c;
-  --c-gold-hi:       #e8b472;
-  --c-gold-glow:     rgba(200, 147, 76, 0.14);
-  --c-gold-border:   rgba(200, 147, 76, 0.18);
-  --c-text-hero:     #f0e8d8;
-  --c-text:          #ede8e0;
-  --c-text-muted:    #7a7060;
-  --c-text-subtle:   #3e3830;
+  --c-hero-b:        #060e1e;
+  --c-teal:          #00c9a7;
+  --c-teal-hi:       #33d9bd;
+  --c-teal-glow:     rgba(0, 201, 167, 0.14);
+  --c-teal-border:   rgba(0, 201, 167, 0.18);
+  --c-text-hero:     #dde8f5;
+  --c-text:          #dde8f5;
+  --c-text-muted:    #5a7494;
+  --c-text-subtle:   #253347;
   --c-card-bg:       rgba(255, 255, 255, 0.045);
-  --c-card-border:   rgba(200, 147, 76, 0.12);
+  --c-card-border:   rgba(0, 201, 167, 0.12);
   --c-input-bg:      rgba(255, 255, 255, 0.05);
   --c-input-border:  rgba(255, 255, 255, 0.1);
-  --c-input-focus:   rgba(200, 147, 76, 0.55);
+  --c-input-focus:   rgba(0, 201, 167, 0.55);
   --c-danger:        #e06060;
   --c-danger-bg:     rgba(224, 96, 96, 0.1);
   --c-danger-border: rgba(224, 96, 96, 0.22);
-  --f-display:       'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-  --f-body:          'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --f-arabic:        'Noto Sans Arabic', 'Segoe UI', Tahoma, sans-serif;
+  --f-display:       'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
+  --f-body:          'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
+  --f-arabic:        'Cairo', 'Segoe UI', Tahoma, sans-serif;
   --radius:          18px;
   --radius-sm:       12px;
   display: block;
@@ -37,12 +37,52 @@
     --c-page:         #f2ede4;
     --c-card-bg:      rgba(255, 255, 255, 0.88);
     --c-card-border:  rgba(0, 0, 0, 0.07);
-    --c-text:         #1a1510;
-    --c-text-muted:   #6b5e48;
+    --c-text:         #0d1d2e;
+    --c-text-muted:   #4a6680;
     --c-input-bg:     rgba(0, 0, 0, 0.04);
     --c-input-border: rgba(0, 0, 0, 0.12);
-    --c-text-subtle:  #b0a898;
+    --c-text-subtle:  #a0b8cc;
   }
+}
+
+// ─── Language toggle (floating) ───────────────────────────────────────────────
+.lang-toggle {
+  position: fixed;
+  top: 16px;
+  inset-inline-end: 16px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 6px 10px;
+  background: rgba(0, 201, 167, 0.08);
+  border: 1px solid rgba(0, 201, 167, 0.20);
+  border-radius: 20px;
+  color: var(--c-teal);
+  cursor: pointer;
+  font-family: var(--f-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.15s ease;
+  backdrop-filter: blur(8px);
+
+  &:hover {
+    background: rgba(0, 201, 167, 0.16);
+    border-color: rgba(0, 201, 167, 0.40);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.lang-toggle-label {
+  font-family: var(--f-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
 }
 
 // ─── Page shell ───────────────────────────────────────────────────────────────
@@ -70,7 +110,7 @@
   justify-content: center;
   padding: 40px 28px 32px;
   overflow: hidden;
-  color: var(--c-gold);
+  color: var(--c-teal);
 
   // Subtle noise grain
   &::after {
@@ -159,7 +199,7 @@
 }
 
 .hero-logo {
-  color: var(--c-gold);
+  color: var(--c-teal);
   flex-shrink: 0;
 }
 
@@ -184,7 +224,7 @@
 }
 
 .hero-accent {
-  color: var(--c-gold);
+  color: var(--c-teal);
 }
 
 .hero-sub {
@@ -202,7 +242,7 @@
   gap: 18px;
   margin-top: 10px;
   padding-top: 18px;
-  border-top: 1px solid rgba(200, 147, 76, 0.14);
+  border-top: 1px solid rgba(0, 201, 167, 0.14);
 }
 
 .stat {
@@ -215,7 +255,7 @@
   font-family: var(--f-display);
   font-size: 15px;
   font-weight: 600;
-  color: var(--c-gold);
+  color: var(--c-teal);
   line-height: 1;
 }
 
@@ -230,7 +270,7 @@
 .stat-sep {
   width: 1px;
   height: 26px;
-  background: rgba(200, 147, 76, 0.14);
+  background: rgba(0, 201, 167, 0.14);
   flex-shrink: 0;
 }
 
@@ -272,7 +312,7 @@
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--c-gold);
+  color: var(--c-teal);
   margin-bottom: 8px;
 }
 
@@ -306,6 +346,42 @@
   position: relative;
 }
 
+// Password field — extra inline-end padding for the eye button
+.field--password .field-input {
+  padding-inline-end: 46px;
+}
+
+// Eye toggle button
+.field-eye-btn {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 13px;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: var(--c-text-muted);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.18s ease, background 0.18s ease;
+  z-index: 1;
+
+  &:hover {
+    color: var(--c-teal);
+    background: rgba(0, 201, 167, 0.08);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--c-teal);
+    outline-offset: 1px;
+  }
+}
+
 .field-input {
   display: block;
   width: 100%;
@@ -325,11 +401,11 @@
 
   &:focus {
     border-color: var(--c-input-focus);
-    box-shadow: 0 0 0 3.5px var(--c-gold-glow);
+    box-shadow: 0 0 0 3.5px var(--c-teal-glow);
   }
 
   &:not(:placeholder-shown) {
-    border-color: var(--c-gold-border);
+    border-color: var(--c-teal-border);
   }
 }
 
@@ -355,7 +431,7 @@
     transform: translateY(0);
     font-size: 10.5px;
     font-weight: 500;
-    color: var(--c-gold);
+    color: var(--c-teal);
     letter-spacing: 0.05em;
   }
 }
@@ -383,7 +459,7 @@
   height: 54px;
   padding: 0 24px;
   margin-top: 2px;
-  background: linear-gradient(105deg, #b8832e 0%, var(--c-gold-hi) 50%, #b8832e 100%);
+  background: linear-gradient(105deg, #009e84 0%, var(--c-teal-hi) 50%, #009e84 100%);
   background-size: 220% 100%;
   border: none;
   border-radius: var(--radius-sm);
@@ -400,13 +476,13 @@
 
   &:hover:not(:disabled) {
     background-position: 100% 0;
-    box-shadow: 0 6px 28px rgba(200, 147, 76, 0.38);
+    box-shadow: 0 6px 28px rgba(0, 201, 167, 0.38);
     transform: translateY(-1px);
   }
 
   &:active:not(:disabled) {
     transform: translateY(0);
-    box-shadow: 0 2px 10px rgba(200, 147, 76, 0.22);
+    box-shadow: 0 2px 10px rgba(0, 201, 167, 0.22);
   }
 
   &:disabled {
@@ -491,7 +567,7 @@
     font-family: var(--f-arabic);
   }
 
-  // Display font still for large headings (Arabic in Cormorant looks poor)
+  // Display font for large headings
   .hero-headline,
   .card-title {
     font-family: var(--f-arabic);

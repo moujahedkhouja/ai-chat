@@ -1,30 +1,30 @@
-/* ─── Nocturne Design System ──────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+/* ─── Meridian Design System ──────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Figtree:wght@300;400;500;600;700&family=Cairo:wght@300;400;500;600;700&display=swap');
 
 /* Dark tokens — default */
 :root {
-  --color-bg:            #0c0f14;
-  --color-surface:       #0f1820;
-  --color-card:          #111b14;
-  --color-border:        rgba(200, 147, 76, 0.1);
+  --color-bg:            #080c14;
+  --color-surface:       #0c1626;
+  --color-card:          #0e1b30;
+  --color-border:        rgba(0, 201, 167, 0.10);
 
-  --color-accent:        #c8934c;
-  --color-accent-hi:     #e8b472;
-  --color-accent-muted:  rgba(200, 147, 76, 0.10);
-  --color-accent-border: rgba(200, 147, 76, 0.22);
+  --color-accent:        #00c9a7;
+  --color-accent-hi:     #33d9bd;
+  --color-accent-muted:  rgba(0, 201, 167, 0.10);
+  --color-accent-border: rgba(0, 201, 167, 0.22);
 
-  --color-text:          #ede8e0;
-  --color-text-muted:    #7a7060;
-  --color-text-subtle:   #3e3830;
+  --color-text:          #dde8f5;
+  --color-text-muted:    #5a7494;
+  --color-text-subtle:   #253347;
 
   --color-danger:        #e06060;
-  --color-success:       #5aaa7a;
+  --color-success:       #4acc8f;
 
-  --gradient-accent: linear-gradient(135deg, #b8832e 0%, #e8b472 100%);
+  --gradient-accent: linear-gradient(135deg, #009e84 0%, #33d9bd 100%);
 
-  --f-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-  --f-body:    'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --f-arabic:  'Noto Sans Arabic', 'Segoe UI', Tahoma, sans-serif;
+  --f-display: 'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
+  --f-body:    'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
+  --f-arabic:  'Cairo', 'Segoe UI', Tahoma, sans-serif;
 
   --sidebar-width:    60px;
   --topbar-height:    52px;
@@ -38,24 +38,24 @@
 
 /* Light theme overrides — applied when <html class="theme-light"> */
 html.theme-light {
-  --color-bg:            #f2ede4;
+  --color-bg:            #edf3f8;
   --color-surface:       #ffffff;
-  --color-card:          #fffdf9;
+  --color-card:          #f5fafd;
   --color-border:        rgba(0, 0, 0, 0.07);
 
-  --color-accent:        #b8832e;
-  --color-accent-hi:     #d4a040;
-  --color-accent-muted:  rgba(184, 131, 46, 0.08);
-  --color-accent-border: rgba(184, 131, 46, 0.20);
+  --color-accent:        #00a88e;
+  --color-accent-hi:     #007a68;
+  --color-accent-muted:  rgba(0, 168, 142, 0.08);
+  --color-accent-border: rgba(0, 168, 142, 0.20);
 
-  --color-text:          #1a1510;
-  --color-text-muted:    #6b5e48;
-  --color-text-subtle:   #b0a898;
+  --color-text:          #0d1d2e;
+  --color-text-muted:    #4a6680;
+  --color-text-subtle:   #a0b8cc;
 
   --color-danger:        #c94040;
-  --color-success:       #2e7d52;
+  --color-success:       #1f8c5a;
 
-  --gradient-accent: linear-gradient(135deg, #b8832e 0%, #e8b472 100%);
+  --gradient-accent: linear-gradient(135deg, #009e84 0%, #33d9bd 100%);
 }
 
 *,

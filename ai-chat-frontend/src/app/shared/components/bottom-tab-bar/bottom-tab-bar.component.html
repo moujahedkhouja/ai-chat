@@ -54,6 +54,18 @@
     <span class="tab-label">Settings</span>
   </a>
 
+  <button class="tab tab-lang" type="button" (click)="langService.toggle()" [title]="langService.isArabic ? 'Switch to English' : 'التبديل إلى العربية'">
+    <span class="tab-icon">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M10 2C10 2 7.5 5.5 7.5 10s2.5 8 2.5 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M10 2C10 2 12.5 5.5 12.5 10s-2.5 8-2.5 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M2 10h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <span class="tab-label">{{ langService.isArabic ? 'EN' : 'AR' }}</span>
+  </button>
+
   <button class="tab tab-logout" type="button" (click)="logout()">
     <span class="tab-icon">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none">

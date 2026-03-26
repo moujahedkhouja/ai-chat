@@ -53,7 +53,7 @@
   transition: box-shadow 0.18s, transform 0.15s;
 
   &:hover {
-    box-shadow: 0 4px 16px rgba(200, 147, 76, 0.32);
+    box-shadow: 0 4px 16px rgba(0, 201, 167, 0.32);
     transform: translateY(-1px);
   }
 }
@@ -126,7 +126,7 @@
   }
 
   tr:hover td {
-    background: rgba(200, 147, 76, 0.03);
+    background: rgba(0, 201, 167, 0.03);
   }
 
   tr:last-child td {
@@ -233,8 +233,8 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
 
-  &.admin    { background: rgba(200, 147, 76, 0.18); color: var(--color-accent-hi); }
-  &.moderator { background: rgba(200, 147, 76, 0.10); color: var(--color-accent); }
+  &.admin    { background: rgba(0, 201, 167, 0.18); color: var(--color-accent-hi); }
+  &.moderator { background: rgba(0, 201, 167, 0.10); color: var(--color-accent); }
   &.user     { background: rgba(255, 255, 255, 0.06); color: var(--color-text-muted); }
 }
 

@@ -75,7 +75,7 @@
   margin-bottom: 10px;
 
   &--purple {
-    background: rgba(200, 147, 76, 0.07);
+    background: rgba(0, 201, 167, 0.07);
     color: var(--color-accent-hi);
   }
 }
@@ -194,7 +194,7 @@
   transition: background 0.1s;
 
   &:hover {
-    background: rgba(200, 147, 76, 0.03);
+    background: rgba(0, 201, 167, 0.03);
   }
 
   &:last-child {
@@ -253,12 +253,12 @@
   letter-spacing: 0.04em;
 
   &.admin {
-    background: rgba(200, 147, 76, 0.18);
+    background: rgba(0, 201, 167, 0.18);
     color: var(--color-accent-hi);
   }
 
   &.moderator {
-    background: rgba(200, 147, 76, 0.10);
+    background: rgba(0, 201, 167, 0.10);
     color: var(--color-accent);
   }
 

@@ -9,8 +9,8 @@
       <rect x="12" y="12" width="5" height="5" rx="1.5" fill="white" opacity="0.4"/>
       <defs>
         <linearGradient id="sb-grad" x1="0" y1="0" x2="22" y2="22">
-          <stop stop-color="#b8832e"/>
-          <stop offset="1" stop-color="#e8b472"/>
+          <stop stop-color="#009e84"/>
+          <stop offset="1" stop-color="#33d9bd"/>
         </linearGradient>
       </defs>
     </svg>
@@ -54,6 +54,16 @@
 
   <!-- Avatar + logout at bottom -->
   <div class="sidebar-footer">
+    <!-- Language toggle -->
+    <button
+      class="lang-btn"
+      type="button"
+      (click)="langService.toggle()"
+      [title]="langService.isArabic ? 'Switch to English' : 'التبديل إلى العربية'"
+    >
+      <span class="lang-label">{{ langService.isArabic ? 'EN' : 'AR' }}</span>
+    </button>
+
     <button
       class="theme-btn"
       type="button"
