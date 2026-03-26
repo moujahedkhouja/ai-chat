@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { marked } from 'marked';
 import { Message } from '../../../models/chat.model';
@@ -7,7 +7,7 @@ import { Message } from '../../../models/chat.model';
 @Component({
   selector: 'app-message-bubble',
   standalone: true,
-  imports: [CommonModule],
+  imports: [DatePipe],
   templateUrl: './message-bubble.component.html',
   styleUrl: './message-bubble.component.scss'
 })
