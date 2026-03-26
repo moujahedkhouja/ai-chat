@@ -195,6 +195,36 @@ class UserServiceTest {
     }
 
     @Test
+    void resetPassword_withValidRequest_encodesPasswordAndSetsFlag() {
+        UUID id = UUID.randomUUID();
+        User user = new User();
+        user.setId(id);
+        ResetPasswordRequest request = new ResetPasswordRequest("newPassword123");
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(passwordEncoder.encode("newPassword123")).thenReturn("encodedNewPassword");
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        userService.resetPassword(id, request);
+
+        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+        verify(userRepository).save(captor.capture());
+        assertThat(captor.getValue().getPassword()).isEqualTo("encodedNewPassword");
+        assertThat(captor.getValue().isForcePasswordChange()).isTrue();
+    }
+
+    @Test
+    void resetPassword_withInvalidUserId_throwsUserNotFoundException() {
+        UUID id = UUID.randomUUID();
+        ResetPasswordRequest request = new ResetPasswordRequest("newPassword123");
+
+        when(userRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> userService.resetPassword(id, request))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
     void updateUser_withPartialRequest_onlyUpdatesNonNullFields() {
         UUID id = UUID.randomUUID();
         User user = User.builder().username("john").email("original@example.com")
