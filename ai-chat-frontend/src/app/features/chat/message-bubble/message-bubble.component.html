@@ -1,0 +1,13 @@
+<div class="bubble" [class.bubble--user]="message.role === 'user'" [class.bubble--assistant]="message.role === 'assistant'">
+  @if (message.role === 'assistant') {
+    <div class="bubble-avatar">A</div>
+  }
+  <div class="bubble-body">
+    @if (message.role === 'assistant') {
+      <div class="bubble-markdown" [innerHTML]="renderedHtml"></div>
+    } @else {
+      <div class="bubble-text">{{ message.content }}</div>
+    }
+    <div class="bubble-time">{{ message.timestamp | date:'HH:mm' }}</div>
+  </div>
+</div>

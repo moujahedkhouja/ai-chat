@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../auth/auth.service';
+import { ThemeService } from '../../../core/theme.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -12,7 +13,8 @@ import { AuthService } from '../../../auth/auth.service';
 export class SidebarComponent {
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    public themeService: ThemeService
   ) {}
 
   get username(): string {
