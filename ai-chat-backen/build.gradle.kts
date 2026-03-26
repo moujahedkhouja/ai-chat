@@ -64,7 +64,10 @@ val staticDir = file("src/main/resources/static")
 
 tasks.register<Exec>("buildFrontend") {
     workingDir = frontendDir
-    commandLine("npm", "run", "build")
+    commandLine(
+        "/bin/zsh", "-c",
+        "source ~/.zshrc && /Users/mkh/.nvm/versions/node/v22.22.0/bin/node /Users/mkh/.nvm/versions/node/v22.22.0/lib/node_modules/npm/bin/npm-cli.js run build"
+    )
 }
 
 tasks.register<Copy>("copyFrontend") {
