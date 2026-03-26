@@ -1,26 +1,33 @@
-/* Design tokens — Dark Pro theme */
+/* ─── Nocturne Design System ──────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+
+/* Dark tokens — default */
 :root {
-  --color-bg: #0f1117;
-  --color-surface: #13151f;
-  --color-card: #1a1d27;
-  --color-border: #1e2235;
+  --color-bg:            #0c0f14;
+  --color-surface:       #0f1820;
+  --color-card:          #111b14;
+  --color-border:        rgba(200, 147, 76, 0.1);
 
-  --color-accent: #6366f1;
-  --color-accent-2: #8b5cf6;
-  --color-accent-muted: rgba(99, 102, 241, 0.15);
-  --color-accent-border: rgba(99, 102, 241, 0.3);
+  --color-accent:        #c8934c;
+  --color-accent-hi:     #e8b472;
+  --color-accent-muted:  rgba(200, 147, 76, 0.10);
+  --color-accent-border: rgba(200, 147, 76, 0.22);
 
-  --color-text: #e2e8f0;
-  --color-text-muted: #64748b;
-  --color-text-subtle: #475569;
+  --color-text:          #ede8e0;
+  --color-text-muted:    #7a7060;
+  --color-text-subtle:   #3e3830;
 
-  --color-danger: #ef4444;
-  --color-success: #22c55e;
+  --color-danger:        #e06060;
+  --color-success:       #5aaa7a;
 
-  --gradient-accent: linear-gradient(135deg, #6366f1, #8b5cf6);
+  --gradient-accent: linear-gradient(135deg, #b8832e 0%, #e8b472 100%);
 
-  --sidebar-width: 60px;
-  --topbar-height: 52px;
+  --f-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --f-body:    'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --f-arabic:  'Noto Sans Arabic', 'Segoe UI', Tahoma, sans-serif;
+
+  --sidebar-width:    60px;
+  --topbar-height:    52px;
   --bottombar-height: 56px;
 
   --radius-sm: 6px;
@@ -31,20 +38,24 @@
 
 /* Light theme overrides — applied when <html class="theme-light"> */
 html.theme-light {
-  --color-bg: #faf9f7;
-  --color-surface: #ffffff;
-  --color-card: #ffffff;
-  --color-border: #e8e6e0;
-  --color-accent: #6366f1;
-  --color-accent-2: #8b5cf6;
-  --color-accent-muted: #eef2ff;
-  --color-accent-border: #c7d2fe;
-  --color-text: #1e1b4b;
-  --color-text-muted: #64748b;
-  --color-text-subtle: #94a3b8;
-  --color-danger: #ef4444;
-  --color-success: #22c55e;
-  --gradient-accent: linear-gradient(135deg, #6366f1, #8b5cf6);
+  --color-bg:            #f2ede4;
+  --color-surface:       #ffffff;
+  --color-card:          #fffdf9;
+  --color-border:        rgba(0, 0, 0, 0.07);
+
+  --color-accent:        #b8832e;
+  --color-accent-hi:     #d4a040;
+  --color-accent-muted:  rgba(184, 131, 46, 0.08);
+  --color-accent-border: rgba(184, 131, 46, 0.20);
+
+  --color-text:          #1a1510;
+  --color-text-muted:    #6b5e48;
+  --color-text-subtle:   #b0a898;
+
+  --color-danger:        #c94040;
+  --color-success:       #2e7d52;
+
+  --gradient-accent: linear-gradient(135deg, #b8832e 0%, #e8b472 100%);
 }
 
 *,
@@ -60,8 +71,12 @@ body {
   height: 100%;
   background: var(--color-bg);
   color: var(--color-text);
-  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  font-family: var(--f-body);
   font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+}
+
+[dir="rtl"] body {
+  font-family: var(--f-arabic);
 }
