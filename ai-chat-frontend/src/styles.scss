@@ -29,6 +29,24 @@
   --radius-xl: 12px;
 }
 
+/* Light theme overrides — applied when <html class="theme-light"> */
+html.theme-light {
+  --color-bg: #faf9f7;
+  --color-surface: #ffffff;
+  --color-card: #ffffff;
+  --color-border: #e8e6e0;
+  --color-accent: #6366f1;
+  --color-accent-2: #8b5cf6;
+  --color-accent-muted: #eef2ff;
+  --color-accent-border: #c7d2fe;
+  --color-text: #1e1b4b;
+  --color-text-muted: #64748b;
+  --color-text-subtle: #94a3b8;
+  --color-danger: #ef4444;
+  --color-success: #22c55e;
+  --gradient-accent: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
 *,
 *::before,
 *::after {
