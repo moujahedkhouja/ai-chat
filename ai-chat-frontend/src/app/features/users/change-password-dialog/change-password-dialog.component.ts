@@ -49,6 +49,8 @@ export class ChangePasswordDialogComponent {
     this.userService.adminResetPassword(this.user.id, newPassword).subscribe({
       next: () => {
         this.loading = false;
+        this.form.reset();
+        this.showPassword = false;
         this.saved.emit();
       },
       error: () => {
