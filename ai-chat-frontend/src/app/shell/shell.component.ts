@@ -3,24 +3,16 @@ import { Router, RouterOutlet } from '@angular/router';
 import { SidebarComponent } from '../shared/components/sidebar/sidebar.component';
 import { BottomTabBarComponent } from '../shared/components/bottom-tab-bar/bottom-tab-bar.component';
 import { AuthService } from '../auth/auth.service';
-import { ThemeService } from '../core/theme.service';
-import { LanguageService } from '../core/language.service';
-import { TranslatePipe } from '../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterOutlet, SidebarComponent, BottomTabBarComponent, TranslatePipe],
+  imports: [RouterOutlet, SidebarComponent, BottomTabBarComponent],
   templateUrl: './shell.component.html',
   styleUrl: './shell.component.scss'
 })
 export class ShellComponent {
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    public theme: ThemeService,
-    public lang: LanguageService,
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   get username(): string {
     return this.authService.getUsername() ?? 'User';

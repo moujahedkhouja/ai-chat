@@ -33,15 +33,7 @@
   --radius-sm: 6px;
   --radius-md: 8px;
   --radius-lg: 10px;
-  --radius-xl: 14px;
-  --radius-2xl: 20px;
-
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
-  --shadow-lg:   0 8px 32px rgba(0,0,0,0.4);
-  --shadow-accent: 0 4px 24px rgba(0, 201, 167, 0.15);
-
-  --transition-fast:   0.15s ease;
-  --transition-smooth: 0.25s ease;
+  --radius-xl: 12px;
 }
 
 /* Light theme overrides — applied when <html class="theme-light"> */
@@ -64,10 +56,6 @@ html.theme-light {
   --color-success:       #1f8c5a;
 
   --gradient-accent: linear-gradient(135deg, #009e84 0%, #33d9bd 100%);
-
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
-  --shadow-lg:   0 8px 32px rgba(0,0,0,0.08);
-  --shadow-accent: 0 4px 20px rgba(0, 168, 142, 0.12);
 }
 
 *,
@@ -87,14 +75,6 @@ body {
   font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  transition: background var(--transition-smooth), color var(--transition-smooth);
-}
-
-/* Arabic font override */
-:lang(ar) {
-  font-family: var(--f-arabic);
-  letter-spacing: 0;
-  line-height: 1.7;
 }
 
 [dir="rtl"] body {
