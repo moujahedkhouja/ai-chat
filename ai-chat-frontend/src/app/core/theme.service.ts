@@ -8,7 +8,7 @@ export class ThemeService {
   private readonly STORAGE_KEY = 'app_theme';
   private themeSubject = new BehaviorSubject<Theme>(this.loadTheme());
 
-  theme$ = this.themeSubject.asObservable();
+  readonly theme$ = this.themeSubject.asObservable();
 
   get isDark(): boolean {
     return this.themeSubject.value === 'dark';
