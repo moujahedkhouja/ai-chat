@@ -82,6 +82,14 @@ public class UserService {
         userRepository.delete(user);
     }
 
+    public void resetPassword(UUID id, ResetPasswordRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+        user.setPassword(passwordEncoder.encode(request.newPassword()));
+        user.setForcePasswordChange(true);
+        userRepository.save(user);
+    }
+
     public UserResponse updateAvatar(UUID id, String path) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
