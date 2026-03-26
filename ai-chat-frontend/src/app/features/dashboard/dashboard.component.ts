@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
 import { UserService } from '../../core/user.service';
 import { UserResponse } from '../../models/user.model';
@@ -18,8 +18,16 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) {}
+
+  logout(): void {
+    this.authService.logout().subscribe({
+      next: () => this.router.navigate(['/login']),
+      error: () => this.router.navigate(['/login'])
+    });
+  }
 
   ngOnInit() {
     if (this.isAdminOrModerator) {
