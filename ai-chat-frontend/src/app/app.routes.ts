@@ -16,6 +16,9 @@ export const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent, canActivate: [forcePasswordChangeGuard] },
       { path: 'profile', loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent), canActivate: [forcePasswordChangeGuard] },
       { path: 'users', loadComponent: () => import('./features/users/users.component').then(m => m.UsersComponent), canActivate: [forcePasswordChangeGuard] },
+      { path: 'chat', loadComponent: () =>
+          import('./features/chat/chat.component').then(m => m.ChatComponent),
+        canActivate: [forcePasswordChangeGuard] },
       { path: 'change-password', component: ChangePasswordComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]

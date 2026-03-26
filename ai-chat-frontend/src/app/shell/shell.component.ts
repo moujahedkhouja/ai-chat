@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { SidebarComponent } from '../shared/components/sidebar/sidebar.component';
 import { BottomTabBarComponent } from '../shared/components/bottom-tab-bar/bottom-tab-bar.component';
 import { AuthService } from '../auth/auth.service';
@@ -12,9 +12,13 @@ import { AuthService } from '../auth/auth.service';
   styleUrl: './shell.component.scss'
 })
 export class ShellComponent {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   get username(): string {
     return this.authService.getUsername() ?? 'User';
+  }
+
+  get isChatPage(): boolean {
+    return this.router.url.startsWith('/chat');
   }
 }
