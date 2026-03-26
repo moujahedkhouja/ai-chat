@@ -1,5 +1,34 @@
 <div class="login-page">
 
+  <!-- Top controls -->
+  <div class="login-controls">
+    <button
+      class="ctrl-btn"
+      type="button"
+      [title]="lang.current === 'en' ? 'Switch to Arabic' : 'التبديل إلى الإنجليزية'"
+      (click)="lang.toggle()"
+    >
+      {{ lang.current === 'en' ? 'AR' : 'EN' }}
+    </button>
+    <button
+      class="ctrl-btn"
+      type="button"
+      [title]="theme.isDark ? 'Light mode' : 'Dark mode'"
+      (click)="theme.toggle()"
+    >
+      @if (theme.isDark) {
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M11.89 4.11l1.06-1.06M3.05 12.95l1.06-1.06" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      } @else {
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path d="M13.5 10a6 6 0 0 1-8-8 6 6 0 1 0 8 8Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      }
+    </button>
+  </div>
+
   <!-- Decorative background blobs -->
   <svg class="bg-blobs" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <circle cx="160" cy="120" r="220" fill="url(#blob1)"/>
@@ -41,11 +70,10 @@
       <span class="brand-name">AI Chat</span>
     </div>
 
-    <p class="brand-tagline">Your intelligent workspace,<br/>always ready.</p>
+    <p class="brand-tagline">{{ 'login.brand.tagline' | t }}</p>
 
     <!-- Abstract AI network illustration -->
     <svg class="brand-illustration" viewBox="0 0 340 280" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <!-- Connection lines -->
       <line x1="170" y1="140" x2="80" y2="80" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.5"/>
       <line x1="170" y1="140" x2="260" y2="80" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.5"/>
       <line x1="170" y1="140" x2="80" y2="200" stroke="#8b5cf6" stroke-width="1.5" stroke-opacity="0.5"/>
@@ -56,26 +84,22 @@
       <line x1="80" y1="200" x2="260" y2="200" stroke="#8b5cf6" stroke-width="1" stroke-opacity="0.25"/>
       <line x1="80" y1="80" x2="80" y2="200" stroke="#6366f1" stroke-width="1" stroke-opacity="0.2"/>
       <line x1="260" y1="80" x2="260" y2="200" stroke="#8b5cf6" stroke-width="1" stroke-opacity="0.2"/>
-      <!-- Outer nodes -->
       <circle cx="80" cy="80" r="8" fill="rgba(99,102,241,0.15)" stroke="#6366f1" stroke-width="1.5"/>
       <circle cx="260" cy="80" r="8" fill="rgba(99,102,241,0.15)" stroke="#6366f1" stroke-width="1.5"/>
       <circle cx="80" cy="200" r="8" fill="rgba(139,92,246,0.15)" stroke="#8b5cf6" stroke-width="1.5"/>
       <circle cx="260" cy="200" r="8" fill="rgba(139,92,246,0.15)" stroke="#8b5cf6" stroke-width="1.5"/>
       <circle cx="170" cy="40" r="6" fill="rgba(99,102,241,0.12)" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.7"/>
       <circle cx="170" cy="240" r="6" fill="rgba(139,92,246,0.12)" stroke="#8b5cf6" stroke-width="1.5" stroke-opacity="0.7"/>
-      <!-- Inner dot highlights -->
       <circle cx="80" cy="80" r="3" fill="#818cf8"/>
       <circle cx="260" cy="80" r="3" fill="#818cf8"/>
       <circle cx="80" cy="200" r="3" fill="#a78bfa"/>
       <circle cx="260" cy="200" r="3" fill="#a78bfa"/>
       <circle cx="170" cy="40" r="2.5" fill="#818cf8"/>
       <circle cx="170" cy="240" r="2.5" fill="#a78bfa"/>
-      <!-- Central node -->
       <circle cx="170" cy="140" r="28" fill="url(#center-grad)" opacity="0.15"/>
       <circle cx="170" cy="140" r="18" fill="url(#center-grad)" opacity="0.2"/>
       <circle cx="170" cy="140" r="10" fill="url(#center-grad)"/>
       <circle cx="170" cy="140" r="4" fill="white" opacity="0.9"/>
-      <!-- Pulse ring -->
       <circle cx="170" cy="140" r="36" stroke="url(#pulse-grad)" stroke-width="1" stroke-opacity="0.25" stroke-dasharray="4 4"/>
       <defs>
         <linearGradient id="center-grad" x1="152" y1="122" x2="188" y2="158" gradientUnits="userSpaceOnUse">
@@ -93,51 +117,51 @@
     <div class="brand-features">
       <span class="feature-pill">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="#818cf8" stroke-width="1.3"/><path d="M4 6l1.5 1.5L8 4" stroke="#818cf8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Secure
+        {{ 'login.feature.secure' | t }}
       </span>
       <span class="feature-pill">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="3" width="10" height="7" rx="1.5" stroke="#818cf8" stroke-width="1.3"/><path d="M4 3V2.5a2 2 0 0 1 4 0V3" stroke="#818cf8" stroke-width="1.3" stroke-linecap="round"/></svg>
-        Private
+        {{ 'login.feature.private' | t }}
       </span>
       <span class="feature-pill">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v2M6 9v2M1 6h2M9 6h2M2.5 2.5l1.4 1.4M8.1 8.1l1.4 1.4M9.5 2.5L8.1 3.9M3.9 8.1L2.5 9.5" stroke="#818cf8" stroke-width="1.3" stroke-linecap="round"/></svg>
-        AI-Powered
+        {{ 'login.feature.ai' | t }}
       </span>
     </div>
   </div>
 
   <!-- Right panel — login form -->
   <div class="login-card">
-    <h1 class="login-title">Welcome back</h1>
-    <p class="login-subtitle">Sign in to your account</p>
+    <h1 class="login-title">{{ 'login.title' | t }}</h1>
+    <p class="login-subtitle">{{ 'login.subtitle' | t }}</p>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form">
       <div class="field">
         <label class="field-label" for="username">
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="vertical-align:-1px;margin-right:4px;"><circle cx="6.5" cy="4.5" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M1 12c0-2.761 2.462-4.5 5.5-4.5S12 9.239 12 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-          Username
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="vertical-align:-1px;margin-inline-end:4px;"><circle cx="6.5" cy="4.5" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M1 12c0-2.761 2.462-4.5 5.5-4.5S12 9.239 12 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          {{ 'login.username' | t }}
         </label>
         <input
           id="username"
           class="field-input"
           type="text"
           formControlName="username"
-          placeholder="Enter your username"
+          [placeholder]="'login.username.placeholder' | t"
           autocomplete="username"
         />
       </div>
 
       <div class="field">
         <label class="field-label" for="password">
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="vertical-align:-1px;margin-right:4px;"><rect x="1.5" y="5" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 5V4a2.5 2.5 0 0 1 5 0v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="6.5" cy="8.5" r="1" fill="currentColor"/></svg>
-          Password
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="vertical-align:-1px;margin-inline-end:4px;"><rect x="1.5" y="5" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 5V4a2.5 2.5 0 0 1 5 0v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="6.5" cy="8.5" r="1" fill="currentColor"/></svg>
+          {{ 'login.password' | t }}
         </label>
         <input
           id="password"
           class="field-input"
           type="password"
           formControlName="password"
-          placeholder="Enter your password"
+          [placeholder]="'login.password.placeholder' | t"
           autocomplete="current-password"
         />
       </div>
@@ -149,9 +173,9 @@
       <button class="btn-primary" type="submit" [disabled]="loading">
         @if (loading) {
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="spin"><circle cx="8" cy="8" r="6" stroke="white" stroke-width="2" stroke-opacity="0.3"/><path d="M8 2a6 6 0 0 1 6 6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-          Signing in...
+          {{ 'login.submitting' | t }}
         } @else {
-          Sign in
+          {{ 'login.submit' | t }}
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         }
       </button>

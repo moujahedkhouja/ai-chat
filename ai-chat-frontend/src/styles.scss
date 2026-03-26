@@ -1,24 +1,83 @@
-/* Design tokens — Dark Pro theme */
-:root {
-  --color-bg: #0f1117;
-  --color-surface: #13151f;
-  --color-card: #1a1d27;
-  --color-border: #1e2235;
+/* ─────────────────────────────────────────
+   Design tokens — Dark Pro (default)
+───────────────────────────────────────── */
+:root,
+[data-theme="dark"] {
+  --color-bg: #0d0f18;
+  --color-surface: #111420;
+  --color-card: #181c2a;
+  --color-card-hover: #1e2235;
+  --color-border: #1e2438;
+  --color-border-subtle: #161929;
 
   --color-accent: #6366f1;
   --color-accent-2: #8b5cf6;
-  --color-accent-muted: rgba(99, 102, 241, 0.15);
-  --color-accent-border: rgba(99, 102, 241, 0.3);
+  --color-accent-muted: rgba(99, 102, 241, 0.12);
+  --color-accent-border: rgba(99, 102, 241, 0.28);
+  --color-accent-glow: rgba(99, 102, 241, 0.08);
 
   --color-text: #e2e8f0;
   --color-text-muted: #64748b;
-  --color-text-subtle: #475569;
+  --color-text-subtle: #3f4f6a;
 
   --color-danger: #ef4444;
+  --color-danger-muted: rgba(239, 68, 68, 0.1);
+  --color-danger-border: rgba(239, 68, 68, 0.2);
   --color-success: #22c55e;
+  --color-success-muted: rgba(34, 197, 94, 0.1);
 
   --gradient-accent: linear-gradient(135deg, #6366f1, #8b5cf6);
+  --gradient-accent-soft: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.2));
 
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+  --shadow-accent: 0 4px 24px rgba(99, 102, 241, 0.15);
+
+  /* Noise overlay for texture */
+  --noise-opacity: 0.025;
+}
+
+/* ─────────────────────────────────────────
+   Light theme
+───────────────────────────────────────── */
+[data-theme="light"] {
+  --color-bg: #f0f2f8;
+  --color-surface: #ffffff;
+  --color-card: #ffffff;
+  --color-card-hover: #f5f7fd;
+  --color-border: #e2e6f0;
+  --color-border-subtle: #edf0f8;
+
+  --color-accent: #5254d4;
+  --color-accent-2: #7c3aed;
+  --color-accent-muted: rgba(82, 84, 212, 0.08);
+  --color-accent-border: rgba(82, 84, 212, 0.2);
+  --color-accent-glow: rgba(82, 84, 212, 0.06);
+
+  --color-text: #1a1d2e;
+  --color-text-muted: #6b7280;
+  --color-text-subtle: #9ca3af;
+
+  --color-danger: #dc2626;
+  --color-danger-muted: rgba(220, 38, 38, 0.08);
+  --color-danger-border: rgba(220, 38, 38, 0.15);
+  --color-success: #16a34a;
+  --color-success-muted: rgba(22, 163, 74, 0.08);
+
+  --gradient-accent: linear-gradient(135deg, #5254d4, #7c3aed);
+  --gradient-accent-soft: linear-gradient(135deg, rgba(82,84,212,0.12), rgba(124,58,237,0.12));
+
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.08);
+  --shadow-accent: 0 4px 20px rgba(82, 84, 212, 0.12);
+
+  --noise-opacity: 0;
+}
+
+/* ─────────────────────────────────────────
+   Layout tokens (theme-independent)
+───────────────────────────────────────── */
+:root {
   --sidebar-width: 60px;
   --topbar-height: 52px;
   --bottombar-height: 56px;
@@ -26,9 +85,16 @@
   --radius-sm: 6px;
   --radius-md: 8px;
   --radius-lg: 10px;
-  --radius-xl: 12px;
+  --radius-xl: 14px;
+  --radius-2xl: 20px;
+
+  --transition-fast: 0.15s ease;
+  --transition-smooth: 0.25s ease;
 }
 
+/* ─────────────────────────────────────────
+   Reset
+───────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -37,6 +103,9 @@
   padding: 0;
 }
 
+/* ─────────────────────────────────────────
+   Base
+───────────────────────────────────────── */
 html,
 body {
   height: 100%;
@@ -46,4 +115,25 @@ body {
   font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  transition: background var(--transition-smooth), color var(--transition-smooth);
+}
+
+/* Arabic font override */
+:lang(ar) {
+  font-family: 'Tajawal', system-ui, -apple-system, sans-serif;
+  letter-spacing: 0;
+  line-height: 1.7;
+}
+
+/* ─────────────────────────────────────────
+   RTL directional utilities
+───────────────────────────────────────── */
+[dir="rtl"] .shell-panel {
+  margin-left: 0 !important;
+  margin-right: var(--sidebar-width);
+}
+
+[dir="rtl"] .sidebar {
+  left: auto !important;
+  right: 0 !important;
 }
