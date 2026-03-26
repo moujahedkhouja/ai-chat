@@ -29,6 +29,7 @@
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s, background 0.15s;
   white-space: nowrap;
+  flex-shrink: 0;
 
   &:hover {
     color: var(--color-danger);

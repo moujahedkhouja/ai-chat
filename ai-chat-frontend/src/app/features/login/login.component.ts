@@ -4,14 +4,12 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
 import { LoginRequest } from '../../models/auth.model';
-import { ThemeService } from '../../core/theme.service';
 import { LanguageService } from '../../core/language.service';
-import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, TranslatePipe],
+  imports: [ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -31,12 +29,7 @@ export class LoginComponent {
     this.showPassword = !this.showPassword;
   }
 
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    public theme: ThemeService,
-    public lang: LanguageService,
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit() {
     if (this.form.invalid) return;
@@ -52,7 +45,7 @@ export class LoginComponent {
         }
       },
       error: () => {
-        this.error = this.lang.t('login.error');
+        this.error = 'Invalid username or password';
         this.loading = false;
       }
     });
