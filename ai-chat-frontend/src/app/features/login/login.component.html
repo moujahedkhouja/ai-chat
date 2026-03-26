@@ -1,160 +1,160 @@
 <div class="login-page">
 
-  <!-- Decorative background blobs -->
-  <svg class="bg-blobs" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <circle cx="160" cy="120" r="220" fill="url(#blob1)"/>
-    <circle cx="680" cy="480" r="180" fill="url(#blob2)"/>
-    <circle cx="720" cy="80" r="100" fill="url(#blob3)"/>
-    <defs>
-      <radialGradient id="blob1" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="#6366f1" stop-opacity="0.15"/>
-        <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
-      </radialGradient>
-      <radialGradient id="blob2" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.12"/>
-        <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
-      </radialGradient>
-      <radialGradient id="blob3" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="#6366f1" stop-opacity="0.08"/>
-        <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
-      </radialGradient>
-    </defs>
-  </svg>
+  <!-- ── Hero Panel (left LTR / right RTL) ── -->
+  <aside class="login-hero" aria-hidden="true">
 
-  <!-- Left panel — branding & illustration (desktop only) -->
-  <div class="login-brand">
-    <!-- Large logo mark -->
-    <div class="brand-logo">
-      <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="72" height="72" rx="20" fill="url(#brand-grad)"/>
-        <rect x="14" y="14" width="16" height="16" rx="4" fill="white"/>
-        <rect x="42" y="14" width="16" height="16" rx="4" fill="white" opacity="0.75"/>
-        <rect x="14" y="42" width="16" height="16" rx="4" fill="white" opacity="0.75"/>
-        <rect x="42" y="42" width="16" height="16" rx="4" fill="white" opacity="0.4"/>
-        <defs>
-          <linearGradient id="brand-grad" x1="0" y1="0" x2="72" y2="72" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#6366f1"/>
-            <stop offset="1" stop-color="#8b5cf6"/>
-          </linearGradient>
-        </defs>
+    <!-- Animated geometric backdrop -->
+    <div class="hero-geo-wrap">
+      <svg class="hero-geo" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Outer halo rings -->
+        <circle cx="150" cy="150" r="138" stroke="currentColor" stroke-width="0.4" stroke-opacity="0.15"/>
+        <circle cx="150" cy="150" r="128" stroke="currentColor" stroke-width="0.3" stroke-opacity="0.2"/>
+        <!-- Outer 8-pointed star (r=110 / inner r=43) -->
+        <polygon class="geo-outer"
+          points="150,40 166,110 228,72 190,133 260,150 190,167 228,228 166,190 150,260 134,190 72,228 110,167 40,150 110,133 72,72 134,110"
+          stroke="currentColor" stroke-width="0.9" fill="none" stroke-opacity="0.45"/>
+        <!-- Mid ring -->
+        <circle cx="150" cy="150" r="83" stroke="currentColor" stroke-width="0.3" stroke-opacity="0.2"/>
+        <!-- Medium 8-pointed star (r=73 / inner r=28) -->
+        <polygon class="geo-mid"
+          points="150,77 161,124 202,98 176,139 223,150 176,161 202,202 161,176 150,223 139,176 98,202 124,161 77,150 124,139 98,98 139,124"
+          stroke="currentColor" stroke-width="1" fill="none" stroke-opacity="0.55"/>
+        <!-- Inner ring -->
+        <circle cx="150" cy="150" r="43" stroke="currentColor" stroke-width="0.3" stroke-opacity="0.25"/>
+        <!-- Inner 8-pointed star (r=37 / inner r=14) -->
+        <polygon class="geo-inner"
+          points="150,113 155,137 176,124 163,145 187,150 163,155 176,176 155,163 150,187 145,163 124,176 137,155 113,150 137,145 124,124 145,137"
+          stroke="currentColor" stroke-width="1.4" fill="currentColor" fill-opacity="0.06" stroke-opacity="0.75"/>
+        <!-- Center -->
+        <circle cx="150" cy="150" r="5" fill="currentColor" opacity="0.6"/>
+        <circle cx="150" cy="150" r="9" stroke="currentColor" stroke-width="0.8" fill="none" opacity="0.35"/>
+        <!-- Cross-axis lines -->
+        <line x1="150" y1="10" x2="150" y2="290" stroke="currentColor" stroke-width="0.25" stroke-opacity="0.08"/>
+        <line x1="10" y1="150" x2="290" y2="150" stroke="currentColor" stroke-width="0.25" stroke-opacity="0.08"/>
+        <line x1="50" y1="50" x2="250" y2="250" stroke="currentColor" stroke-width="0.25" stroke-opacity="0.06"/>
+        <line x1="250" y1="50" x2="50" y2="250" stroke="currentColor" stroke-width="0.25" stroke-opacity="0.06"/>
       </svg>
-      <span class="brand-name">AI Chat</span>
     </div>
 
-    <p class="brand-tagline">Your intelligent workspace,<br/>always ready.</p>
-
-    <!-- Abstract AI network illustration -->
-    <svg class="brand-illustration" viewBox="0 0 340 280" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <!-- Connection lines -->
-      <line x1="170" y1="140" x2="80" y2="80" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.5"/>
-      <line x1="170" y1="140" x2="260" y2="80" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.5"/>
-      <line x1="170" y1="140" x2="80" y2="200" stroke="#8b5cf6" stroke-width="1.5" stroke-opacity="0.5"/>
-      <line x1="170" y1="140" x2="260" y2="200" stroke="#8b5cf6" stroke-width="1.5" stroke-opacity="0.5"/>
-      <line x1="170" y1="140" x2="170" y2="40" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.4"/>
-      <line x1="170" y1="140" x2="170" y2="240" stroke="#8b5cf6" stroke-width="1.5" stroke-opacity="0.4"/>
-      <line x1="80" y1="80" x2="260" y2="80" stroke="#6366f1" stroke-width="1" stroke-opacity="0.25"/>
-      <line x1="80" y1="200" x2="260" y2="200" stroke="#8b5cf6" stroke-width="1" stroke-opacity="0.25"/>
-      <line x1="80" y1="80" x2="80" y2="200" stroke="#6366f1" stroke-width="1" stroke-opacity="0.2"/>
-      <line x1="260" y1="80" x2="260" y2="200" stroke="#8b5cf6" stroke-width="1" stroke-opacity="0.2"/>
-      <!-- Outer nodes -->
-      <circle cx="80" cy="80" r="8" fill="rgba(99,102,241,0.15)" stroke="#6366f1" stroke-width="1.5"/>
-      <circle cx="260" cy="80" r="8" fill="rgba(99,102,241,0.15)" stroke="#6366f1" stroke-width="1.5"/>
-      <circle cx="80" cy="200" r="8" fill="rgba(139,92,246,0.15)" stroke="#8b5cf6" stroke-width="1.5"/>
-      <circle cx="260" cy="200" r="8" fill="rgba(139,92,246,0.15)" stroke="#8b5cf6" stroke-width="1.5"/>
-      <circle cx="170" cy="40" r="6" fill="rgba(99,102,241,0.12)" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.7"/>
-      <circle cx="170" cy="240" r="6" fill="rgba(139,92,246,0.12)" stroke="#8b5cf6" stroke-width="1.5" stroke-opacity="0.7"/>
-      <!-- Inner dot highlights -->
-      <circle cx="80" cy="80" r="3" fill="#818cf8"/>
-      <circle cx="260" cy="80" r="3" fill="#818cf8"/>
-      <circle cx="80" cy="200" r="3" fill="#a78bfa"/>
-      <circle cx="260" cy="200" r="3" fill="#a78bfa"/>
-      <circle cx="170" cy="40" r="2.5" fill="#818cf8"/>
-      <circle cx="170" cy="240" r="2.5" fill="#a78bfa"/>
-      <!-- Central node -->
-      <circle cx="170" cy="140" r="28" fill="url(#center-grad)" opacity="0.15"/>
-      <circle cx="170" cy="140" r="18" fill="url(#center-grad)" opacity="0.2"/>
-      <circle cx="170" cy="140" r="10" fill="url(#center-grad)"/>
-      <circle cx="170" cy="140" r="4" fill="white" opacity="0.9"/>
-      <!-- Pulse ring -->
-      <circle cx="170" cy="140" r="36" stroke="url(#pulse-grad)" stroke-width="1" stroke-opacity="0.25" stroke-dasharray="4 4"/>
-      <defs>
-        <linearGradient id="center-grad" x1="152" y1="122" x2="188" y2="158" gradientUnits="userSpaceOnUse">
-          <stop stop-color="#6366f1"/>
-          <stop offset="1" stop-color="#8b5cf6"/>
-        </linearGradient>
-        <linearGradient id="pulse-grad" x1="134" y1="104" x2="206" y2="176" gradientUnits="userSpaceOnUse">
-          <stop stop-color="#6366f1"/>
-          <stop offset="1" stop-color="#8b5cf6"/>
-        </linearGradient>
-      </defs>
-    </svg>
-
-    <!-- Feature pills -->
-    <div class="brand-features">
-      <span class="feature-pill">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="#818cf8" stroke-width="1.3"/><path d="M4 6l1.5 1.5L8 4" stroke="#818cf8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Secure
-      </span>
-      <span class="feature-pill">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="3" width="10" height="7" rx="1.5" stroke="#818cf8" stroke-width="1.3"/><path d="M4 3V2.5a2 2 0 0 1 4 0V3" stroke="#818cf8" stroke-width="1.3" stroke-linecap="round"/></svg>
-        Private
-      </span>
-      <span class="feature-pill">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v2M6 9v2M1 6h2M9 6h2M2.5 2.5l1.4 1.4M8.1 8.1l1.4 1.4M9.5 2.5L8.1 3.9M3.9 8.1L2.5 9.5" stroke="#818cf8" stroke-width="1.3" stroke-linecap="round"/></svg>
-        AI-Powered
-      </span>
-    </div>
-  </div>
-
-  <!-- Right panel — login form -->
-  <div class="login-card">
-    <h1 class="login-title">Welcome back</h1>
-    <p class="login-subtitle">Sign in to your account</p>
-
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form">
-      <div class="field">
-        <label class="field-label" for="username">
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="vertical-align:-1px;margin-right:4px;"><circle cx="6.5" cy="4.5" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M1 12c0-2.761 2.462-4.5 5.5-4.5S12 9.239 12 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-          Username
-        </label>
-        <input
-          id="username"
-          class="field-input"
-          type="text"
-          formControlName="username"
-          placeholder="Enter your username"
-          autocomplete="username"
-        />
+    <!-- Hero text content -->
+    <div class="hero-content">
+      <!-- Brand -->
+      <div class="hero-brand">
+        <svg class="hero-logo" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="36" height="36" rx="9" fill="currentColor" fill-opacity="0.12"/>
+          <rect x="0.5" y="0.5" width="35" height="35" rx="8.5" stroke="currentColor" stroke-opacity="0.35"/>
+          <rect x="7" y="7" width="8" height="8" rx="2" fill="currentColor"/>
+          <rect x="21" y="7" width="8" height="8" rx="2" fill="currentColor" opacity="0.6"/>
+          <rect x="7" y="21" width="8" height="8" rx="2" fill="currentColor" opacity="0.6"/>
+          <rect x="21" y="21" width="8" height="8" rx="2" fill="currentColor" opacity="0.28"/>
+        </svg>
+        <span class="hero-brand-name">AI Chat</span>
       </div>
 
-      <div class="field">
-        <label class="field-label" for="password">
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="vertical-align:-1px;margin-right:4px;"><rect x="1.5" y="5" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 5V4a2.5 2.5 0 0 1 5 0v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="6.5" cy="8.5" r="1" fill="currentColor"/></svg>
-          Password
-        </label>
-        <input
-          id="password"
-          class="field-input"
-          type="password"
-          formControlName="password"
-          placeholder="Enter your password"
-          autocomplete="current-password"
-        />
-      </div>
-
-      @if (error) {
-        <p class="error-message">{{ error }}</p>
-      }
-
-      <button class="btn-primary" type="submit" [disabled]="loading">
-        @if (loading) {
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="spin"><circle cx="8" cy="8" r="6" stroke="white" stroke-width="2" stroke-opacity="0.3"/><path d="M8 2a6 6 0 0 1 6 6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-          Signing in...
+      <!-- Headline -->
+      <h2 class="hero-headline">
+        @if (isRtl) {
+          <span>مساحتك الذكية</span>
+          <span class="hero-accent">دائماً في متناول يدك</span>
         } @else {
-          Sign in
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Your intelligent</span>
+          <span class="hero-accent">workspace</span>
         }
-      </button>
-    </form>
-  </div>
+      </h2>
+
+      <p class="hero-sub">
+        {{ isRtl
+          ? 'منصة محادثة مدعومة بالذكاء الاصطناعي — خاصة وآمنة'
+          : 'AI-powered conversations, seamlessly private.' }}
+      </p>
+
+      <!-- Stats row -->
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-val">{{ isRtl ? '٢٤/٧' : '24/7' }}</span>
+          <span class="stat-key">{{ isRtl ? 'متاح' : 'Available' }}</span>
+        </div>
+        <span class="stat-sep"></span>
+        <div class="stat">
+          <span class="stat-val">E2E</span>
+          <span class="stat-key">{{ isRtl ? 'مشفّر' : 'Encrypted' }}</span>
+        </div>
+        <span class="stat-sep"></span>
+        <div class="stat">
+          <span class="stat-val">{{ isRtl ? '١٠٠٪' : '100%' }}</span>
+          <span class="stat-key">{{ isRtl ? 'خاص' : 'Private' }}</span>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ── Form Panel ── -->
+  <main class="login-panel">
+    <div class="login-card">
+
+      <p class="card-eyebrow">{{ isRtl ? 'مرحباً بك' : 'Welcome back' }}</p>
+      <h1 class="card-title">{{ isRtl ? 'تسجيل الدخول' : 'Sign in' }}</h1>
+      <p class="card-sub">
+        {{ isRtl ? 'أدخل بيانات حسابك للمتابعة' : 'Enter your credentials to continue' }}
+      </p>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form" novalidate>
+
+        <!-- Username -->
+        <div class="field">
+          <input
+            id="username"
+            class="field-input"
+            type="text"
+            formControlName="username"
+            placeholder=" "
+            autocomplete="username"
+          />
+          <label class="field-label" for="username">
+            {{ isRtl ? 'اسم المستخدم' : 'Username' }}
+          </label>
+        </div>
+
+        <!-- Password -->
+        <div class="field">
+          <input
+            id="password"
+            class="field-input"
+            type="password"
+            formControlName="password"
+            placeholder=" "
+            autocomplete="current-password"
+          />
+          <label class="field-label" for="password">
+            {{ isRtl ? 'كلمة المرور' : 'Password' }}
+          </label>
+        </div>
+
+        @if (error) {
+          <div class="error-banner" role="alert">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M7 4.5v2.5M7 9v.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+            {{ isRtl ? 'اسم المستخدم أو كلمة المرور غير صحيحة' : error }}
+          </div>
+        }
+
+        <button class="btn-submit" type="submit" [disabled]="loading">
+          @if (loading) {
+            <span class="btn-spinner" aria-hidden="true"></span>
+            {{ isRtl ? 'جارٍ الدخول…' : 'Signing in…' }}
+          } @else {
+            {{ isRtl ? 'دخول' : 'Sign in' }}
+            <svg class="btn-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8h10M9.5 4.5 13 8l-3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          }
+        </button>
+
+      </form>
+    </div>
+  </main>
+
 </div>
