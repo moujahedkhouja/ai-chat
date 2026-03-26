@@ -4,11 +4,12 @@ import { UserService } from '../../core/user.service';
 import { AuthService } from '../../auth/auth.service';
 import { UserResponse } from '../../models/user.model';
 import { CreateUserDialogComponent } from './create-user-dialog/create-user-dialog.component';
+import { ChangePasswordDialogComponent } from './change-password-dialog/change-password-dialog.component';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CreateUserDialogComponent, ReactiveFormsModule],
+  imports: [CreateUserDialogComponent, ChangePasswordDialogComponent, ReactiveFormsModule],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss'
 })
@@ -22,6 +23,9 @@ export class UsersComponent implements OnInit {
   showCreateForm = false;
   loading = false;
   errorMessage = '';
+
+  userToDelete: UserResponse | null = null;
+  userToChangePassword: UserResponse | null = null;
 
   constructor(
     private userService: UserService,
@@ -55,8 +59,14 @@ export class UsersComponent implements OnInit {
     this.loadUsers();
   }
 
-  onDeleteUser(id: string) {
-    if (!confirm('Are you sure you want to delete this user?')) return;
+  onDeleteUser(user: UserResponse) {
+    this.userToDelete = user;
+  }
+
+  confirmDelete() {
+    if (!this.userToDelete) return;
+    const id = this.userToDelete.id;
+    this.userToDelete = null;
     this.userService.deleteUser(id).subscribe({
       next: () => this.loadUsers(),
       error: () => this.errorMessage = 'Failed to delete user'
@@ -66,5 +76,9 @@ export class UsersComponent implements OnInit {
   onUserCreated(user: UserResponse) {
     this.showCreateForm = false;
     this.loadUsers();
+  }
+
+  onPasswordChanged() {
+    this.userToChangePassword = null;
   }
 }

@@ -6,7 +6,9 @@
     </div>
     @if (isAdmin) {
       <button class="btn-primary" type="button" (click)="showCreateForm = true">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
         New User
       </button>
     }
@@ -43,9 +45,22 @@
               <td><span class="role-badge" [class]="user.role.toLowerCase()">{{ user.role }}</span></td>
               <td class="actions-cell">
                 @if (isAdmin) {
-                  <button class="btn-danger-icon" type="button" title="Delete user" (click)="onDeleteUser(user.id)">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 3h12M5 3V2h4v1M2 3l1 9h8l1-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </button>
+                  <div class="action-btns">
+                    <button class="btn-password-icon" type="button" title="Change password" aria-label="Change password"
+                      (click)="userToChangePassword = user">
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                        <rect x="2" y="7" width="12" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M5 7V5a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        <circle cx="8" cy="11" r="1" fill="currentColor"/>
+                      </svg>
+                    </button>
+                    <button class="btn-danger-icon" type="button" title="Delete user" aria-label="Delete user"
+                      (click)="onDeleteUser(user)">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M1 3h12M5 3V2h4v1M2 3l1 9h8l1-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  </div>
                 }
               </td>
             </tr>
@@ -65,9 +80,22 @@
             <span class="role-badge" [class]="user.role.toLowerCase()">{{ user.role }}</span>
           </div>
           @if (isAdmin) {
-            <button class="btn-danger-icon" type="button" (click)="onDeleteUser(user.id)">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 3h12M5 3V2h4v1M2 3l1 9h8l1-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
+            <div class="action-btns">
+              <button class="btn-password-icon" type="button" title="Change password" aria-label="Change password"
+                (click)="userToChangePassword = user">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                  <rect x="2" y="7" width="12" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                  <path d="M5 7V5a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  <circle cx="8" cy="11" r="1" fill="currentColor"/>
+                </svg>
+              </button>
+              <button class="btn-danger-icon" type="button" title="Delete user" aria-label="Delete user"
+                (click)="onDeleteUser(user)">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M1 3h12M5 3V2h4v1M2 3l1 9h8l1-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
           }
         </div>
       }
@@ -82,10 +110,42 @@
     }
   }
 
+  <!-- Create user dialog -->
   @if (showCreateForm) {
     <app-create-user-dialog
       (userCreated)="onUserCreated($event)"
       (cancelled)="showCreateForm = false">
     </app-create-user-dialog>
+  }
+
+  <!-- Change password dialog -->
+  @if (userToChangePassword) {
+    <app-change-password-dialog
+      [user]="userToChangePassword"
+      (saved)="onPasswordChanged()"
+      (cancelled)="userToChangePassword = null">
+    </app-change-password-dialog>
+  }
+
+  <!-- Delete confirmation modal -->
+  @if (userToDelete) {
+    <div class="confirm-overlay" (click)="userToDelete = null">
+      <div class="confirm-dialog" (click)="$event.stopPropagation()">
+        <div class="confirm-icon">
+          <svg width="22" height="22" viewBox="0 0 16 16" fill="none">
+            <path d="M3 4h10M6 4V2.5h4V4M5 4v8.5h6V4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="confirm-title">Delete User</h3>
+        <p class="confirm-text">
+          Are you sure you want to delete <strong>{{ userToDelete.username }}</strong>?
+          This action cannot be undone.
+        </p>
+        <div class="confirm-actions">
+          <button class="btn-ghost" type="button" (click)="userToDelete = null">Cancel</button>
+          <button class="btn-delete" type="button" (click)="confirmDelete()">Delete</button>
+        </div>
+      </div>
+    </div>
   }
 </div>
