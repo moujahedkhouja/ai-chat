@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "Angular Frontend",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["start", "--prefix", "ai-chat-frontend"],
+      "runtimeExecutable": "/bin/bash",
+      "runtimeArgs": ["start-frontend.sh"],
       "port": 4200
     },
     {
