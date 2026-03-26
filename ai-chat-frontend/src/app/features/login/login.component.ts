@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-
+import { DOCUMENT } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
@@ -20,6 +20,7 @@ export class LoginComponent {
 
   error = '';
   loading = false;
+  readonly isRtl = inject(DOCUMENT).documentElement.dir === 'rtl';
 
   constructor(private authService: AuthService, private router: Router) {}
 

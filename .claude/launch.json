@@ -5,7 +5,8 @@
       "name": "Angular Frontend",
       "runtimeExecutable": "/bin/bash",
       "runtimeArgs": ["start-frontend.sh"],
-      "port": 4200
+      "port": 4200,
+      "autoPort": true
     },
     {
       "name": "Spring Boot Backend",
