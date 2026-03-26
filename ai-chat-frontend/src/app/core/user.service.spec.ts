@@ -92,4 +92,13 @@ describe('UserService', () => {
     expect(req.request.method).toBe('GET');
     req.flush(mockPage);
   });
+
+  it('should POST to reset-password endpoint with newPassword', () => {
+    service.adminResetPassword('user-1', 'newPassword123').subscribe();
+
+    const req = httpMock.expectOne('/api/users/user-1/reset-password');
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ newPassword: 'newPassword123' });
+    req.flush(null);
+  });
 });

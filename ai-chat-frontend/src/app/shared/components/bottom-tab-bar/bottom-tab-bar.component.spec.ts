@@ -32,7 +32,7 @@ describe('BottomTabBarComponent', () => {
   });
 
   it('should hide Users tab for USER role', () => {
-    const comp = new BottomTabBarComponent({ getRole: () => 'USER' } as any);
+    const comp = new BottomTabBarComponent({ getRole: () => 'USER' } as any, {} as any);
     expect(comp.isAdminOrModerator).toBeFalse();
   });
 });
