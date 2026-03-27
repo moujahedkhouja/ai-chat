@@ -88,27 +88,35 @@ export class UsersComponent implements OnInit {
     this.userToChangePassword = null;
   }
 
-  onEditUsername(user: UserResponse): void {
-    this.userToEditUsername = user;
-    this.editUsernameValue = user.username;
-    this.editUsernameError = '';
+  onEditUser(user: UserResponse): void {
+    this.userToEdit = user;
+    this.editValue = {
+      username: user.username,
+      firstName: user.firstName || '',
+      lastName: user.lastName || ''
+    };
+    this.editError = '';
   }
 
-  confirmEditUsername(): void {
-    if (!this.userToEditUsername || !this.editUsernameValue.trim()) return;
-    this.editUsernameLoading = true;
-    this.editUsernameError = '';
-    this.userService.updateUser(this.userToEditUsername.id, { username: this.editUsernameValue.trim() }).subscribe({
+  confirmEditUser(): void {
+    if (!this.userToEdit || !this.editValue.username.trim()) return;
+    this.editLoading = true;
+    this.editError = '';
+    this.userService.updateUser(this.userToEdit.id, {
+      username: this.editValue.username.trim(),
+      firstName: this.editValue.firstName.trim(),
+      lastName: this.editValue.lastName.trim()
+    }).subscribe({
       next: () => {
-        this.editUsernameLoading = false;
-        this.userToEditUsername = null;
+        this.editLoading = false;
+        this.userToEdit = null;
         this.loadUsers();
       },
       error: (err) => {
-        this.editUsernameLoading = false;
-        this.editUsernameError = err.status === 409
+        this.editLoading = false;
+        this.editError = err.status === 409
           ? 'Username is already taken'
-          : 'Failed to update username';
+          : 'Failed to update user';
       }
     });
   }
