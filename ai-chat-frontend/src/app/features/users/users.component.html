@@ -44,7 +44,18 @@
                       {{ user.username.charAt(0).toUpperCase() }}
                     }
                   </div>
-                  <span class="user-name">{{ user.username }}</span>
+                  <div class="user-info-stack">
+                    <span class="user-full-name">
+                      @if (user.firstName || user.lastName) {
+                        {{ user.firstName }} {{ user.lastName }}
+                      } @else {
+                        {{ user.username }}
+                      }
+                    </span>
+                    @if (user.firstName || user.lastName) {
+                      <span class="user-handle">@{{ user.username }}</span>
+                    }
+                  </div>
                 </div>
               </td>
               <td class="user-email">{{ user.email }}</td>
@@ -99,7 +110,16 @@
             }
           </div>
           <div class="user-card-info">
-            <span class="user-name">{{ user.username }}</span>
+            <span class="user-full-name">
+              @if (user.firstName || user.lastName) {
+                {{ user.firstName }} {{ user.lastName }}
+              } @else {
+                {{ user.username }}
+              }
+            </span>
+            @if (user.firstName || user.lastName) {
+              <span class="user-handle">@{{ user.username }}</span>
+            }
             <span class="user-email">{{ user.email }}</span>
             <span class="role-badge" [class]="user.role.toLowerCase()">{{ user.role }}</span>
           </div>

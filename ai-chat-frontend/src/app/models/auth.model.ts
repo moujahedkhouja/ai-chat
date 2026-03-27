@@ -11,6 +11,8 @@ export interface ChangePasswordRequest {
 export interface CurrentUser {
   userId: string;
   username: string;
+  firstName?: string;
+  lastName?: string;
   role: 'ADMIN' | 'MODERATOR' | 'USER';
   forcePasswordChange: boolean;
   profilePicturePath: string | null;

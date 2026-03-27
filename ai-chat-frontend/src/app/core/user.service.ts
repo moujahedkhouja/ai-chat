@@ -5,6 +5,8 @@ import { UserResponse, UserPage, CreateUserRequest } from '../models/user.model'
 
 export interface UpdateUserRequest {
   username?: string;
+  firstName?: string;
+  lastName?: string;
   linkedinUrl?: string | null;
   role?: string;
   email?: string;
@@ -14,6 +16,8 @@ export interface UpdateUserRequest {
 export interface UpdateProfileRequest {
   username: string;
   email: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 @Injectable({ providedIn: 'root' })

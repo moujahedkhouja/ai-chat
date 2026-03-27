@@ -57,6 +57,8 @@
   "create_user": {
     "title": "New User",
     "username": "Username",
+    "first_name": "First Name",
+    "last_name": "Last Name",
     "email": "Email",
     "password": "Temporary Password",
     "role": "Role",
@@ -98,6 +100,8 @@
     "title": "Profile",
     "account_info": "Account Info",
     "username": "Username",
+    "first_name": "First Name",
+    "last_name": "Last Name",
     "email": "Email",
     "save": "Save Changes",
     "saving": "Saving…",

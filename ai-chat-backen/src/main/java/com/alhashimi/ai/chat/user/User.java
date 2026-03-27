@@ -8,7 +8,11 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "users")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor(access = AccessLevel.PACKAGE) @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@Builder
 public class User {
 
     @Id
@@ -20,6 +24,12 @@ public class User {
 
     @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(length = 255)
+    private String firstName;
+
+    @Column(length = 255)
+    private String lastName;
 
     @Column(nullable = false)
     private String password;

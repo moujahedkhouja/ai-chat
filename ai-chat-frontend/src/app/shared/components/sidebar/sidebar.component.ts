@@ -24,6 +24,14 @@ export class SidebarComponent {
     return this.authService.getUsername() ?? 'Unknown';
   }
 
+  get displayName(): string {
+    const user = this.authService.currentUserValue;
+    if (user?.firstName || user?.lastName) {
+      return `${user.firstName || ''} ${user.lastName || ''}`.trim();
+    }
+    return this.username;
+  }
+
   get role(): string {
     return this.authService.getRole() ?? '';
   }

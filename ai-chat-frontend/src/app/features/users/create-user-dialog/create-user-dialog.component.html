@@ -13,6 +13,17 @@
         <input id="d-username" class="field-input" type="text" formControlName="username" placeholder="e.g. john_doe" autocomplete="off"/>
       </div>
 
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label" for="d-firstname">{{ 'create_user.first_name' | translate }}</label>
+          <input id="d-firstname" class="field-input" type="text" formControlName="firstName" [placeholder]="'create_user.first_name' | translate" autocomplete="off"/>
+        </div>
+        <div class="field">
+          <label class="field-label" for="d-lastname">{{ 'create_user.last_name' | translate }}</label>
+          <input id="d-lastname" class="field-input" type="text" formControlName="lastName" [placeholder]="'create_user.last_name' | translate" autocomplete="off"/>
+        </div>
+      </div>
+
       <div class="field">
         <label class="field-label" for="d-email">{{ 'create_user.email' | translate }}</label>
         <input id="d-email" class="field-input" type="email" formControlName="email" placeholder="e.g. john@example.com" autocomplete="off"/>

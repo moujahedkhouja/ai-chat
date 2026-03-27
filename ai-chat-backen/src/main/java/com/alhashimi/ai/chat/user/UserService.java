@@ -32,6 +32,8 @@ public class UserService {
         User user = new User();
         user.setUsername(request.username());
         user.setEmail(request.email());
+        user.setFirstName(request.firstName());
+        user.setLastName(request.lastName());
         user.setPassword(passwordEncoder.encode(request.temporaryPassword()));
         user.setRole(request.role());
         user.setForcePasswordChange(true);
@@ -72,6 +74,12 @@ public class UserService {
         }
         if (request.email() != null) {
             user.setEmail(request.email());
+        }
+        if (request.firstName() != null) {
+            user.setFirstName(request.firstName());
+        }
+        if (request.lastName() != null) {
+            user.setLastName(request.lastName());
         }
         if (request.enabled() != null) {
             user.setEnabled(request.enabled());
@@ -123,6 +131,9 @@ public class UserService {
             }
             user.setEmail(request.email());
         }
+
+        user.setFirstName(request.firstName());
+        user.setLastName(request.lastName());
 
         return UserResponse.from(userRepository.save(user));
     }

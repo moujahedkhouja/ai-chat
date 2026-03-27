@@ -46,6 +46,22 @@
                [placeholder]="'profile.username' | translate"/>
       </div>
 
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label" for="p-firstname">{{ 'profile.first_name' | translate }}</label>
+          <input id="p-firstname" class="field-input" type="text"
+                 formControlName="firstName" autocomplete="given-name"
+                 [placeholder]="'profile.first_name' | translate"/>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="p-lastname">{{ 'profile.last_name' | translate }}</label>
+          <input id="p-lastname" class="field-input" type="text"
+                 formControlName="lastName" autocomplete="family-name"
+                 [placeholder]="'profile.last_name' | translate"/>
+        </div>
+      </div>
+
       <div class="field">
         <label class="field-label" for="p-email">{{ 'profile.email' | translate }}</label>
         <input id="p-email" class="field-input" type="email"

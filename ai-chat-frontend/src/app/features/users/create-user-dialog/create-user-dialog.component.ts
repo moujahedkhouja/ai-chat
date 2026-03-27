@@ -17,6 +17,8 @@ export class CreateUserDialogComponent {
 
   form = inject(FormBuilder).group({
     username: ['', [Validators.required, Validators.minLength(3)]],
+    firstName: [''],
+    lastName: [''],
     email: ['', [Validators.required, Validators.email]],
     temporaryPassword: ['', [Validators.required, Validators.minLength(8)]],
     role: ['USER', Validators.required]
@@ -31,9 +33,11 @@ export class CreateUserDialogComponent {
     if (this.form.invalid) return;
     this.loading = true;
     this.error = '';
-    const { username, email, temporaryPassword, role } = this.form.value;
+    const { username, firstName, lastName, email, temporaryPassword, role } = this.form.value;
     this.userService.createUser({
       username: username!,
+      firstName: firstName || '',
+      lastName: lastName || '',
       email: email!,
       temporaryPassword: temporaryPassword!,
       role: role as 'ADMIN' | 'MODERATOR' | 'USER'

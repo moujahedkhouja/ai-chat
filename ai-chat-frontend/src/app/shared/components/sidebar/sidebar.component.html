@@ -76,11 +76,11 @@
         </svg>
       }
     </button>
-    <a class="avatar-btn" routerLink="/profile" [title]="username + ' · ' + role">
+    <a class="avatar-btn" routerLink="/profile" [title]="displayName + ' · ' + role">
       @if (avatarUrl) {
-        <img [src]="avatarUrl" [alt]="username" class="sidebar-avatar">
+        <img [src]="avatarUrl" [alt]="displayName" class="sidebar-avatar">
       } @else {
-        <span class="avatar-initials">{{ username.charAt(0).toUpperCase() }}</span>
+        <span class="avatar-initials">{{ (displayName || username).charAt(0).toUpperCase() }}</span>
       }
     </a>
   </div>

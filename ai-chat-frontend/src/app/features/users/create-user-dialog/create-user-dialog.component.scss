@@ -83,6 +83,13 @@
   gap: 14px;
 }
 
+.field-row {
+  display: flex;
+  gap: 12px;
+
+  .field { flex: 1; }
+}
+
 .field {
   display: flex;
   flex-direction: column;

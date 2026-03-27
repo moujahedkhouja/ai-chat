@@ -140,6 +140,14 @@
 
 .form { display: flex; flex-direction: column; gap: 14px; }
 
+.field-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  .field { flex: 1; min-width: 200px; }
+}
+
 .field { display: flex; flex-direction: column; gap: 6px; }
 
 .field-label {

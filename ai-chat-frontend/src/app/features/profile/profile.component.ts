@@ -20,7 +20,9 @@ export class ProfileComponent implements OnInit {
 
   infoForm = this.fb.group({
     username: ['', [Validators.required, Validators.maxLength(50)]],
-    email: ['', [Validators.required, Validators.email]]
+    email: ['', [Validators.required, Validators.email]],
+    firstName: [''],
+    lastName: ['']
   });
 
   passwordForm = this.fb.group({
@@ -53,7 +55,12 @@ export class ProfileComponent implements OnInit {
     this.userService.getProfile().subscribe({
       next: (user) => {
         this.user = user;
-        this.infoForm.patchValue({ username: user.username, email: user.email });
+        this.infoForm.patchValue({
+          username: user.username,
+          email: user.email,
+          firstName: user.firstName || '',
+          lastName: user.lastName || ''
+        });
       },
       error: () => this.infoError = 'Failed to load profile'
     });
@@ -64,8 +71,13 @@ export class ProfileComponent implements OnInit {
     this.infoLoading = true;
     this.infoSuccess = '';
     this.infoError = '';
-    const { username, email } = this.infoForm.value;
-    this.userService.updateProfile({ username: username!, email: email! }).subscribe({
+    const { username, email, firstName, lastName } = this.infoForm.value;
+    this.userService.updateProfile({
+      username: username!,
+      email: email!,
+      firstName: firstName || '',
+      lastName: lastName || ''
+    }).subscribe({
       next: (updated) => {
         this.user = updated;
         this.infoSuccess = 'Profile updated';
@@ -159,6 +171,6 @@ export class ProfileComponent implements OnInit {
 
   getAvatarUrl(): string | null {
     if (!this.user?.profilePicturePath) return null;
-    return `/uploads/${this.user.profilePicturePath}`;
+    return `/api/uploads/${this.user.profilePicturePath}`;
   }
 }

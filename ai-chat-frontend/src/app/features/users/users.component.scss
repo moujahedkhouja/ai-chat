@@ -190,6 +190,29 @@
   gap: 10px;
 }
 
+.user-info-stack {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.user-full-name {
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--f-body);
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-handle {
+  font-size: 11px;
+  font-family: var(--f-body);
+  color: var(--color-text-subtle);
+  margin-top: -1px;
+}
+
 .user-avatar {
   width: 30px;
   height: 30px;

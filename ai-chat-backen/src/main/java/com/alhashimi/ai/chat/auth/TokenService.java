@@ -17,6 +17,8 @@ import java.util.UUID;
 public class TokenService {
 
     private static final String CLAIM_USERNAME = "username";
+    private static final String CLAIM_FIRST_NAME = "firstName";
+    private static final String CLAIM_LAST_NAME = "lastName";
     private static final String CLAIM_ROLE = "role";
     private static final String CLAIM_FORCE_PASSWORD_CHANGE = "forcePasswordChange";
 
@@ -37,6 +39,8 @@ public class TokenService {
         return Jwts.builder()
                 .subject(user.getId().toString())
                 .claim(CLAIM_USERNAME, user.getUsername())
+                .claim(CLAIM_FIRST_NAME, user.getFirstName())
+                .claim(CLAIM_LAST_NAME, user.getLastName())
                 .claim(CLAIM_ROLE, user.getRole().name())
                 .claim(CLAIM_FORCE_PASSWORD_CHANGE, user.isForcePasswordChange())
                 .issuedAt(new Date(now))
@@ -66,6 +70,8 @@ public class TokenService {
         return new TokenClaims(
                 UUID.fromString(claims.getSubject()),
                 claims.get(CLAIM_USERNAME, String.class),
+                claims.get(CLAIM_FIRST_NAME, String.class),
+                claims.get(CLAIM_LAST_NAME, String.class),
                 claims.get(CLAIM_ROLE, String.class),
                 claims.get(CLAIM_FORCE_PASSWORD_CHANGE, Boolean.class)
         );

@@ -62,6 +62,8 @@ public class AuthController {
         return ResponseEntity.ok(new AuthResponse(
             user.getId().toString(),
             user.getUsername(),
+            user.getFirstName(),
+            user.getLastName(),
             user.getRole().name(),
             user.isForcePasswordChange(),
             user.getProfilePicturePath()
@@ -97,6 +99,8 @@ public class AuthController {
         return ResponseEntity.ok(new AuthResponse(
             user.getId().toString(),
             user.getUsername(),
+            user.getFirstName(),
+            user.getLastName(),
             user.getRole().name(),
             false,
             user.getProfilePicturePath()
@@ -122,6 +126,8 @@ public class AuthController {
         return ResponseEntity.ok(new AuthResponse(
             user.getId().toString(),
             user.getUsername(),
+            user.getFirstName(),
+            user.getLastName(),
             user.getRole().name(),
             user.isForcePasswordChange(),
             user.getProfilePicturePath()

@@ -9,6 +9,10 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<CurrentUser | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
+  get currentUserValue(): CurrentUser | null {
+    return this.currentUserSubject.value;
+  }
+
   constructor(private http: HttpClient) {}
 
   login(request: LoginRequest): Observable<CurrentUser> {
@@ -70,6 +74,8 @@ export class AuthService {
       this.currentUserSubject.next({
         ...current,
         username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
         profilePicturePath: user.profilePicturePath
       });
     }
