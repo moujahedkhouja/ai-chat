@@ -21,12 +21,12 @@ export class MessageBubbleComponent implements OnChanges {
   constructor(private sanitizer: DomSanitizer) {}
 
   get userAvatar(): string | null {
-    const user = this.authService.getCurrentUser();
+    const user = this.authService.currentUserSignal();
     return this.authService.getAvatarUrl(user?.userId, user?.profilePicturePath);
   }
 
   get username(): string {
-    return this.authService.getUsername() ?? 'User';
+    return this.authService.currentUserSignal()?.username ?? 'User';
   }
 
   ngOnChanges(): void {

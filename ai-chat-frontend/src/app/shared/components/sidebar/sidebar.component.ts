@@ -25,19 +25,19 @@ export class SidebarComponent {
   }
 
   get displayName(): string {
-    const user = this.authService.currentUserValue;
+    const user = this.authService.currentUserSignal();
     if (user?.firstName || user?.lastName) {
       return `${user.firstName || ''} ${user.lastName || ''}`.trim();
     }
-    return this.username;
+    return user?.username ?? 'Unknown';
   }
 
   get role(): string {
-    return this.authService.getRole() ?? '';
+    return this.authService.currentUserSignal()?.role ?? '';
   }
 
   get avatarUrl(): string | null {
-    const user = this.authService.getCurrentUser();
+    const user = this.authService.currentUserSignal();
     return this.authService.getAvatarUrl(user?.userId, user?.profilePicturePath);
   }
 

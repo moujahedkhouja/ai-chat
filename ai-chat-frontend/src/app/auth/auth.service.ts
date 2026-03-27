@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, catchError, of, tap } from 'rxjs';
 import { LoginRequest, ChangePasswordRequest, CurrentUser } from '../models/auth.model';
@@ -8,6 +8,7 @@ import { UserResponse } from '../models/user.model';
 export class AuthService {
   private currentUserSubject = new BehaviorSubject<CurrentUser | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
+  currentUserSignal = signal<CurrentUser | null>(null);
 
   get currentUserValue(): CurrentUser | null {
     return this.currentUserSubject.value;
@@ -17,24 +18,37 @@ export class AuthService {
 
   login(request: LoginRequest): Observable<CurrentUser> {
     return this.http.post<CurrentUser>('/api/auth/login', request)
-      .pipe(tap(user => this.currentUserSubject.next(user)));
+      .pipe(tap(user => {
+        this.currentUserSubject.next(user);
+        this.currentUserSignal.set(user);
+      }));
   }
 
   changePassword(request: ChangePasswordRequest): Observable<CurrentUser> {
     return this.http.post<CurrentUser>('/api/auth/change-password', request)
-      .pipe(tap(user => this.currentUserSubject.next(user)));
+      .pipe(tap(user => {
+        this.currentUserSubject.next(user);
+        this.currentUserSignal.set(user);
+      }));
   }
 
   logout(): Observable<void> {
     return this.http.post<void>('/api/auth/logout', {})
-      .pipe(tap(() => this.currentUserSubject.next(null)));
+      .pipe(tap(() => {
+        this.currentUserSubject.next(null);
+        this.currentUserSignal.set(null);
+      }));
   }
 
   loadCurrentUser(): Observable<CurrentUser | null> {
     return this.http.get<CurrentUser>('/api/auth/me').pipe(
-      tap(user => this.currentUserSubject.next(user)),
+      tap(user => {
+        this.currentUserSubject.next(user);
+        this.currentUserSignal.set(user);
+      }),
       catchError(() => {
         this.currentUserSubject.next(null);
+        this.currentUserSignal.set(null);
         return of(null);
       })
     );
@@ -76,13 +90,15 @@ export class AuthService {
   refreshFromProfile(user: UserResponse): void {
     const current = this.currentUserSubject.value;
     if (current) {
-      this.currentUserSubject.next({
+      const updated = {
         ...current,
         username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
         profilePicturePath: user.profilePicturePath
-      });
+      };
+      this.currentUserSubject.next(updated);
+      this.currentUserSignal.set(updated);
     }
   }
 }

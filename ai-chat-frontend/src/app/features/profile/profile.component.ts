@@ -161,6 +161,7 @@ export class ProfileComponent implements OnInit {
       next: (updated) => {
         this.user = updated;
         this.avatarUploading = false;
+        this.authService.refreshFromProfile(updated);
       },
       error: () => {
         this.avatarError = 'Failed to upload avatar';
@@ -170,7 +171,7 @@ export class ProfileComponent implements OnInit {
   }
 
   getAvatarUrl(): string | null {
-    if (!this.user?.id || !this.user?.profilePicturePath) return null;
-    return this.authService.getAvatarUrl(this.user.id, this.user.profilePicturePath);
+    const user = this.authService.currentUserSignal();
+    return this.authService.getAvatarUrl(user?.userId, user?.profilePicturePath);
   }
 }
