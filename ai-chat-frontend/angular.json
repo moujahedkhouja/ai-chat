@@ -32,6 +32,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
               }
             ],
             "styles": [
@@ -51,7 +56,7 @@
                   "type": "anyComponentStyle",
                   "maximumWarning": "16kB",
                   "maximumError": "48kB"
-            z     }
+                }
               ],
               "outputHashing": "all"
             },
@@ -94,6 +99,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
               }
             ],
             "styles": [
