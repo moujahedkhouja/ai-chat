@@ -26,11 +26,10 @@ describe('ProfileComponent', () => {
   let userServiceSpy: jasmine.SpyObj<UserService>;
 
   beforeEach(async () => {
-    authServiceSpy = jasmine.createSpyObj('AuthService', ['getUserId']);
-    userServiceSpy = jasmine.createSpyObj('UserService', ['getUser', 'updateUser', 'uploadAvatar']);
+    authServiceSpy = jasmine.createSpyObj('AuthService', ['refreshFromProfile', 'changePassword']);
+    userServiceSpy = jasmine.createSpyObj('UserService', ['getProfile', 'updateProfile', 'uploadAvatar']);
 
-    authServiceSpy.getUserId.and.returnValue('42');
-    userServiceSpy.getUser.and.returnValue(of(mockUser));
+    userServiceSpy.getProfile.and.returnValue(of(mockUser));
 
     await TestBed.configureTestingModule({
       imports: [ProfileComponent, ReactiveFormsModule],
@@ -46,30 +45,29 @@ describe('ProfileComponent', () => {
   });
 
   it('should load and display user profile on init', () => {
-    expect(userServiceSpy.getUser).toHaveBeenCalledWith('42');
+    expect(userServiceSpy.getProfile).toHaveBeenCalled();
     expect(component.user).toEqual(mockUser);
-    expect(component.form.value.linkedinUrl).toBe('https://linkedin.com/in/testuser');
-    expect(component.errorMessage).toBe('');
-
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.profile-username')?.textContent?.trim()).toBe('testuser');
+    expect(component.infoForm.value.username).toBe('testuser');
+    expect(component.infoForm.value.email).toBe('test@example.com');
+    expect(component.infoError).toBe('');
   });
 
-  it('should show success message on save', () => {
+  it('should show success message on save info', () => {
     const updatedUser: UserResponse = {
       ...mockUser,
-      linkedinUrl: 'https://linkedin.com/in/updated'
+      username: 'updateduser'
     };
-    userServiceSpy.updateUser.and.returnValue(of(updatedUser));
+    userServiceSpy.updateProfile.and.returnValue(of(updatedUser));
 
-    component.form.patchValue({ linkedinUrl: 'https://linkedin.com/in/updated' });
-    component.onSave();
+    component.infoForm.patchValue({ username: 'updateduser', email: 'updated@example.com' });
+    component.onSaveInfo();
 
-    expect(userServiceSpy.updateUser).toHaveBeenCalledWith('42', {
-      linkedinUrl: 'https://linkedin.com/in/updated'
+    expect(userServiceSpy.updateProfile).toHaveBeenCalledWith({
+      username: 'updateduser',
+      email: 'updated@example.com'
     });
-    expect(component.successMessage).toBe('Profile updated successfully');
+    expect(component.infoSuccess).toBe('Profile updated');
     expect(component.user).toEqual(updatedUser);
-    expect(component.loading).toBeFalse();
+    expect(component.infoLoading).toBeFalse();
   });
 });
