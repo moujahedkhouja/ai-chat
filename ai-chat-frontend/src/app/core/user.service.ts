@@ -10,6 +10,11 @@ export interface UpdateUserRequest {
   enabled?: boolean;
 }
 
+export interface UpdateProfileRequest {
+  username: string;
+  email: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class UserService {
   constructor(private http: HttpClient) {}
@@ -42,5 +47,13 @@ export class UserService {
 
   adminResetPassword(id: string, newPassword: string): Observable<void> {
     return this.http.post<void>(`/api/users/${id}/reset-password`, { newPassword });
+  }
+
+  updateProfile(request: UpdateProfileRequest): Observable<UserResponse> {
+    return this.http.put<UserResponse>('/api/profile', request);
+  }
+
+  getProfile(): Observable<UserResponse> {
+    return this.http.get<UserResponse>('/api/profile');
   }
 }

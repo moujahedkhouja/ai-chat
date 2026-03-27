@@ -101,4 +101,21 @@ describe('UserService', () => {
     expect(req.request.body).toEqual({ newPassword: 'newPassword123' });
     req.flush(null);
   });
+
+  it('should PUT to /api/profile with username and email', () => {
+    service.updateProfile({ username: 'newname', email: 'new@test.com' }).subscribe();
+
+    const req = httpMock.expectOne('/api/profile');
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({ username: 'newname', email: 'new@test.com' });
+    req.flush({ id: '1', username: 'newname', email: 'new@test.com' });
+  });
+
+  it('should GET /api/profile', () => {
+    service.getProfile().subscribe();
+
+    const req = httpMock.expectOne('/api/profile');
+    expect(req.request.method).toBe('GET');
+    req.flush({ id: '1', username: 'me', email: 'me@test.com' });
+  });
 });
