@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { UserResponse, UserPage, CreateUserRequest } from '../models/user.model';
 
 export interface UpdateUserRequest {
+  username?: string;
   linkedinUrl?: string | null;
   role?: string;
   email?: string;

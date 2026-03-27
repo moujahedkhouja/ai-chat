@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../../core/user.service';
 import { AuthService } from '../../auth/auth.service';
 import { UserResponse } from '../../models/user.model';
@@ -9,7 +9,7 @@ import { ChangePasswordDialogComponent } from './change-password-dialog/change-p
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CreateUserDialogComponent, ChangePasswordDialogComponent, ReactiveFormsModule],
+  imports: [CreateUserDialogComponent, ChangePasswordDialogComponent, ReactiveFormsModule, FormsModule],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss'
 })
@@ -26,6 +26,11 @@ export class UsersComponent implements OnInit {
 
   userToDelete: UserResponse | null = null;
   userToChangePassword: UserResponse | null = null;
+
+  userToEditUsername: UserResponse | null = null;
+  editUsernameValue = '';
+  editUsernameLoading = false;
+  editUsernameError = '';
 
   constructor(
     private userService: UserService,
@@ -80,5 +85,30 @@ export class UsersComponent implements OnInit {
 
   onPasswordChanged() {
     this.userToChangePassword = null;
+  }
+
+  onEditUsername(user: UserResponse): void {
+    this.userToEditUsername = user;
+    this.editUsernameValue = user.username;
+    this.editUsernameError = '';
+  }
+
+  confirmEditUsername(): void {
+    if (!this.userToEditUsername || !this.editUsernameValue.trim()) return;
+    this.editUsernameLoading = true;
+    this.editUsernameError = '';
+    this.userService.updateUser(this.userToEditUsername.id, { username: this.editUsernameValue.trim() }).subscribe({
+      next: () => {
+        this.editUsernameLoading = false;
+        this.userToEditUsername = null;
+        this.loadUsers();
+      },
+      error: (err) => {
+        this.editUsernameLoading = false;
+        this.editUsernameError = err.status === 409
+          ? 'Username is already taken'
+          : 'Failed to update username';
+      }
+    });
   }
 }

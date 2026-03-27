@@ -46,6 +46,12 @@
               <td class="actions-cell">
                 @if (isAdmin) {
                   <div class="action-btns">
+                    <button class="btn-edit-icon" type="button" title="Edit username" aria-label="Edit username"
+                      (click)="onEditUsername(user)">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M9.5 2.5l2 2L4 12H2v-2L9.5 2.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
                     <button class="btn-password-icon" type="button" title="Change password" aria-label="Change password"
                       (click)="userToChangePassword = user">
                       <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -81,6 +87,12 @@
           </div>
           @if (isAdmin) {
             <div class="action-btns">
+              <button class="btn-edit-icon" type="button" title="Edit username" aria-label="Edit username"
+                (click)="onEditUsername(user)">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M9.5 2.5l2 2L4 12H2v-2L9.5 2.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
               <button class="btn-password-icon" type="button" title="Change password" aria-label="Change password"
                 (click)="userToChangePassword = user">
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -125,6 +137,37 @@
       (saved)="onPasswordChanged()"
       (cancelled)="userToChangePassword = null">
     </app-change-password-dialog>
+  }
+
+  <!-- Edit username modal -->
+  @if (userToEditUsername) {
+    <div class="confirm-overlay" (click)="userToEditUsername = null">
+      <div class="confirm-dialog edit-username-dialog" (click)="$event.stopPropagation()">
+        <h3 class="confirm-title">Edit Username</h3>
+        <p class="confirm-text">Current: <strong>{{ userToEditUsername.username }}</strong></p>
+        <div class="edit-field">
+          <input
+            class="edit-input"
+            type="text"
+            [(ngModel)]="editUsernameValue"
+            placeholder="New username"
+            (keydown.enter)="confirmEditUsername()"
+            (keydown.escape)="userToEditUsername = null"
+            autocomplete="off"/>
+          @if (editUsernameError) {
+            <span class="field-error">{{ editUsernameError }}</span>
+          }
+        </div>
+        <div class="confirm-actions">
+          <button class="btn-ghost" type="button" (click)="userToEditUsername = null">Cancel</button>
+          <button class="btn-primary-sm" type="button"
+            [disabled]="editUsernameLoading || !editUsernameValue.trim()"
+            (click)="confirmEditUsername()">
+            @if (editUsernameLoading) { Saving... } @else { Save }
+          </button>
+        </div>
+      </div>
+    </div>
   }
 
   <!-- Delete confirmation modal -->
