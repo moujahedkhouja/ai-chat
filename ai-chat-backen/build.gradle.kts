@@ -35,6 +35,8 @@ dependencies {
     implementation("org.flywaydb:flyway-database-postgresql")
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")
     compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+    testAnnotationProcessor("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
@@ -62,22 +64,22 @@ val frontendDir = file("${rootDir}/../ai-chat-frontend")
 val frontendOutputDir = file("${frontendDir}/dist/ai-chat-frontend/browser")
 val staticDir = file("src/main/resources/static")
 
-tasks.register<Exec>("buildFrontend") {
-    workingDir = frontendDir
-    commandLine(
-        "/bin/zsh", "-c",
-        "source ~/.zshrc && /Users/mkh/.nvm/versions/node/v22.22.0/bin/node /Users/mkh/.nvm/versions/node/v22.22.0/lib/node_modules/npm/bin/npm-cli.js run build"
-    )
-}
+//tasks.register<Exec>("buildFrontend") {
+//    workingDir = frontendDir
+//    commandLine(
+//        "/bin/zsh", "-c",
+//        "source ~/.zshrc && /Users/mkh/.nvm/versions/node/v22.22.0/bin/node /Users/mkh/.nvm/versions/node/v22.22.0/lib/node_modules/npm/bin/npm-cli.js run build"
+//    )
+//}
+//
+//tasks.register<Copy>("copyFrontend") {
+//    dependsOn("buildFrontend")
+//    from(frontendOutputDir)
+//    into(staticDir)
+//}
 
-tasks.register<Copy>("copyFrontend") {
-    dependsOn("buildFrontend")
-    from(frontendOutputDir)
-    into(staticDir)
-}
-
-if (frontendDir.exists()) {
-    tasks.named("processResources") {
-        dependsOn("copyFrontend")
-    }
-}
+//if (frontendDir.exists()) {
+//    tasks.named("processResources") {
+//        dependsOn("copyFrontend")
+//    }
+//}

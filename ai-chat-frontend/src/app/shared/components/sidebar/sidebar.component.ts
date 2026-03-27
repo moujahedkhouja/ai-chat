@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../auth/auth.service';
 import { ThemeService } from '../../../core/theme.service';
@@ -13,38 +13,34 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent {
+  readonly username = computed(() => this.authService.username() ?? 'Unknown');
+
+  readonly displayName = computed(() => {
+    const user = this.authService.currentUser();
+    if (user?.firstName || user?.lastName) {
+      return `${user.firstName || ''} ${user.lastName || ''}`.trim();
+    }
+    return user?.username ?? 'Unknown';
+  });
+
+  readonly role = computed(() => this.authService.currentUser()?.role ?? '');
+
+  readonly avatarUrl = computed(() => {
+    const user = this.authService.currentUser();
+    return this.authService.getAvatarUrl(user?.userId, user?.profilePicturePath);
+  });
+
+  readonly isAdminOrModerator = computed(() => {
+    const r = this.authService.role();
+    return r === 'ADMIN' || r === 'MODERATOR';
+  });
+
   constructor(
     private authService: AuthService,
     private router: Router,
     public themeService: ThemeService,
     public langService: LanguageService
   ) {}
-
-  get username(): string {
-    return this.authService.getUsername() ?? 'Unknown';
-  }
-
-  get displayName(): string {
-    const user = this.authService.currentUserSignal();
-    if (user?.firstName || user?.lastName) {
-      return `${user.firstName || ''} ${user.lastName || ''}`.trim();
-    }
-    return user?.username ?? 'Unknown';
-  }
-
-  get role(): string {
-    return this.authService.currentUserSignal()?.role ?? '';
-  }
-
-  get avatarUrl(): string | null {
-    const user = this.authService.currentUserSignal();
-    return this.authService.getAvatarUrl(user?.userId, user?.profilePicturePath);
-  }
-
-  get isAdminOrModerator(): boolean {
-    const role = this.authService.getRole();
-    return role === 'ADMIN' || role === 'MODERATOR';
-  }
 
   logout(): void {
     this.authService.logout().subscribe({

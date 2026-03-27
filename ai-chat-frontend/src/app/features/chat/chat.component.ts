@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../auth/auth.service';
 import { ChatHistoryService } from '../../core/chat-history.service';
@@ -16,65 +16,85 @@ import { ChatInputComponent } from './chat-input/chat-input.component';
   styleUrl: './chat.component.scss'
 })
 export class ChatComponent implements OnInit {
-  conversations: Conversation[] = [];
-  activeConversation: Conversation | null = null;
-  isTyping = false;
-  showDrawer = false;
+  readonly conversations = this.historyService.conversations;
+  readonly activeConversation = signal<Conversation | null>(null);
+  readonly isTyping = signal(false);
+  readonly showDrawer = signal(false);
 
-  private username = '';
+  readonly username = computed(() => this.authService.username() ?? '');
 
   constructor(
     private authService: AuthService,
     private historyService: ChatHistoryService,
     private chatService: ChatService
-  ) {}
+  ) {
+    // When username changes, load conversations
+    effect(() => {
+      const user = this.username();
+      if (user) {
+        this.historyService.loadConversations(user);
+        const current = this.conversations();
+        if (current.length > 0 && !this.activeConversation()) {
+          this.activeConversation.set(current[0]);
+        }
+      }
+    }, { allowSignalWrites: true });
+  }
 
   ngOnInit(): void {
-    this.username = this.authService.getUsername() ?? '';
-    this.conversations = this.historyService.getConversations(this.username);
-    if (this.conversations.length > 0) {
-      this.activeConversation = this.conversations[0];
-    } else {
-      this.startNewChat();
+    const user = this.username();
+    if (user) {
+      this.historyService.loadConversations(user);
+      const convs = this.conversations();
+      if (convs.length > 0) {
+        this.activeConversation.set(convs[0]);
+      } else {
+        this.startNewChat();
+      }
     }
   }
 
   startNewChat(): void {
-    const conv = this.historyService.createConversation(this.username);
-    this.conversations = this.historyService.getConversations(this.username);
-    this.activeConversation = conv;
-    this.showDrawer = false;
+    const user = this.username();
+    if (!user) return;
+    const conv = this.historyService.createConversation(user);
+    this.activeConversation.set(conv);
+    this.showDrawer.set(false);
   }
 
   selectConversation(id: string): void {
-    this.activeConversation = this.historyService.getConversation(this.username, id) ?? null;
-    this.showDrawer = false;
+    const user = this.username();
+    if (!user) return;
+    this.activeConversation.set(this.historyService.getConversation(user, id) ?? null);
+    this.showDrawer.set(false);
   }
 
   deleteConversation(id: string): void {
-    const wasActive = this.activeConversation?.id === id;
-    this.historyService.deleteConversation(this.username, id);
-    this.conversations = this.historyService.getConversations(this.username);
+    const user = this.username();
+    if (!user) return;
+    const wasActive = this.activeConversation()?.id === id;
+    this.historyService.deleteConversation(user, id);
     if (wasActive) {
-      this.activeConversation = this.conversations[0] ?? null;
-      if (!this.activeConversation) this.startNewChat();
+      const current = this.conversations();
+      this.activeConversation.set(current[0] ?? null);
+      if (!this.activeConversation()) this.startNewChat();
     }
   }
 
   sendMessage(content: string): void {
-    if (!this.activeConversation || this.isTyping) return;
-    const convId = this.activeConversation.id;
+    const user = this.username();
+    const active = this.activeConversation();
+    if (!user || !active || this.isTyping()) return;
+    const convId = active.id;
 
-    this.historyService.addMessage(this.username, convId, 'user', content);
-    this.activeConversation = this.historyService.getConversation(this.username, convId)!;
-    this.conversations = this.historyService.getConversations(this.username);
-    this.isTyping = true;
+    this.historyService.addMessage(user, convId, 'user', content);
+    this.activeConversation.set(this.historyService.getConversation(user, convId)!);
+    this.isTyping.set(true);
 
     this.chatService.sendMessage(convId, content).subscribe(reply => {
-      this.historyService.addMessage(this.username, convId, 'assistant', reply);
-      this.activeConversation = this.historyService.getConversation(this.username, convId)!;
-      this.conversations = this.historyService.getConversations(this.username);
-      this.isTyping = false;
+      this.historyService.addMessage(user, convId, 'assistant', reply);
+      this.activeConversation.set(this.historyService.getConversation(user, convId)!);
+      this.isTyping.set(false);
     });
   }
 }

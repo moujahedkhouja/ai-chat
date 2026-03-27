@@ -1,9 +1,9 @@
 <div class="thread">
-  @for (message of messages; track message.id) {
+  @for (message of messages(); track message.id) {
     <app-message-bubble [message]="message" />
   }
 
-  @if (isTyping) {
+  @if (isTyping()) {
     <div class="typing-row">
       <div class="typing-avatar">A</div>
       <div class="typing-bubble">

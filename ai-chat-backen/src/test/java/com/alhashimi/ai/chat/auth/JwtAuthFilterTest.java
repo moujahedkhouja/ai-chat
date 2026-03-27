@@ -1,5 +1,6 @@
 package com.alhashimi.ai.chat.auth;
 
+import org.springframework.security.core.GrantedAuthority;
 import tools.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.Cookie;
@@ -44,7 +45,7 @@ class JwtAuthFilterTest {
     void doFilterInternal_withValidToken_setsAuthentication() throws Exception {
         // Arrange
         when(tokenService.extractAll(VALID_TOKEN))
-                .thenReturn(new TokenClaims(USER_ID, "john", "ADMIN", false));
+                .thenReturn(new TokenClaims(USER_ID, "john", "Doe", "John", "ADMIN", false));
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         Cookie cookie = new Cookie("auth_token", VALID_TOKEN);
@@ -63,7 +64,7 @@ class JwtAuthFilterTest {
         assertThat(auth).isNotNull();
         assertThat(auth.getName()).isEqualTo("john");
         assertThat(auth.getAuthorities())
-                .extracting(a -> a.getAuthority())
+                .extracting(GrantedAuthority::getAuthority)
                 .containsExactly("ROLE_ADMIN");
         assertThat(response.getStatus()).isEqualTo(200);
     }
@@ -115,7 +116,7 @@ class JwtAuthFilterTest {
     void doFilterInternal_withForcePasswordChange_andNonChangePasswordPath_returns403() throws Exception {
         // Arrange
         when(tokenService.extractAll(VALID_TOKEN))
-                .thenReturn(new TokenClaims(USER_ID, "john", "USER", true));
+                .thenReturn(new TokenClaims(USER_ID, "john",  "Doe", "John", "USER", true));
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         Cookie cookie = new Cookie("auth_token", VALID_TOKEN);
@@ -148,7 +149,7 @@ class JwtAuthFilterTest {
         MockFilterChain filterChain = new MockFilterChain();
 
         when(tokenService.extractAll(VALID_TOKEN))
-                .thenReturn(new TokenClaims(USER_ID, "john", "USER", true));
+                .thenReturn(new TokenClaims(USER_ID, "john", "John", "Dow", "USER", false));
 
         // Act
         jwtAuthFilter.doFilter(request, response, filterChain);

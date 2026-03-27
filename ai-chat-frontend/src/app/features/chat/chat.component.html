@@ -1,14 +1,14 @@
 <div class="chat-page">
   <!-- Overlay for mobile drawer -->
-  @if (showDrawer) {
-    <div class="drawer-overlay" (click)="showDrawer = false"></div>
+  @if (showDrawer()) {
+    <div class="drawer-overlay" (click)="showDrawer.set(false)"></div>
   }
 
   <!-- Left: conversation list panel -->
-  <div class="conv-panel" [class.open]="showDrawer">
+  <div class="conv-panel" [class.open]="showDrawer()">
     <app-conversation-list
-      [conversations]="conversations"
-      [activeId]="activeConversation?.id ?? null"
+      [conversations]="conversations()"
+      [activeId]="activeConversation()?.id ?? null"
       (select)="selectConversation($event)"
       (newChat)="startNewChat()"
       (delete)="deleteConversation($event)"
@@ -19,19 +19,19 @@
   <div class="chat-panel">
     <!-- Header bar -->
     <div class="chat-header">
-      <button class="menu-btn" type="button" (click)="showDrawer = !showDrawer" title="Conversations">
+      <button class="menu-btn" type="button" (click)="showDrawer.set(!showDrawer())" title="Conversations">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
           <path d="M2 4.5h14M2 9h14M2 13.5h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
         </svg>
       </button>
-      <span class="chat-title">{{ activeConversation?.title ?? 'AI Chat' }}</span>
+      <span class="chat-title">{{ activeConversation()?.title ?? 'AI Chat' }}</span>
     </div>
 
-    @if (activeConversation) {
+    @if (activeConversation()) {
       <!-- Messages -->
       <app-message-thread
-        [messages]="activeConversation.messages"
-        [isTyping]="isTyping"
+        [messages]="activeConversation()!.messages"
+        [isTyping]="isTyping()"
       />
       <!-- Input -->
       <app-chat-input (send)="sendMessage($event)" />

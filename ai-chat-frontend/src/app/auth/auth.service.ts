@@ -1,17 +1,24 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, catchError, of, tap } from 'rxjs';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { Observable, catchError, of, tap } from 'rxjs';
 import { LoginRequest, ChangePasswordRequest, CurrentUser } from '../models/auth.model';
 import { UserResponse } from '../models/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private currentUserSubject = new BehaviorSubject<CurrentUser | null>(null);
-  currentUser$ = this.currentUserSubject.asObservable();
-  currentUserSignal = signal<CurrentUser | null>(null);
+  readonly currentUser = signal<CurrentUser | null>(null);
+  currentUser$ = toObservable(this.currentUser);
+
+  readonly isLoggedIn = computed(() => this.currentUser() !== null);
+  readonly role = computed(() => this.currentUser()?.role ?? null);
+  readonly userId = computed(() => this.currentUser()?.userId ?? null);
+  readonly username = computed(() => this.currentUser()?.username ?? null);
+  readonly profilePicturePath = computed(() => this.currentUser()?.profilePicturePath ?? null);
+  readonly forcePasswordChange = computed(() => this.currentUser()?.forcePasswordChange ?? false);
 
   get currentUserValue(): CurrentUser | null {
-    return this.currentUserSubject.value;
+    return this.currentUser();
   }
 
   constructor(private http: HttpClient) {}
@@ -19,77 +26,73 @@ export class AuthService {
   login(request: LoginRequest): Observable<CurrentUser> {
     return this.http.post<CurrentUser>('/api/auth/login', request)
       .pipe(tap(user => {
-        this.currentUserSubject.next(user);
-        this.currentUserSignal.set(user);
+        this.currentUser.set(user);
       }));
   }
 
   changePassword(request: ChangePasswordRequest): Observable<CurrentUser> {
     return this.http.post<CurrentUser>('/api/auth/change-password', request)
       .pipe(tap(user => {
-        this.currentUserSubject.next(user);
-        this.currentUserSignal.set(user);
+        this.currentUser.set(user);
       }));
   }
 
   logout(): Observable<void> {
     return this.http.post<void>('/api/auth/logout', {})
       .pipe(tap(() => {
-        this.currentUserSubject.next(null);
-        this.currentUserSignal.set(null);
+        this.currentUser.set(null);
       }));
   }
 
   loadCurrentUser(): Observable<CurrentUser | null> {
     return this.http.get<CurrentUser>('/api/auth/me').pipe(
       tap(user => {
-        this.currentUserSubject.next(user);
-        this.currentUserSignal.set(user);
+        this.currentUser.set(user);
       }),
       catchError(() => {
-        this.currentUserSubject.next(null);
-        this.currentUserSignal.set(null);
+        this.currentUser.set(null);
         return of(null);
       })
     );
   }
 
-  isLoggedIn(): boolean {
-    return this.currentUserSubject.value !== null;
-  }
-
+  // Backward compatibility wrappers for consumers/tests
   isForcePasswordChange(): boolean {
-    return this.currentUserSubject.value?.forcePasswordChange ?? false;
+    return this.forcePasswordChange();
   }
 
+  // Deprecated: prefer using `role()`
   getRole(): string | null {
-    return this.currentUserSubject.value?.role ?? null;
+    return this.role();
   }
 
+  // Deprecated: prefer using `userId()`
   getUserId(): string | null {
-    return this.currentUserSubject.value?.userId ?? null;
+    return this.userId();
   }
 
+  // Deprecated: prefer using `username()`
   getUsername(): string | null {
-    return this.currentUserSubject.value?.username ?? null;
+    return this.username();
   }
 
+  // Deprecated: prefer using `profilePicturePath()`
   getProfilePicturePath(): string | null {
-    return this.currentUserSubject.value?.profilePicturePath ?? null;
+    return this.profilePicturePath();
   }
 
+  // Deprecated: prefer using `currentUser()`
   getCurrentUser(): CurrentUser | null {
-    return this.currentUserSubject.value;
+    return this.currentUser();
   }
 
   getAvatarUrl(userId?: string | null, path?: string | null): string | null {
     if (!path || !userId) return null;
-    // Use path as cache-buster so the browser fetches the new image after an upload.
     return `/api/users/${userId}/avatar?v=${encodeURIComponent(path)}`;
   }
 
   refreshFromProfile(user: UserResponse): void {
-    const current = this.currentUserSubject.value;
+    const current = this.currentUser();
     if (current) {
       const updated = {
         ...current,
@@ -98,8 +101,7 @@ export class AuthService {
         lastName: user.lastName,
         profilePicturePath: user.profilePicturePath
       };
-      this.currentUserSubject.next(updated);
-      this.currentUserSignal.set(updated);
+      this.currentUser.set(updated);
     }
   }
 }

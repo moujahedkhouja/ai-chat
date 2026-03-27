@@ -1,20 +1,27 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Conversation, Message } from '../models/chat.model';
 
 @Injectable({ providedIn: 'root' })
 export class ChatHistoryService {
   private readonly PREFIX = 'chat_history_';
+  readonly conversations = signal<Conversation[]>([]);
 
   private key(username: string): string {
     return `${this.PREFIX}${username}`;
   }
 
-  getConversations(username: string): Conversation[] {
+  loadConversations(username: string): void {
     const raw = localStorage.getItem(this.key(username));
     const list: Conversation[] = raw ? JSON.parse(raw) : [];
-    return list.sort(
+    const sorted = list.sort(
       (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
     );
+    this.conversations.set(sorted);
+  }
+
+  getConversations(username: string): Conversation[] {
+    this.loadConversations(username);
+    return this.conversations();
   }
 
   getConversation(username: string, id: string): Conversation | undefined {
@@ -35,8 +42,8 @@ export class ChatHistoryService {
         timestamp: now
       }]
     };
-    const all = this.getConversations(username);
-    this.save(username, [conversation, ...all]);
+    const all = [conversation, ...this.conversations()];
+    this.save(username, all);
     return conversation;
   }
 
@@ -46,7 +53,7 @@ export class ChatHistoryService {
     role: 'user' | 'assistant',
     content: string
   ): Message {
-    const all = this.getConversations(username);
+    const all = [...this.conversations()];
     const conv = all.find(c => c.id === conversationId);
     if (!conv) throw new Error(`Conversation not found: ${conversationId}`);
 
@@ -56,7 +63,7 @@ export class ChatHistoryService {
       content,
       timestamp: new Date().toISOString()
     };
-    conv.messages.push(message);
+    conv.messages = [...conv.messages, message];
     conv.updatedAt = message.timestamp;
 
     if (role === 'user' && conv.title === 'New Chat') {
@@ -68,11 +75,12 @@ export class ChatHistoryService {
   }
 
   deleteConversation(username: string, id: string): void {
-    const filtered = this.getConversations(username).filter(c => c.id !== id);
+    const filtered = this.conversations().filter(c => c.id !== id);
     this.save(username, filtered);
   }
 
   private save(username: string, conversations: Conversation[]): void {
     localStorage.setItem(this.key(username), JSON.stringify(conversations));
+    this.conversations.set(conversations);
   }
 }

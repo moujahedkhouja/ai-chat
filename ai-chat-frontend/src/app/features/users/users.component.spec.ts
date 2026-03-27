@@ -4,6 +4,7 @@ import { UsersComponent } from './users.component';
 import { AuthService } from '../../auth/auth.service';
 import { UserService } from '../../core/user.service';
 import { UserResponse, UserPage } from '../../models/user.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 const mockUser: UserResponse = {
   id: '1',
@@ -35,14 +36,14 @@ describe('UsersComponent', () => {
   let userServiceSpy: jasmine.SpyObj<UserService>;
 
   beforeEach(async () => {
-    authServiceSpy = jasmine.createSpyObj('AuthService', ['getRole']);
-    userServiceSpy = jasmine.createSpyObj('UserService', ['listUsers', 'deleteUser', 'createUser', 'updateUser']);
+    authServiceSpy = jasmine.createSpyObj('AuthService', ['getRole', 'getAvatarUrl']);
+    userServiceSpy = jasmine.createSpyObj('UserService', ['listUsers', 'deleteUser', 'createUser', 'updateUser', 'adminResetPassword']);
 
     authServiceSpy.getRole.and.returnValue('ADMIN');
     userServiceSpy.listUsers.and.returnValue(of(mockPage));
 
     await TestBed.configureTestingModule({
-      imports: [UsersComponent],
+      imports: [UsersComponent, TranslateModule.forRoot()],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
         { provide: UserService, useValue: userServiceSpy }
@@ -56,72 +57,72 @@ describe('UsersComponent', () => {
 
   it('should load users on init', () => {
     expect(userServiceSpy.listUsers).toHaveBeenCalledWith(0, 20);
-    expect(component.users).toEqual([mockUser]);
-    expect(component.totalElements).toBe(1);
-    expect(component.totalPages).toBe(1);
-    expect(component.errorMessage).toBe('');
+    expect(component.users()).toEqual([mockUser]);
+    expect(component.totalElements()).toBe(1);
+    expect(component.totalPages()).toBe(1);
+    expect(component.errorMessage()).toBe('');
   });
 
   it('should show create form when isAdmin and button clicked', () => {
-    expect(component.isAdmin).toBeTrue();
-    expect(component.showCreateForm).toBeFalse();
+    expect(component.isAdmin()).toBeTrue();
+    expect(component.showCreateForm()).toBeFalse();
 
     const compiled = fixture.nativeElement as HTMLElement;
     const createButton = compiled.querySelector('.btn-primary') as HTMLButtonElement;
     expect(createButton).toBeTruthy();
-    expect(createButton.textContent?.trim()).toContain('New User');
+    expect(createButton.textContent?.trim()).toContain('users.new');
 
     createButton.click();
     fixture.detectChanges();
 
-    expect(component.showCreateForm).toBeTrue();
+    expect(component.showCreateForm()).toBeTrue();
     expect(compiled.querySelector('app-create-user-dialog')).toBeTruthy();
   });
 
-  describe('edit-username flow', () => {
-    it('onEditUsername opens modal with current username value', () => {
-      component.onEditUsername(mockUser);
+  describe('edit flow', () => {
+    it('onEditUser opens modal with current user values', () => {
+      component.onEditUser(mockUser);
 
-      expect(component.userToEditUsername).toBe(mockUser);
-      expect(component.editUsernameValue).toBe(mockUser.username);
-      expect(component.editUsernameError).toBe('');
+      expect(component.userToEdit()).toBe(mockUser);
+      expect(component.editUsername()).toBe(mockUser.username);
+      expect(component.editError()).toBe('');
     });
 
-    it('confirmEditUsername success closes modal and reloads', () => {
+    it('confirmEditUser success closes modal and reloads', () => {
       userServiceSpy.updateUser.and.returnValue(of(mockUser));
-      component.onEditUsername(mockUser);
-      component.editUsernameValue = 'newname';
+      component.onEditUser(mockUser);
+      component.editUsername.set('newname');
 
-      component.confirmEditUsername();
+      component.confirmEditUser();
 
-      expect(userServiceSpy.updateUser).toHaveBeenCalledWith(mockUser.id, { username: 'newname' });
-      expect(component.userToEditUsername).toBeNull();
-      expect(component.editUsernameLoading).toBeFalse();
+      expect(userServiceSpy.updateUser).toHaveBeenCalledWith(mockUser.id, jasmine.objectContaining({ username: 'newname' }));
+      expect(component.userToEdit()).toBeNull();
+      expect(component.editLoading()).toBeFalse();
       expect(userServiceSpy.listUsers).toHaveBeenCalledTimes(2);
     });
 
-    it('confirmEditUsername 409 shows taken error', () => {
+    it('confirmEditUser 409 shows taken error', () => {
       userServiceSpy.updateUser.and.returnValue(throwError(() => ({ status: 409 })));
-      component.onEditUsername(mockUser);
-      component.editUsernameValue = 'taken';
+      component.onEditUser(mockUser);
+      component.editUsername.set('taken');
 
-      component.confirmEditUsername();
+      component.confirmEditUser();
 
-      expect(component.editUsernameError).toBe('Username is already taken');
-      expect(component.editUsernameLoading).toBeFalse();
-      expect(component.userToEditUsername).toBe(mockUser);
+      expect(component.editError()).toBe('Username is already taken');
+      expect(component.editLoading()).toBeFalse();
+      expect(component.userToEdit()).toBe(mockUser);
     });
 
-    it('confirmEditUsername other error shows generic error', () => {
+    it('confirmEditUser other error shows generic error', () => {
       userServiceSpy.updateUser.and.returnValue(throwError(() => ({ status: 500 })));
-      component.onEditUsername(mockUser);
-      component.editUsernameValue = 'newname';
+      component.onEditUser(mockUser);
+      component.editUsername.set('newname');
 
-      component.confirmEditUsername();
+      component.confirmEditUser();
 
-      expect(component.editUsernameError).toBe('Failed to update username');
-      expect(component.editUsernameLoading).toBeFalse();
-      expect(component.userToEditUsername).toBe(mockUser);
+      expect(component.editError()).toBe('Failed to update user');
+      expect(component.editLoading()).toBeFalse();
+      expect(component.userToEdit()).toBe(mockUser);
     });
   });
 });

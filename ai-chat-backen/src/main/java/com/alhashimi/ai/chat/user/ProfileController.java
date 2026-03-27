@@ -43,7 +43,7 @@ public class ProfileController {
         User user = userService.getRawUser(principal.userId());
         String token = tokenService.generateToken(user);
         ResponseCookie cookie = ResponseCookie.from("auth_token", token)
-                .httpOnly(true)
+                .httpOnly(false)
                 .secure(cookieSecure)
                 .sameSite("Strict")
                 .path("/")

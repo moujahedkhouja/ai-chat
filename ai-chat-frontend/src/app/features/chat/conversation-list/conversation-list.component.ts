@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, Output, EventEmitter, input, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Conversation } from '../../../models/chat.model';
@@ -16,31 +16,23 @@ interface ConversationGroup {
   templateUrl: './conversation-list.component.html',
   styleUrl: './conversation-list.component.scss'
 })
-export class ConversationListComponent implements OnChanges {
-  @Input() conversations: Conversation[] = [];
-  @Input() activeId: string | null = null;
+export class ConversationListComponent {
+  conversations = input<Conversation[]>([]);
+  activeId = input<string | null>(null);
   @Output() select = new EventEmitter<string>();
   @Output() newChat = new EventEmitter<void>();
   @Output() delete = new EventEmitter<string>();
 
-  searchQuery = '';
-  groups: ConversationGroup[] = [];
+  searchQuery = signal('');
 
-  ngOnChanges(): void {
-    this.buildGroups();
-  }
-
-  onSearch(): void {
-    this.buildGroups();
-  }
-
-  private buildGroups(): void {
+  groups = computed(() => {
     const now = new Date();
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
     const yesterdayStart = todayStart - 86_400_000;
 
-    const filtered = this.conversations.filter(c =>
-      c.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+    const query = this.searchQuery().toLowerCase();
+    const filtered = this.conversations().filter(c =>
+      c.title.toLowerCase().includes(query)
     );
 
     const today: Conversation[] = [];
@@ -54,10 +46,10 @@ export class ConversationListComponent implements OnChanges {
       else older.push(c);
     }
 
-    this.groups = [
+    return [
       { label: 'Today', items: today },
       { label: 'Yesterday', items: yesterday },
       { label: 'Older', items: older }
     ].filter(g => g.items.length > 0);
-  }
+  });
 }

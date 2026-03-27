@@ -1,18 +1,13 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, signal, computed } from '@angular/core';
 
 export type Theme = 'dark' | 'light';
 
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
   private readonly STORAGE_KEY = 'app_theme';
-  private themeSubject = new BehaviorSubject<Theme>(this.loadTheme());
+  readonly theme = signal<Theme>(this.loadTheme());
 
-  readonly theme$ = this.themeSubject.asObservable();
-
-  get isDark(): boolean {
-    return this.themeSubject.value === 'dark';
-  }
+  readonly isDark = computed(() => this.theme() === 'dark');
 
   private loadTheme(): Theme {
     const stored = localStorage.getItem(this.STORAGE_KEY);
@@ -20,14 +15,14 @@ export class ThemeService {
   }
 
   apply(): void {
-    const theme = this.themeSubject.value;
+    const theme = this.theme();
     document.documentElement.classList.remove('theme-dark', 'theme-light');
     document.documentElement.classList.add(`theme-${theme}`);
   }
 
   toggle(): void {
-    const next: Theme = this.themeSubject.value === 'dark' ? 'light' : 'dark';
-    this.themeSubject.next(next);
+    const next: Theme = this.theme() === 'dark' ? 'light' : 'dark';
+    this.theme.set(next);
     localStorage.setItem(this.STORAGE_KEY, next);
     this.apply();
   }

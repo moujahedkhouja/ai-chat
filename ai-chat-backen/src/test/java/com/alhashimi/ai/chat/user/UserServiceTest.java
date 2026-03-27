@@ -57,7 +57,7 @@ class UserServiceTest {
     @Test
     void createUser_withValidRequest_savesAndReturnsUserResponse() {
         CreateUserRequest request = new CreateUserRequest(
-                "john", "john@example.com", "password123", Role.USER);
+                "john", "john@example.com","John", "Doe", "password123", Role.USER);
 
         when(userRepository.existsByUsername("john")).thenReturn(false);
         when(userRepository.existsByEmail("john@example.com")).thenReturn(false);
@@ -85,7 +85,7 @@ class UserServiceTest {
     @Test
     void createUser_withDuplicateUsername_throwsUsernameAlreadyExistsException() {
         CreateUserRequest request = new CreateUserRequest(
-                "john", "john@example.com", "password123", Role.USER);
+                "john", "john@example.com", "John", "Doe", "password123", Role.USER);
 
         when(userRepository.existsByUsername("john")).thenReturn(true);
 
@@ -98,7 +98,7 @@ class UserServiceTest {
     @Test
     void createUser_withDuplicateEmail_throwsEmailAlreadyExistsException() {
         CreateUserRequest request = new CreateUserRequest(
-                "john", "john@example.com", "password123", Role.USER);
+                "john", "john@example.com", "John", "Doe", "password123", Role.USER);
 
         when(userRepository.existsByUsername("john")).thenReturn(false);
         when(userRepository.existsByEmail("john@example.com")).thenReturn(true);
@@ -154,7 +154,7 @@ class UserServiceTest {
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        UpdateUserRequest request = new UpdateUserRequest(null, Role.MODERATOR, "newemail@example.com", false, "https://linkedin.com/in/bob");
+        UpdateUserRequest request = new UpdateUserRequest(null, Role.MODERATOR, "newemail@example.com", null, null, false, "https://linkedin.com/in/bob");
 
         UserResponse response = userService.updateUser(id, request);
 
@@ -232,7 +232,7 @@ class UserServiceTest {
         user.setId(id);
 
         // Only update linkedinUrl — all other fields are null
-        UpdateUserRequest request = new UpdateUserRequest(null, null, null, null, "https://linkedin.com/in/john");
+        UpdateUserRequest request = new UpdateUserRequest(null, null, null, null, null, null, "https://linkedin.com/in/john");
 
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -252,7 +252,7 @@ class UserServiceTest {
         user.setId(id);
         user.setUsername("oldname");
         user.setEmail("old@example.com");
-        UpdateProfileRequest request = new UpdateProfileRequest("newname", "new@example.com");
+        UpdateProfileRequest request = new UpdateProfileRequest("newname", "new@example.com", null, null);
 
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userRepository.existsByUsername("newname")).thenReturn(false);
@@ -273,7 +273,7 @@ class UserServiceTest {
         user.setId(id);
         user.setUsername("samename");
         user.setEmail("same@example.com");
-        UpdateProfileRequest request = new UpdateProfileRequest("samename", "same@example.com");
+        UpdateProfileRequest request = new UpdateProfileRequest("samename", "same@example.com", null, null);
 
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -292,7 +292,7 @@ class UserServiceTest {
         user.setId(id);
         user.setUsername("oldname");
         user.setEmail("old@example.com");
-        UpdateProfileRequest request = new UpdateProfileRequest("taken", "old@example.com");
+        UpdateProfileRequest request = new UpdateProfileRequest("taken", "old@example.com", null, null);
 
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userRepository.existsByUsername("taken")).thenReturn(true);
@@ -310,7 +310,7 @@ class UserServiceTest {
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userRepository.existsByUsername("bob")).thenReturn(true);
 
-        assertThatThrownBy(() -> userService.updateUser(id, new UpdateUserRequest("bob", null, null, null, null)))
+        assertThatThrownBy(() -> userService.updateUser(id, new UpdateUserRequest("bob", null, null, null, null, null, null)))
                 .isInstanceOf(UsernameAlreadyExistsException.class);
 
         verify(userRepository, never()).save(any());
@@ -324,7 +324,7 @@ class UserServiceTest {
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        userService.updateUser(id, new UpdateUserRequest("alice", null, null, null, null));
+        userService.updateUser(id, new UpdateUserRequest("alice", null, null, null, null, null, null));
 
         verify(userRepository, never()).existsByUsername(anyString());
     }
@@ -338,7 +338,7 @@ class UserServiceTest {
         when(userRepository.existsByUsername("carol")).thenReturn(false);
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        userService.updateUser(id, new UpdateUserRequest("carol", null, null, null, null));
+        userService.updateUser(id, new UpdateUserRequest("carol", null, null, null, null, null, null));
 
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(captor.capture());
@@ -352,7 +352,7 @@ class UserServiceTest {
         user.setId(id);
         user.setUsername("oldname");
         user.setEmail("old@example.com");
-        UpdateProfileRequest request = new UpdateProfileRequest("oldname", "taken@example.com");
+        UpdateProfileRequest request = new UpdateProfileRequest("oldname", "taken@example.com", null, null);
 
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userRepository.existsByEmail("taken@example.com")).thenReturn(true);

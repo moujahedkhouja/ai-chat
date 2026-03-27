@@ -2,7 +2,7 @@
   <div class="page-header">
     <div class="page-header-text">
       <h1 class="page-title">{{ 'dashboard.title' | translate }}</h1>
-      <p class="page-subtitle">{{ 'dashboard.welcome' | translate }}, {{ username }}</p>
+      <p class="page-subtitle">{{ 'dashboard.welcome' | translate }}, {{ username() }}</p>
     </div>
     <button class="logout-btn" type="button" (click)="logout()" [title]="'dashboard.signout' | translate">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -14,7 +14,7 @@
     </button>
   </div>
 
-  @if (isAdminOrModerator) {
+  @if (isAdminOrModerator()) {
     <div class="stat-grid">
       <div class="stat-card">
         <div class="stat-icon">
@@ -25,7 +25,7 @@
             <path d="M10 9.5c2 0 4 1 4 2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/>
           </svg>
         </div>
-        <div class="stat-value">{{ totalUsers }}</div>
+        <div class="stat-value">{{ totalUsers() }}</div>
         <div class="stat-label">{{ 'dashboard.total_users' | translate }}</div>
       </div>
 
@@ -38,12 +38,12 @@
             <rect x="9.5" y="9.5" width="5.5" height="5.5" rx="1.5" fill="currentColor"/>
           </svg>
         </div>
-        <div class="stat-value">{{ role }}</div>
+        <div class="stat-value">{{ role() }}</div>
         <div class="stat-label">{{ 'users.col.role' | translate }}</div>
       </div>
     </div>
 
-    @if (recentUsers.length > 0) {
+    @if (recentUsers().length > 0) {
       <div class="card">
         <div class="card-header">
           <h2 class="card-title">{{ 'dashboard.recent_conversations' | translate }}</h2>
@@ -55,7 +55,7 @@
             <span>{{ 'users.col.email' | translate }}</span>
             <span>{{ 'users.col.role' | translate }}</span>
           </div>
-          @for (user of recentUsers; track user.id) {
+          @for (user of recentUsers(); track user.id) {
             <div class="table-row">
               <div class="user-cell">
                 <div class="user-avatar">{{ getInitial(user.username) }}</div>

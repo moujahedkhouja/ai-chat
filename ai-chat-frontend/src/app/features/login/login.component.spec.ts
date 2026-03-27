@@ -35,12 +35,12 @@ describe('LoginComponent', () => {
     component.form.setValue({ username: 'user', password: 'wrong' });
     component.onSubmit();
 
-    expect(component.error).toBe('Invalid username or password');
-    expect(component.loading).toBeFalse();
+    expect(component.error()).toBe('Invalid username or password');
+    expect(component.loading()).toBeFalse();
   });
 
   it('should navigate to dashboard on successful login (forcePasswordChange=false)', () => {
-    const response: CurrentUser = { userId: '1', username: 'user', role: 'USER', forcePasswordChange: false };
+    const response: CurrentUser = { userId: '1', username: 'user', role: 'USER', forcePasswordChange: false, profilePicturePath: null };
     authServiceSpy.login.and.returnValue(of(response));
 
     component.form.setValue({ username: 'user', password: 'pass' });

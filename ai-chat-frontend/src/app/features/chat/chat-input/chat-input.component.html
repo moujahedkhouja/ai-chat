@@ -3,7 +3,8 @@
     <textarea
       #textarea
       class="input-textarea"
-      [(ngModel)]="value"
+      [ngModel]="value()"
+      (ngModelChange)="value.set($event)"
       (keydown)="onKeydown($event)"
       (input)="onInput()"
       [placeholder]="'chat.placeholder' | translate"
@@ -13,7 +14,7 @@
       class="send-btn"
       type="button"
       (click)="submit()"
-      [disabled]="!value.trim()"
+      [disabled]="!value().trim()"
       [title]="'chat.send' | translate"
     >
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">

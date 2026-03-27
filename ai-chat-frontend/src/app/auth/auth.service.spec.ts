@@ -12,7 +12,8 @@ describe('AuthService', () => {
     userId: '123',
     username: 'testuser',
     role: 'USER',
-    forcePasswordChange: false
+    forcePasswordChange: false,
+    profilePicturePath: null
   };
 
   beforeEach(() => {
@@ -47,7 +48,7 @@ describe('AuthService', () => {
 
   it('logout should POST to /api/auth/logout and clear currentUser', () => {
     // Set up a logged-in state first
-    (service as any).currentUserSubject.next(mockUser);
+    service.currentUser.set(mockUser);
     expect(service.isLoggedIn()).toBeTrue();
 
     service.logout().subscribe(() => {
@@ -87,22 +88,22 @@ describe('AuthService', () => {
   });
 
   it('isForcePasswordChange should return true when currentUser has forcePasswordChange', () => {
-    (service as any).currentUserSubject.next({ ...mockUser, forcePasswordChange: true });
+    service.currentUser.set({ ...mockUser, forcePasswordChange: true });
     expect(service.isForcePasswordChange()).toBeTrue();
   });
 
   it('getRole should return role from currentUser', () => {
-    (service as any).currentUserSubject.next(mockUser);
+    service.currentUser.set(mockUser);
     expect(service.getRole()).toBe('USER');
   });
 
   it('getUsername should return username from currentUser', () => {
-    (service as any).currentUserSubject.next(mockUser);
+    service.currentUser.set(mockUser);
     expect(service.getUsername()).toBe('testuser');
   });
 
   it('getUserId should return userId from currentUser', () => {
-    (service as any).currentUserSubject.next(mockUser);
+    service.currentUser.set(mockUser);
     expect(service.getUserId()).toBe('123');
   });
 });

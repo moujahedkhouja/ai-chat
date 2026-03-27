@@ -12,7 +12,7 @@
       @if (getAvatarUrl()) {
         <img class="avatar-img" [src]="getAvatarUrl()" alt="avatar"/>
       } @else {
-        <div class="avatar-fallback">{{ user?.username?.charAt(0)?.toUpperCase() ?? '?' }}</div>
+        <div class="avatar-fallback">{{ user()?.username?.charAt(0)?.toUpperCase() ?? '?' }}</div>
       }
       <label class="avatar-edit-btn" [title]="'profile.save' | translate">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -22,15 +22,15 @@
       </label>
     </div>
     <div class="avatar-info">
-      <p class="avatar-name">{{ user?.username }}</p>
-      <p class="avatar-email">{{ user?.email }}</p>
-      <span class="role-badge" [class]="user?.role?.toString()?.toLowerCase()">{{ user?.role }}</span>
+      <p class="avatar-name">{{ user()?.username }}</p>
+      <p class="avatar-email">{{ user()?.email }}</p>
+      <span class="role-badge" [class]="user()?.role?.toString()?.toLowerCase()">{{ user()?.role }}</span>
     </div>
-    @if (avatarUploading) {
+    @if (avatarUploading()) {
       <span class="uploading-hint">{{ 'common.loading' | translate }}</span>
     }
-    @if (avatarError) {
-      <p class="field-error">{{ avatarError }}</p>
+    @if (avatarError()) {
+      <p class="field-error">{{ avatarError() }}</p>
     }
   </div>
 
@@ -68,16 +68,16 @@
                formControlName="email" autocomplete="email" placeholder="your@email.com"/>
       </div>
 
-      @if (infoError) {
-        <div class="alert alert-error">{{ infoError }}</div>
+      @if (infoError()) {
+        <div class="alert alert-error">{{ infoError() }}</div>
       }
-      @if (infoSuccess) {
+      @if (infoSuccess()) {
         <div class="alert alert-success">{{ 'profile.saved' | translate }}</div>
       }
 
       <div class="form-actions">
-        <button class="btn-primary" type="submit" [disabled]="infoLoading || infoForm.invalid">
-          @if (infoLoading) { {{ 'profile.saving' | translate }} } @else { {{ 'profile.save' | translate }} }
+        <button class="btn-primary" type="submit" [disabled]="infoLoading() || infoForm.invalid">
+          @if (infoLoading()) { {{ 'profile.saving' | translate }} } @else { {{ 'profile.save' | translate }} }
         </button>
       </div>
     </form>
@@ -91,12 +91,12 @@
       <div class="field">
         <label class="field-label" for="p-cur">{{ 'profile.current_password' | translate }}</label>
         <div class="input-wrap">
-          <input id="p-cur" class="field-input" [type]="showCurrentPassword ? 'text' : 'password'"
+          <input id="p-cur" class="field-input" [type]="showCurrentPassword() ? 'text' : 'password'"
                  formControlName="currentPassword" autocomplete="current-password"
                  [placeholder]="'profile.current_password' | translate"/>
-          <button type="button" class="eye-btn" (click)="showCurrentPassword = !showCurrentPassword"
-                  [attr.aria-label]="showCurrentPassword ? ('login.hide_password' | translate) : ('login.show_password' | translate)">
-            @if (showCurrentPassword) {
+          <button type="button" class="eye-btn" (click)="showCurrentPassword.set(!showCurrentPassword())"
+                  [attr.aria-label]="showCurrentPassword() ? ('login.hide_password' | translate) : ('login.show_password' | translate)">
+            @if (showCurrentPassword()) {
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
                 <path d="M2 2l12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                 <path d="M6.5 6.6A2 2 0 0 0 9.4 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -116,12 +116,12 @@
       <div class="field">
         <label class="field-label" for="p-new">{{ 'profile.new_password' | translate }}</label>
         <div class="input-wrap">
-          <input id="p-new" class="field-input" [type]="showNewPassword ? 'text' : 'password'"
+          <input id="p-new" class="field-input" [type]="showNewPassword() ? 'text' : 'password'"
                  formControlName="newPassword" autocomplete="new-password"
                  [placeholder]="'common.min8' | translate"/>
-          <button type="button" class="eye-btn" (click)="showNewPassword = !showNewPassword"
-                  [attr.aria-label]="showNewPassword ? ('login.hide_password' | translate) : ('login.show_password' | translate)">
-            @if (showNewPassword) {
+          <button type="button" class="eye-btn" (click)="showNewPassword.set(!showNewPassword())"
+                  [attr.aria-label]="showNewPassword() ? ('login.hide_password' | translate) : ('login.show_password' | translate)">
+            @if (showNewPassword()) {
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
                 <path d="M2 2l12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                 <path d="M6.5 6.6A2 2 0 0 0 9.4 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -138,24 +138,24 @@
         </div>
       </div>
 
-      @if (passwordError) {
-        <div class="alert alert-error">{{ passwordError }}</div>
+      @if (passwordError()) {
+        <div class="alert alert-error">{{ passwordError() }}</div>
       }
-      @if (passwordSuccess) {
-        <div class="alert alert-success">{{ passwordSuccess }}</div>
+      @if (passwordSuccess()) {
+        <div class="alert alert-success">{{ passwordSuccess() }}</div>
       }
 
       <div class="form-actions">
-        <button class="btn-primary" type="submit" [disabled]="passwordLoading || passwordForm.invalid">
-          @if (passwordLoading) { {{ 'profile.updating' | translate }} } @else { {{ 'profile.change_password' | translate }} }
+        <button class="btn-primary" type="submit" [disabled]="passwordLoading() || passwordForm.invalid">
+          @if (passwordLoading()) { {{ 'profile.updating' | translate }} } @else { {{ 'profile.change_password' | translate }} }
         </button>
       </div>
     </form>
   </div>
 
-  @if (showCropper) {
+  @if (showCropper()) {
     <app-image-cropper-dialog
-      [imageChangedEvent]="imageChangedEvent"
+      [imageChangedEvent]="imageChangedEvent()"
       (cropped)="onImageCropped($event)"
       (cancelled)="onCropperCancelled()">
     </app-image-cropper-dialog>

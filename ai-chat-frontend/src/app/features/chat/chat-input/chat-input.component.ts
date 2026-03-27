@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, Output, EventEmitter, ViewChild, ElementRef, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -13,7 +13,7 @@ export class ChatInputComponent {
   @ViewChild('textarea') textareaRef!: ElementRef<HTMLTextAreaElement>;
   @Output() send = new EventEmitter<string>();
 
-  value = '';
+  value = signal('');
 
   onKeydown(event: KeyboardEvent): void {
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -29,10 +29,10 @@ export class ChatInputComponent {
   }
 
   submit(): void {
-    const trimmed = this.value.trim();
+    const trimmed = this.value().trim();
     if (!trimmed) return;
     this.send.emit(trimmed);
-    this.value = '';
+    this.value.set('');
     // Reset textarea height on next tick
     setTimeout(() => {
       if (this.textareaRef?.nativeElement) {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Output, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ImageCropperComponent, ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
 import { TranslateModule } from '@ngx-translate/core';
@@ -11,21 +11,21 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './image-cropper-dialog.component.scss'
 })
 export class ImageCropperDialogComponent {
-  @Input() imageChangedEvent: Event | null = null;
+  imageChangedEvent = input<Event | null>(null);
   @Output() cropped = new EventEmitter<Blob>();
   @Output() cancelled = new EventEmitter<void>();
 
-  croppedImage: Blob | null = null;
-  loading = true;
+  croppedImage = signal<Blob | null>(null);
+  loading = signal(true);
 
   imageCropped(event: ImageCroppedEvent) {
     if (event.blob) {
-      this.croppedImage = event.blob;
+      this.croppedImage.set(event.blob);
     }
   }
 
   imageLoaded(image: LoadedImage) {
-    this.loading = false;
+    this.loading.set(false);
   }
 
   cropperReady() {
@@ -37,8 +37,9 @@ export class ImageCropperDialogComponent {
   }
 
   onSave() {
-    if (this.croppedImage) {
-      this.cropped.emit(this.croppedImage);
+    const blob = this.croppedImage();
+    if (blob) {
+      this.cropped.emit(blob);
     }
   }
 

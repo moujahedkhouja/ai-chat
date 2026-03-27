@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../auth/auth.service';
 import { LanguageService } from '../../../core/language.service';
@@ -12,15 +12,15 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './bottom-tab-bar.component.scss'
 })
 export class BottomTabBarComponent {
+  readonly isAdminOrModerator = computed(() => {
+    const role = this.authService.role();
+    return role === 'ADMIN' || role === 'MODERATOR';
+  });
+
   constructor(
     private authService: AuthService,
     public langService: LanguageService
   ) {}
-
-  get isAdminOrModerator(): boolean {
-    const role = this.authService.getRole();
-    return role === 'ADMIN' || role === 'MODERATOR';
-  }
 
   logout(): void {
     this.authService.logout().subscribe();

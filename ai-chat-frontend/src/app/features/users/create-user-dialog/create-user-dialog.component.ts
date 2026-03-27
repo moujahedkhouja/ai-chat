@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Output, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../../../core/user.service';
@@ -25,16 +25,16 @@ export class CreateUserDialogComponent {
     role: ['USER', Validators.required]
   });
 
-  loading = false;
-  error = '';
+  loading = signal(false);
+  error = signal('');
 
   constructor(private userService: UserService) {}
 
   onSubmit() {
     if (this.form.invalid) return;
-    this.loading = true;
-    this.error = '';
-    const { username, firstName, lastName, email, temporaryPassword, role } = this.form.value;
+    this.loading.set(true);
+    this.error.set('');
+    const { username, firstName, lastName, email, temporaryPassword, role } = this.form.getRawValue();
     this.userService.createUser({
       username: username!,
       firstName: firstName || '',
@@ -44,12 +44,12 @@ export class CreateUserDialogComponent {
       role: role as 'ADMIN' | 'MODERATOR' | 'USER'
     }).subscribe({
       next: (user) => {
-        this.loading = false;
+        this.loading.set(false);
         this.userCreated.emit(user);
       },
       error: () => {
-        this.error = 'Failed to create user';
-        this.loading = false;
+        this.error.set('Failed to create user');
+        this.loading.set(false);
       }
     });
   }

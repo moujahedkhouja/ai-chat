@@ -506,6 +506,12 @@
   }
 }
 
+.eu-help-text {
+  font-size: 11px;
+  color: var(--color-text-subtle);
+  margin-top: 4px;
+}
+
 :host-context([dir="rtl"]) .eu-input { font-family: var(--f-arabic); }
 
 .eu-error {

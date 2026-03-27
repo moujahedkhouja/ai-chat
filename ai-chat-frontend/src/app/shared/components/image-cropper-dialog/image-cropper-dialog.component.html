@@ -4,7 +4,7 @@
 
     <div class="cropper-container">
       <image-cropper
-        [imageChangedEvent]="imageChangedEvent"
+        [imageChangedEvent]="imageChangedEvent()"
         [maintainAspectRatio]="true"
         [aspectRatio]="1 / 1"
         format="png"
@@ -20,7 +20,7 @@
 
     <div class="confirm-actions">
       <button class="btn-ghost" type="button" (click)="onCancel()">{{ 'common.cancel' | translate }}</button>
-      <button class="btn-primary-sm" type="button" (click)="onSave()" [disabled]="loading || !croppedImage">
+      <button class="btn-primary-sm" type="button" (click)="onSave()" [disabled]="loading() || !croppedImage()">
         {{ 'common.save' | translate }}
       </button>
     </div>

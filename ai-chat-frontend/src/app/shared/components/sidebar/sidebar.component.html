@@ -33,7 +33,7 @@
       </svg>
     </a>
 
-    @if (isAdminOrModerator) {
+    @if (isAdminOrModerator()) {
       <a class="nav-item" routerLink="/users" routerLinkActive="active" [title]="'nav.users' | translate">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
           <circle cx="6.5" cy="6" r="2.5" fill="currentColor"/>
@@ -52,18 +52,18 @@
       class="lang-btn"
       type="button"
       (click)="langService.toggle()"
-      [title]="langService.isArabic ? 'Switch to English' : 'التبديل إلى العربية'"
+      [title]="langService.isArabic() ? 'Switch to English' : 'التبديل إلى العربية'"
     >
-      <span class="lang-label">{{ langService.isArabic ? 'EN' : 'AR' }}</span>
+      <span class="lang-label">{{ langService.isArabic() ? 'EN' : 'AR' }}</span>
     </button>
 
     <button
       class="theme-btn"
       type="button"
       (click)="themeService.toggle()"
-      [title]="themeService.isDark ? 'Switch to light theme' : 'Switch to dark theme'"
+      [title]="themeService.isDark() ? 'Switch to light theme' : 'Switch to dark theme'"
     >
-      @if (themeService.isDark) {
+      @if (themeService.isDark()) {
         <!-- Sun icon -->
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
           <circle cx="8" cy="8" r="3" fill="currentColor"/>
@@ -76,11 +76,11 @@
         </svg>
       }
     </button>
-    <a class="avatar-btn" routerLink="/profile" [title]="displayName + ' · ' + role">
-      @if (avatarUrl) {
-        <img [src]="avatarUrl" [alt]="displayName" class="sidebar-avatar">
+    <a class="avatar-btn" routerLink="/profile" [title]="displayName() + ' · ' + role()">
+      @if (avatarUrl()) {
+        <img [src]="avatarUrl()" [alt]="displayName()" class="sidebar-avatar">
       } @else {
-        <span class="avatar-initials">{{ (displayName || username).charAt(0).toUpperCase() }}</span>
+        <span class="avatar-initials">{{ (displayName() || username()).charAt(0).toUpperCase() }}</span>
       }
     </a>
   </div>

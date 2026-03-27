@@ -43,14 +43,14 @@
         </select>
       </div>
 
-      @if (error) {
-        <p class="error-message">{{ error }}</p>
+      @if (error()) {
+        <p class="error-message">{{ error() }}</p>
       }
 
       <div class="dialog-actions">
         <button class="btn-ghost" type="button" (click)="onCancel()">{{ 'create_user.cancel' | translate }}</button>
-        <button class="btn-primary" type="submit" [disabled]="loading">
-          @if (loading) { {{ 'create_user.creating' | translate }} } @else { {{ 'create_user.submit' | translate }} }
+        <button class="btn-primary" type="submit" [disabled]="loading()">
+          @if (loading()) { {{ 'create_user.creating' | translate }} } @else { {{ 'create_user.submit' | translate }} }
         </button>
       </div>
     </form>

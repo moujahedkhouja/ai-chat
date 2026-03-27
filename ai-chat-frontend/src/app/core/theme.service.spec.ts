@@ -12,7 +12,7 @@ describe('ThemeService', () => {
   });
 
   it('defaults to dark when nothing is stored', () => {
-    expect(service.isDark).toBeTrue();
+    expect(service.isDark()).toBeTrue();
   });
 
   it('loads light theme from localStorage', () => {
@@ -20,19 +20,19 @@ describe('ThemeService', () => {
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({});
     const fresh = TestBed.inject(ThemeService);
-    expect(fresh.isDark).toBeFalse();
+    expect(fresh.isDark()).toBeFalse();
   });
 
   it('toggle() switches dark → light and persists', () => {
     service.toggle();
-    expect(service.isDark).toBeFalse();
+    expect(service.isDark()).toBeFalse();
     expect(localStorage.getItem('app_theme')).toBe('light');
   });
 
   it('toggle() switches light → dark and persists', () => {
     service.toggle(); // dark → light
     service.toggle(); // light → dark
-    expect(service.isDark).toBeTrue();
+    expect(service.isDark()).toBeTrue();
     expect(localStorage.getItem('app_theme')).toBe('dark');
   });
 

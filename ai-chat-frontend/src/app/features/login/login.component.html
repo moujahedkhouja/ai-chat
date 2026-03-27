@@ -5,9 +5,9 @@
     class="lang-toggle"
     type="button"
     (click)="langService.toggle()"
-    [title]="langService.isArabic ? 'Switch to English' : 'التبديل إلى العربية'"
+    [title]="langService.isArabic() ? 'Switch to English' : 'التبديل إلى العربية'"
   >
-    <span class="lang-toggle-label">{{ langService.isArabic ? 'EN' : 'AR' }}</span>
+    <span class="lang-toggle-label">{{ langService.isArabic() ? 'EN' : 'AR' }}</span>
     <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
       <circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" stroke-width="1.2"/>
       <path d="M6.5 1C6.5 1 4.5 3.5 4.5 6.5s2 5.5 2 5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
@@ -78,17 +78,17 @@
       <div class="hero-stats">
         <div class="stat">
           <span class="stat-val">24/7</span>
-          <span class="stat-key">{{ langService.isArabic ? 'متاح' : 'Available' }}</span>
+          <span class="stat-key">{{ langService.isArabic() ? 'متاح' : 'Available' }}</span>
         </div>
         <span class="stat-sep"></span>
         <div class="stat">
           <span class="stat-val">E2E</span>
-          <span class="stat-key">{{ langService.isArabic ? 'مشفّر' : 'Encrypted' }}</span>
+          <span class="stat-key">{{ langService.isArabic() ? 'مشفّر' : 'Encrypted' }}</span>
         </div>
         <span class="stat-sep"></span>
         <div class="stat">
           <span class="stat-val">100%</span>
-          <span class="stat-key">{{ langService.isArabic ? 'خاص' : 'Private' }}</span>
+          <span class="stat-key">{{ langService.isArabic() ? 'خاص' : 'Private' }}</span>
         </div>
       </div>
     </div>
@@ -125,7 +125,7 @@
           <input
             id="password"
             class="field-input"
-            [type]="showPassword ? 'text' : 'password'"
+            [type]="showPassword() ? 'text' : 'password'"
             formControlName="password"
             placeholder=" "
             autocomplete="current-password"
@@ -137,10 +137,10 @@
             class="field-eye-btn"
             type="button"
             (click)="togglePassword()"
-            [title]="showPassword ? ('login.hide_password' | translate) : ('login.show_password' | translate)"
-            [attr.aria-label]="showPassword ? ('login.hide_password' | translate) : ('login.show_password' | translate)"
+            [title]="showPassword() ? ('login.hide_password' | translate) : ('login.show_password' | translate)"
+            [attr.aria-label]="showPassword() ? ('login.hide_password' | translate) : ('login.show_password' | translate)"
           >
-            @if (showPassword) {
+            @if (showPassword()) {
               <!-- Eye-off (hide) -->
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M2 2l12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -158,7 +158,7 @@
           </button>
         </div>
 
-        @if (error) {
+        @if (error()) {
           <div class="error-banner" role="alert">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
               <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.4"/>
@@ -168,10 +168,10 @@
           </div>
         }
 
-        <button class="btn-submit" type="submit" [disabled]="loading">
-          @if (loading) {
+        <button class="btn-submit" type="submit" [disabled]="loading()">
+          @if (loading()) {
             <span class="btn-spinner" aria-hidden="true"></span>
-            {{ langService.isArabic ? 'جارٍ الدخول…' : 'Signing in…' }}
+            {{ langService.isArabic() ? 'جارٍ الدخول…' : 'Signing in…' }}
           } @else {
             {{ 'login.btn' | translate }}
             <svg class="btn-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">

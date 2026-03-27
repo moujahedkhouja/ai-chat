@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../auth/auth.service';
 import { UserService } from '../../core/user.service';
@@ -14,7 +14,7 @@ import { ImageCropperDialogComponent } from '../../shared/components/image-cropp
   styleUrl: './profile.component.scss'
 })
 export class ProfileComponent implements OnInit {
-  user: UserResponse | null = null;
+  user = signal<UserResponse | null>(null);
 
   private fb = inject(FormBuilder);
 
@@ -30,21 +30,21 @@ export class ProfileComponent implements OnInit {
     newPassword: ['', [Validators.required, Validators.minLength(8)]]
   });
 
-  infoLoading = false;
-  infoSuccess = '';
-  infoError = '';
+  infoLoading = signal(false);
+  infoSuccess = signal('');
+  infoError = signal('');
 
-  passwordLoading = false;
-  passwordSuccess = '';
-  passwordError = '';
+  passwordLoading = signal(false);
+  passwordSuccess = signal('');
+  passwordError = signal('');
 
-  showCurrentPassword = false;
-  showNewPassword = false;
+  showCurrentPassword = signal(false);
+  showNewPassword = signal(false);
 
-  avatarUploading = false;
-  avatarError = '';
-  showCropper = false;
-  imageChangedEvent: Event | null = null;
+  avatarUploading = signal(false);
+  avatarError = signal('');
+  showCropper = signal(false);
+  imageChangedEvent = signal<Event | null>(null);
 
   constructor(
     private authService: AuthService,
@@ -54,7 +54,7 @@ export class ProfileComponent implements OnInit {
   ngOnInit() {
     this.userService.getProfile().subscribe({
       next: (user) => {
-        this.user = user;
+        this.user.set(user);
         this.infoForm.patchValue({
           username: user.username,
           email: user.email,
@@ -62,16 +62,16 @@ export class ProfileComponent implements OnInit {
           lastName: user.lastName || ''
         });
       },
-      error: () => this.infoError = 'Failed to load profile'
+      error: () => this.infoError.set('Failed to load profile')
     });
   }
 
   onSaveInfo() {
     if (this.infoForm.invalid) return;
-    this.infoLoading = true;
-    this.infoSuccess = '';
-    this.infoError = '';
-    const { username, email, firstName, lastName } = this.infoForm.value;
+    this.infoLoading.set(true);
+    this.infoSuccess.set('');
+    this.infoError.set('');
+    const { username, email, firstName, lastName } = this.infoForm.getRawValue();
     this.userService.updateProfile({
       username: username!,
       email: email!,
@@ -79,40 +79,41 @@ export class ProfileComponent implements OnInit {
       lastName: lastName || ''
     }).subscribe({
       next: (updated) => {
-        this.user = updated;
-        this.infoSuccess = 'Profile updated';
-        this.infoLoading = false;
+        this.user.set(updated);
+        this.infoSuccess.set('Profile updated');
+        this.infoLoading.set(false);
         this.authService.refreshFromProfile(updated);
       },
       error: (err) => {
-        this.infoError = err?.error?.error ?? 'Failed to update profile';
-        this.infoLoading = false;
+        this.infoError.set(err?.error?.error ?? 'Failed to update profile');
+        this.infoLoading.set(false);
       }
     });
   }
 
   onChangePassword() {
     if (this.passwordForm.invalid) return;
-    this.passwordLoading = true;
-    this.passwordSuccess = '';
-    this.passwordError = '';
-    const { currentPassword, newPassword } = this.passwordForm.value;
+    this.passwordLoading.set(true);
+    this.passwordSuccess.set('');
+    this.passwordError.set('');
+    const { currentPassword, newPassword } = this.passwordForm.getRawValue();
     this.authService.changePassword({ currentPassword: currentPassword!, newPassword: newPassword! }).subscribe({
       next: () => {
-        this.passwordSuccess = 'Password changed successfully';
+        this.passwordSuccess.set('Password changed successfully');
         this.passwordForm.reset();
-        this.passwordLoading = false;
+        this.passwordLoading.set(false);
       },
       error: (err) => {
-        this.passwordError = err?.error?.error ?? 'Failed to change password';
-        this.passwordLoading = false;
+        this.passwordError.set(err?.error?.error ?? 'Failed to change password');
+        this.passwordLoading.set(false);
       }
     });
   }
 
   onAvatarChange(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
-    if (!file || !this.user) return;
+    const user = this.user();
+    if (!file || !user) return;
 
     // Check if the image is square and has reasonable dimensions
     const img = new Image();
@@ -123,8 +124,8 @@ export class ProfileComponent implements OnInit {
       const isTooSmall = img.width < 200 || img.height < 200;
 
       if (!isSquare || isTooLarge || isTooSmall) {
-        this.imageChangedEvent = event;
-        this.showCropper = true;
+        this.imageChangedEvent.set(event);
+        this.showCropper.set(true);
       } else {
         this.uploadAvatar(file);
         (event.target as HTMLInputElement).value = '';
@@ -134,44 +135,46 @@ export class ProfileComponent implements OnInit {
   }
 
   onImageCropped(blob: Blob) {
-    this.showCropper = false;
+    this.showCropper.set(false);
     const file = new File([blob], 'avatar.png', { type: 'image/png' });
     this.uploadAvatar(file);
     this.clearInput();
-    this.imageChangedEvent = null;
+    this.imageChangedEvent.set(null);
   }
 
   onCropperCancelled() {
-    this.showCropper = false;
+    this.showCropper.set(false);
     this.clearInput();
-    this.imageChangedEvent = null;
+    this.imageChangedEvent.set(null);
   }
 
   private clearInput() {
-    if (this.imageChangedEvent?.target) {
-      (this.imageChangedEvent.target as HTMLInputElement).value = '';
+    const event = this.imageChangedEvent();
+    if (event?.target) {
+      (event.target as HTMLInputElement).value = '';
     }
   }
 
   private uploadAvatar(file: File) {
-    if (!this.user) return;
-    this.avatarUploading = true;
-    this.avatarError = '';
-    this.userService.uploadAvatar(this.user.id, file).subscribe({
+    const user = this.user();
+    if (!user) return;
+    this.avatarUploading.set(true);
+    this.avatarError.set('');
+    this.userService.uploadAvatar(user.id, file).subscribe({
       next: (updated) => {
-        this.user = updated;
-        this.avatarUploading = false;
+        this.user.set(updated);
+        this.avatarUploading.set(false);
         this.authService.refreshFromProfile(updated);
       },
       error: () => {
-        this.avatarError = 'Failed to upload avatar';
-        this.avatarUploading = false;
+        this.avatarError.set('Failed to upload avatar');
+        this.avatarUploading.set(false);
       }
     });
   }
 
   getAvatarUrl(): string | null {
-    const user = this.authService.currentUserSignal();
+    const user = this.authService.currentUser();
     return this.authService.getAvatarUrl(user?.userId, user?.profilePicturePath);
   }
 }

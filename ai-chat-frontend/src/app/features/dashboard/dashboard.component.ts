@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
@@ -14,8 +14,15 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
-  recentUsers: UserResponse[] = [];
-  totalUsers = 0;
+  recentUsers = signal<UserResponse[]>([]);
+  totalUsers = signal(0);
+
+  readonly username = computed(() => this.authService.username() ?? 'User');
+  readonly role = computed(() => this.authService.role() ?? '');
+  readonly isAdminOrModerator = computed(() => {
+    const r = this.authService.role();
+    return r === 'ADMIN' || r === 'MODERATOR';
+  });
 
   constructor(
     public authService: AuthService,
@@ -31,27 +38,14 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.isAdminOrModerator) {
+    if (this.isAdminOrModerator()) {
       this.userService.listUsers(0, 5).subscribe({
         next: (page) => {
-          this.recentUsers = page.content;
-          this.totalUsers = page.page.totalElements;
+          this.recentUsers.set(page.content);
+          this.totalUsers.set(page.page.totalElements);
         }
       });
     }
-  }
-
-  get username(): string {
-    return this.authService.getUsername() ?? 'User';
-  }
-
-  get role(): string {
-    return this.authService.getRole() ?? '';
-  }
-
-  get isAdminOrModerator(): boolean {
-    const r = this.authService.getRole();
-    return r === 'ADMIN' || r === 'MODERATOR';
   }
 
   getRoleBadgeClass(role: string): string {

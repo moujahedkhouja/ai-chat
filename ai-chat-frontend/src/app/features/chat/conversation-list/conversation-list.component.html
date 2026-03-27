@@ -9,8 +9,8 @@
       <input
         class="search-input"
         type="text"
-        [(ngModel)]="searchQuery"
-        (ngModelChange)="onSearch()"
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
         [placeholder]="'chat.search' | translate"
       />
     </div>
@@ -23,12 +23,12 @@
 
   <!-- Grouped conversations -->
   <div class="conv-scroll">
-    @for (group of groups; track group.label) {
+    @for (group of groups(); track group.label) {
       <div class="group-label">{{ group.label }}</div>
       @for (conv of group.items; track conv.id) {
         <div
           class="conv-item"
-          [class.active]="conv.id === activeId"
+          [class.active]="conv.id === activeId()"
           (click)="select.emit(conv.id)"
         >
           <div class="conv-title">{{ conv.title }}</div>
@@ -45,9 +45,9 @@
         </div>
       }
     }
-    @if (groups.length === 0) {
+    @if (groups().length === 0) {
       <div class="conv-empty">
-        @if (searchQuery) { No results for "{{ searchQuery }}" }
+        @if (searchQuery()) { No results for "{{ searchQuery() }}" }
         @else { {{ 'chat.no_conversations' | translate }} }
       </div>
     }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
@@ -24,23 +24,23 @@ export class ChangePasswordComponent {
     confirmPassword: new FormControl('', [Validators.required])
   }, { validators: confirmPasswordValidator });
 
-  error = '';
-  loading = false;
+  error = signal('');
+  loading = signal(false);
 
   constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit() {
     if (this.form.invalid) return;
-    this.loading = true;
-    this.error = '';
+    this.loading.set(true);
+    this.error.set('');
 
-    const { currentPassword, newPassword } = this.form.value;
+    const { currentPassword, newPassword } = this.form.getRawValue();
     this.authService.changePassword({ currentPassword: currentPassword!, newPassword: newPassword! })
       .subscribe({
         next: () => this.router.navigate(['/dashboard']),
         error: (err) => {
-          this.error = err.error?.error || 'Failed to change password';
-          this.loading = false;
+          this.error.set(err.error?.error || 'Failed to change password');
+          this.loading.set(false);
         }
       });
   }
