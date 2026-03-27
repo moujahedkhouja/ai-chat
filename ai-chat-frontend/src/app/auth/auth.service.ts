@@ -84,7 +84,8 @@ export class AuthService {
 
   getAvatarUrl(userId?: string | null, path?: string | null): string | null {
     if (!path || !userId) return null;
-    return `/api/users/${userId}/avatar`;
+    // Use path as cache-buster so the browser fetches the new image after an upload.
+    return `/api/users/${userId}/avatar?v=${encodeURIComponent(path)}`;
   }
 
   refreshFromProfile(user: UserResponse): void {
