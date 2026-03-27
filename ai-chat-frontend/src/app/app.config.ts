@@ -25,7 +25,7 @@ export const appConfig: ApplicationConfig = {
       const lang = (localStorage.getItem('app_lang') ?? 'en') as 'en' | 'ar';
       translate.addLangs(['en', 'ar']);
       // setDefaultLang returns an Observable in v17 – we must wait for it.
-      return translate.setDefaultLang('en').pipe(
+      return translate.setFallbackLang('en').pipe(
         switchMap(() => translate.use(lang))
       );
     })
