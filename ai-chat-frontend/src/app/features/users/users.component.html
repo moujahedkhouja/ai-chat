@@ -151,6 +151,7 @@
             type="text"
             [(ngModel)]="editUsernameValue"
             placeholder="New username"
+            autofocus
             (keydown.enter)="confirmEditUsername()"
             (keydown.escape)="userToEditUsername = null"
             autocomplete="off"/>
@@ -161,7 +162,7 @@
         <div class="confirm-actions">
           <button class="btn-ghost" type="button" (click)="userToEditUsername = null">Cancel</button>
           <button class="btn-primary-sm" type="button"
-            [disabled]="editUsernameLoading || !editUsernameValue.trim()"
+            [disabled]="editUsernameLoading || !editUsernameValue.trim() || editUsernameValue.trim() === userToEditUsername!.username"
             (click)="confirmEditUsername()">
             @if (editUsernameLoading) { Saving... } @else { Save }
           </button>
