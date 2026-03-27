@@ -11,11 +11,7 @@
     </div>
   }
   <div class="bubble-body">
-    @if (message().role === 'assistant') {
-      <div class="bubble-markdown" [innerHTML]="renderedHtml()"></div>
-    } @else {
-      <div class="bubble-text">{{ message().content }}</div>
-    }
+    <div class="bubble-markdown" [class.bubble-markdown--user]="message().role === 'user'" [innerHTML]="renderedHtml()"></div>
     <div class="bubble-time">{{ message().timestamp | date:'HH:mm' }}</div>
   </div>
 </div>

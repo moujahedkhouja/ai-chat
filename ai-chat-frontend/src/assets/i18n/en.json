@@ -39,7 +39,9 @@
     "no_conversations": "No conversations yet",
     "thinking": "Thinking…",
     "you": "You",
-    "assistant": "Assistant"
+    "assistant": "Assistant",
+    "preview": "Preview",
+    "write": "Write"
   },
   "users": {
     "title": "Users",

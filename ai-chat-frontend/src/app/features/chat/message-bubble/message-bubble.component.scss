@@ -37,25 +37,6 @@
 }
 
 /* User message bubble — gold-tinted */
-.bubble-text {
-  background: rgba(0, 201, 167, 0.13);
-  border: 1px solid rgba(0, 201, 167, 0.22);
-  color: var(--color-text);
-  border-radius: 14px 14px 4px 14px;
-  padding: 10px 14px;
-  font-size: 14px;
-  font-family: var(--f-body);
-  line-height: 1.55;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-:host-context([dir="rtl"]) .bubble-text {
-  font-family: var(--f-arabic);
-  border-radius: 14px 14px 14px 4px;
-}
-
-/* AI message bubble — card style */
 .bubble-markdown {
   background: var(--color-card);
   border: 1px solid var(--color-border);
@@ -99,9 +80,19 @@
   }
 }
 
+.bubble-markdown--user {
+  background: rgba(0, 201, 167, 0.13);
+  border: 1px solid rgba(0, 201, 167, 0.22);
+  border-radius: 14px 14px 4px 14px;
+}
+
 :host-context([dir="rtl"]) .bubble-markdown {
   font-family: var(--f-arabic);
   border-radius: 14px 4px 14px 14px;
+}
+
+:host-context([dir="rtl"]) .bubble-markdown--user {
+  border-radius: 14px 14px 14px 4px;
 }
 
 .bubble-time {

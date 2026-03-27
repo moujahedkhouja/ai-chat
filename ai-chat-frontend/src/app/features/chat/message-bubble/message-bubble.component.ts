@@ -19,12 +19,8 @@ export class MessageBubbleComponent {
   private sanitizer = inject(DomSanitizer);
 
   readonly renderedHtml = computed<SafeHtml>(() => {
-    const msg = this.message();
-    if (msg.role === 'assistant') {
-      const html = String(marked.parse(msg.content));
-      return this.sanitizer.bypassSecurityTrustHtml(html);
-    }
-    return '';
+    const html = String(marked.parse(this.message().content));
+    return this.sanitizer.bypassSecurityTrustHtml(html);
   });
 
   readonly userAvatar = computed(() => {

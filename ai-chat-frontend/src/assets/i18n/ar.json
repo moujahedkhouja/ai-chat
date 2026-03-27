@@ -39,7 +39,9 @@
     "no_conversations": "لا توجد محادثات بعد",
     "thinking": "جارٍ التفكير…",
     "you": "أنت",
-    "assistant": "المساعد"
+    "assistant": "المساعد",
+    "preview": "معاينة",
+    "write": "تحرير"
   },
   "users": {
     "title": "المستخدمون",
