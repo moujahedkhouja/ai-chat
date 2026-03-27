@@ -56,6 +56,10 @@ export class AuthService {
     return this.currentUserSubject.value?.username ?? null;
   }
 
+  getProfilePicturePath(): string | null {
+    return this.currentUserSubject.value?.profilePicturePath ?? null;
+  }
+
   getCurrentUser(): CurrentUser | null {
     return this.currentUserSubject.value;
   }
@@ -63,7 +67,11 @@ export class AuthService {
   refreshFromProfile(user: UserResponse): void {
     const current = this.currentUserSubject.value;
     if (current) {
-      this.currentUserSubject.next({ ...current, username: user.username });
+      this.currentUserSubject.next({
+        ...current,
+        username: user.username,
+        profilePicturePath: user.profilePicturePath
+      });
     }
   }
 }

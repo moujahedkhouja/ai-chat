@@ -137,4 +137,12 @@
     </form>
   </div>
 
+  @if (showCropper) {
+    <app-image-cropper-dialog
+      [imageChangedEvent]="imageChangedEvent"
+      (cropped)="onImageCropped($event)"
+      (cancelled)="onCropperCancelled()">
+    </app-image-cropper-dialog>
+  }
+
 </div>

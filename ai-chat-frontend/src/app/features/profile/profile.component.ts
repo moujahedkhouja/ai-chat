@@ -4,11 +4,12 @@ import { AuthService } from '../../auth/auth.service';
 import { UserService } from '../../core/user.service';
 import { UserResponse } from '../../models/user.model';
 import { TranslateModule } from '@ngx-translate/core';
+import { ImageCropperDialogComponent } from '../../shared/components/image-cropper-dialog/image-cropper-dialog.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [ReactiveFormsModule, TranslateModule],
+  imports: [ReactiveFormsModule, TranslateModule, ImageCropperDialogComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
@@ -40,6 +41,8 @@ export class ProfileComponent implements OnInit {
 
   avatarUploading = false;
   avatarError = '';
+  showCropper = false;
+  imageChangedEvent: Event | null = null;
 
   constructor(
     private authService: AuthService,
@@ -98,6 +101,48 @@ export class ProfileComponent implements OnInit {
   onAvatarChange(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file || !this.user) return;
+
+    // Check if the image is square and has reasonable dimensions
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    img.onload = () => {
+      const isSquare = img.width === img.height;
+      const isTooLarge = img.width > 1024 || img.height > 1024;
+      const isTooSmall = img.width < 200 || img.height < 200;
+
+      if (!isSquare || isTooLarge || isTooSmall) {
+        this.imageChangedEvent = event;
+        this.showCropper = true;
+      } else {
+        this.uploadAvatar(file);
+        (event.target as HTMLInputElement).value = '';
+      }
+      URL.revokeObjectURL(img.src);
+    };
+  }
+
+  onImageCropped(blob: Blob) {
+    this.showCropper = false;
+    const file = new File([blob], 'avatar.png', { type: 'image/png' });
+    this.uploadAvatar(file);
+    this.clearInput();
+    this.imageChangedEvent = null;
+  }
+
+  onCropperCancelled() {
+    this.showCropper = false;
+    this.clearInput();
+    this.imageChangedEvent = null;
+  }
+
+  private clearInput() {
+    if (this.imageChangedEvent?.target) {
+      (this.imageChangedEvent.target as HTMLInputElement).value = '';
+    }
+  }
+
+  private uploadAvatar(file: File) {
+    if (!this.user) return;
     this.avatarUploading = true;
     this.avatarError = '';
     this.userService.uploadAvatar(this.user.id, file).subscribe({

@@ -13,6 +13,7 @@ export interface CurrentUser {
   username: string;
   role: 'ADMIN' | 'MODERATOR' | 'USER';
   forcePasswordChange: boolean;
+  profilePicturePath: string | null;
 }
 
 // AuthResponse from backend (no token)

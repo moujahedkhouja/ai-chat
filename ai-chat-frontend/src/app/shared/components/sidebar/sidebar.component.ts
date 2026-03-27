@@ -28,6 +28,10 @@ export class SidebarComponent {
     return this.authService.getRole() ?? '';
   }
 
+  get avatarUrl(): string | null {
+    return this.authService.getProfilePicturePath();
+  }
+
   get isAdminOrModerator(): boolean {
     const role = this.authService.getRole();
     return role === 'ADMIN' || role === 'MODERATOR';

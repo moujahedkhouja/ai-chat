@@ -4,5 +4,6 @@ public record AuthResponse(
     String userId,
     String username,
     String role,
-    boolean forcePasswordChange
+    boolean forcePasswordChange,
+    String profilePicturePath
 ) {}

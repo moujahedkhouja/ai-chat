@@ -63,7 +63,8 @@ public class AuthController {
             user.getId().toString(),
             user.getUsername(),
             user.getRole().name(),
-            user.isForcePasswordChange()
+            user.isForcePasswordChange(),
+            user.getProfilePicturePath()
         ));
     }
 
@@ -97,7 +98,8 @@ public class AuthController {
             user.getId().toString(),
             user.getUsername(),
             user.getRole().name(),
-            false
+            false,
+            user.getProfilePicturePath()
         ));
     }
 
@@ -113,11 +115,16 @@ public class AuthController {
         if (principal == null) {
             return ResponseEntity.status(401).body(Map.of("error", INVALID_CREDENTIALS_ERROR));
         }
+        User user = userRepository.findById(principal.userId()).orElse(null);
+        if (user == null) {
+            return ResponseEntity.status(401).build();
+        }
         return ResponseEntity.ok(new AuthResponse(
-            principal.userId().toString(),
-            principal.username(),
-            principal.role(),
-            principal.forcePasswordChange()
+            user.getId().toString(),
+            user.getUsername(),
+            user.getRole().name(),
+            user.isForcePasswordChange(),
+            user.getProfilePicturePath()
         ));
     }
 

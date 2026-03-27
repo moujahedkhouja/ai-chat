@@ -112,7 +112,8 @@
     "taken": "Username or email is already taken",
     "error": "Failed to save changes",
     "pw_error": "Failed to update password",
-    "member_since": "Member since"
+    "member_since": "Member since",
+    "crop_avatar": "Crop Profile Picture"
   },
   "cp": {
     "title": "Change Password",

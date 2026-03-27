@@ -37,7 +37,13 @@
             <tr>
               <td>
                 <div class="user-cell">
-                  <div class="user-avatar">{{ user.username.charAt(0).toUpperCase() }}</div>
+                  <div class="user-avatar">
+                    @if (user.profilePicturePath) {
+                      <img [src]="user.profilePicturePath" [alt]="user.username" class="table-avatar">
+                    } @else {
+                      {{ user.username.charAt(0).toUpperCase() }}
+                    }
+                  </div>
                   <span class="user-name">{{ user.username }}</span>
                 </div>
               </td>
@@ -85,7 +91,13 @@
     <div class="mobile-list">
       @for (user of users; track user.id) {
         <div class="user-card">
-          <div class="user-card-avatar">{{ user.username.charAt(0).toUpperCase() }}</div>
+          <div class="user-card-avatar">
+            @if (user.profilePicturePath) {
+              <img [src]="user.profilePicturePath" [alt]="user.username" class="card-avatar">
+            } @else {
+              {{ user.username.charAt(0).toUpperCase() }}
+            }
+          </div>
           <div class="user-card-info">
             <span class="user-name">{{ user.username }}</span>
             <span class="user-email">{{ user.email }}</span>
