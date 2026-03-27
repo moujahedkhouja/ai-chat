@@ -23,8 +23,8 @@
 
   <!-- Grouped conversations -->
   <div class="conv-scroll">
-    @for (group of groups(); track group.label) {
-      <div class="group-label">{{ group.label }}</div>
+    @for (group of groups(); track group.labelKey) {
+      <div class="group-label">{{ group.labelKey | translate }}</div>
       @for (conv of group.items; track conv.id) {
         <div
           class="conv-item"
@@ -47,7 +47,7 @@
     }
     @if (groups().length === 0) {
       <div class="conv-empty">
-        @if (searchQuery()) { No results for "{{ searchQuery() }}" }
+        @if (searchQuery()) { {{ 'chat.no_results' | translate:{ query: searchQuery() } }} }
         @else { {{ 'chat.no_conversations' | translate }} }
       </div>
     }

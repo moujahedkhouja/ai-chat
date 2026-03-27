@@ -5,7 +5,7 @@ import { Conversation } from '../../../models/chat.model';
 import { TranslateModule } from '@ngx-translate/core';
 
 interface ConversationGroup {
-  label: string;
+  labelKey: string;
   items: Conversation[];
 }
 
@@ -47,9 +47,9 @@ export class ConversationListComponent {
     }
 
     return [
-      { label: 'Today', items: today },
-      { label: 'Yesterday', items: yesterday },
-      { label: 'Older', items: older }
+      { labelKey: 'chat.today', items: today },
+      { labelKey: 'chat.yesterday', items: yesterday },
+      { labelKey: 'chat.older', items: older }
     ].filter(g => g.items.length > 0);
   });
 }
