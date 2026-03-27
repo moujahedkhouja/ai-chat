@@ -48,7 +48,11 @@
     "col": { "user": "User", "email": "Email", "role": "Role" },
     "loading": "Loading users…",
     "error": "Failed to load users",
-    "edit_username": "Edit username",
+    "edit": "Edit user",
+    "edit_title": "Edit User Details",
+    "username": "Username",
+    "first_name": "First Name",
+    "last_name": "Last Name",
     "change_password": "Change password",
     "delete": "Delete user",
     "prev": "← Prev",
@@ -85,16 +89,6 @@
     "warning": "This action cannot be undone.",
     "cancel": "Cancel",
     "btn": "Delete"
-  },
-  "edit_username": {
-    "title": "Edit Username",
-    "current": "Current:",
-    "placeholder": "New username",
-    "cancel": "Cancel",
-    "save": "Save",
-    "saving": "Saving…",
-    "taken": "Username is already taken",
-    "error": "Failed to update username"
   },
   "profile": {
     "title": "Profile",
