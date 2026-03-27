@@ -1,19 +1,24 @@
 <div class="input-wrap">
   <div class="toolbar">
-    <button type="button" class="tool-btn" (click)="applyFormat('bold')" title="Bold">B</button>
-    <button type="button" class="tool-btn" (click)="applyFormat('italic')" title="Italic"><em>I</em></button>
-    <button type="button" class="tool-btn" (click)="applyFormat('code')" title="Code">{ }</button>
-    <button type="button" class="tool-btn" (click)="applyFormat('quote')" title="Quote">"</button>
-    <button type="button" class="tool-btn" (click)="applyFormat('link')" title="Link">Link</button>
-    <button type="button" class="tool-btn" (click)="applyFormat('ul')" title="List">List</button>
-    <button type="button" class="tool-btn" (click)="applyFormat('h2')" title="Heading">H2</button>
-    <button type="button" class="tool-btn tool-btn--preview" (click)="togglePreview()">
-      @if (previewMode()) { {{ 'chat.write' | translate }} } @else { {{ 'chat.preview' | translate }} }
+    <button type="button" class="tool-btn tool-btn--mode" (click)="toggleInputMode()">
+      @if (richMode()) { {{ 'chat.input_plain' | translate }} } @else { {{ 'chat.input_rich' | translate }} }
     </button>
+    @if (richMode()) {
+      <button type="button" class="tool-btn" (click)="applyFormat('bold')" title="Bold" [disabled]="previewMode()">B</button>
+      <button type="button" class="tool-btn" (click)="applyFormat('italic')" title="Italic" [disabled]="previewMode()"><em>I</em></button>
+      <button type="button" class="tool-btn" (click)="applyFormat('code')" title="Code" [disabled]="previewMode()">{ }</button>
+      <button type="button" class="tool-btn" (click)="applyFormat('quote')" title="Quote" [disabled]="previewMode()">"</button>
+      <button type="button" class="tool-btn" (click)="applyFormat('link')" title="Link" [disabled]="previewMode()">Link</button>
+      <button type="button" class="tool-btn" (click)="applyFormat('ul')" title="List" [disabled]="previewMode()">List</button>
+      <button type="button" class="tool-btn" (click)="applyFormat('h2')" title="Heading" [disabled]="previewMode()">H2</button>
+      <button type="button" class="tool-btn tool-btn--preview" (click)="togglePreview()">
+        @if (previewMode()) { {{ 'chat.write' | translate }} } @else { {{ 'chat.preview' | translate }} }
+      </button>
+    }
   </div>
 
   <div class="input-bar">
-    @if (!previewMode()) {
+    @if (!previewMode() || !richMode()) {
       <textarea
         #textarea
         class="input-textarea"
@@ -26,7 +31,6 @@
       ></textarea>
     } @else {
       <div class="input-preview" [innerHTML]="previewHtml()"></div>
-      <textarea #textarea class="hidden-textarea" rows="1"></textarea>
     }
     <button
       class="send-btn"
@@ -40,5 +44,9 @@
       </svg>
     </button>
   </div>
-  <p class="input-hint">Markdown enabled · Enter to send · Shift+Enter for new line</p>
+  @if (richMode()) {
+    <p class="input-hint">Markdown enabled · Enter to send · Shift+Enter for new line</p>
+  } @else {
+    <p class="input-hint">{{ 'chat.plain_hint' | translate }}</p>
+  }
 </div>

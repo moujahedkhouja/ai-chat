@@ -105,6 +105,40 @@
   }
 }
 
+.logout-header-btn {
+  height: 32px;
+  padding: 0 10px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+
+  &:hover {
+    color: var(--color-danger);
+    border-color: rgba(var(--color-danger-rgb), 0.45);
+    background: rgba(var(--color-danger-rgb), 0.08);
+  }
+}
+
+.logout-label {
+  font-size: 12px;
+  font-family: var(--f-body);
+  font-weight: 600;
+
+  @media (max-width: 767px) {
+    display: none;
+  }
+}
+
+:host-context([dir="rtl"]) .logout-label {
+  font-family: var(--f-arabic);
+}
+
 .shell-content {
   flex: 1;
   overflow-y: auto;

@@ -45,7 +45,10 @@
     "you": "أنت",
     "assistant": "المساعد",
     "preview": "معاينة",
-    "write": "تحرير"
+    "write": "تحرير",
+    "input_rich": "تحرير غني",
+    "input_plain": "تحرير عادي",
+    "plain_hint": "وضع النص العادي · Enter للإرسال · Shift+Enter لسطر جديد"
   },
   "users": {
     "title": "المستخدمون",

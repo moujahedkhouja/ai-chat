@@ -29,10 +29,21 @@
     border-color: var(--color-accent-border);
     background: var(--color-accent-muted);
   }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
 }
 
 .tool-btn--preview {
   margin-inline-start: auto;
+}
+
+.tool-btn--mode {
+  background: var(--color-accent-muted);
+  color: var(--color-accent);
+  border-color: var(--color-accent-border);
 }
 
 .input-bar {
@@ -68,14 +79,6 @@
   &::placeholder {
     color: var(--color-text-subtle);
   }
-}
-
-.hidden-textarea {
-  position: absolute;
-  opacity: 0;
-  width: 1px;
-  height: 1px;
-  pointer-events: none;
 }
 
 .input-preview {

@@ -45,7 +45,10 @@
     "you": "You",
     "assistant": "Assistant",
     "preview": "Preview",
-    "write": "Write"
+    "write": "Write",
+    "input_rich": "Rich Input",
+    "input_plain": "Plain Input",
+    "plain_hint": "Plain text mode · Enter to send · Shift+Enter for new line"
   },
   "users": {
     "title": "Users",

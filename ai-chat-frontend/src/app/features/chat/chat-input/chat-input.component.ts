@@ -12,11 +12,12 @@ import { marked } from 'marked';
   styleUrl: './chat-input.component.scss'
 })
 export class ChatInputComponent {
-  @ViewChild('textarea') textareaRef!: ElementRef<HTMLTextAreaElement>;
+  @ViewChild('textarea') textareaRef?: ElementRef<HTMLTextAreaElement>;
   send = output<string>();
   private sanitizer = inject(DomSanitizer);
 
   value = signal('');
+  richMode = signal(true);
   previewMode = signal(false);
 
   previewHtml = computed<SafeHtml>(() => {
@@ -33,7 +34,8 @@ export class ChatInputComponent {
   }
 
   onInput(): void {
-    const el = this.textareaRef.nativeElement;
+    const el = this.textareaRef?.nativeElement;
+    if (!el) return;
     el.style.height = 'auto';
     el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
   }
@@ -46,9 +48,8 @@ export class ChatInputComponent {
     this.previewMode.set(false);
     // Reset textarea height on next tick
     setTimeout(() => {
-      if (this.textareaRef?.nativeElement) {
-        this.textareaRef.nativeElement.style.height = 'auto';
-      }
+      const el = this.getTextarea();
+      if (el) el.style.height = 'auto';
     });
   }
 
@@ -56,9 +57,18 @@ export class ChatInputComponent {
     this.previewMode.set(!this.previewMode());
   }
 
+  toggleInputMode(): void {
+    this.richMode.set(!this.richMode());
+    if (!this.richMode()) {
+      this.previewMode.set(false);
+    }
+  }
+
   applyFormat(type: 'bold' | 'italic' | 'code' | 'quote' | 'link' | 'ul' | 'h2'): void {
-    if (!this.textareaRef?.nativeElement) return;
-    const textarea = this.textareaRef.nativeElement;
+    if (!this.richMode()) return;
+    if (this.previewMode()) return;
+    const textarea = this.getTextarea();
+    if (!textarea) return;
     textarea.focus();
 
     switch (type) {
@@ -88,7 +98,8 @@ export class ChatInputComponent {
   }
 
   private wrapSelection(prefix: string, suffix: string, placeholder: string): void {
-    const textarea = this.textareaRef.nativeElement;
+    const textarea = this.getTextarea();
+    if (!textarea) return;
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const text = this.value();
@@ -102,7 +113,8 @@ export class ChatInputComponent {
   }
 
   private prefixLines(prefix: string): void {
-    const textarea = this.textareaRef.nativeElement;
+    const textarea = this.getTextarea();
+    if (!textarea) return;
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const text = this.value();
@@ -113,5 +125,9 @@ export class ChatInputComponent {
     this.value.set(`${before}${lines}${after}`);
     const nextPos = before.length + lines.length;
     setTimeout(() => textarea.setSelectionRange(nextPos, nextPos));
+  }
+
+  private getTextarea(): HTMLTextAreaElement | null {
+    return this.textareaRef?.nativeElement ?? null;
   }
 }
