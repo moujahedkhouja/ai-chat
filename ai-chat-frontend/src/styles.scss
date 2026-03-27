@@ -1,26 +1,32 @@
 /* ─── Meridian Design System ──────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Figtree:wght@300;400;500;600;700&family=Cairo:wght@300;400;500;600;700&display=swap');
 
-/* Dark tokens — default */
+/* Light tokens — default */
 :root {
-  --color-bg:            #080c14;
-  --color-surface:       #0c1626;
-  --color-card:          #0e1b30;
-  --color-border:        rgba(0, 201, 167, 0.10);
+  --color-bg:            #f4f8fc;
+  --color-surface:       #ffffff;
+  --color-card:          #ffffff;
+  --color-border:        rgba(43, 83, 124, 0.16);
 
-  --color-accent:        #00c9a7;
-  --color-accent-hi:     #33d9bd;
-  --color-accent-muted:  rgba(0, 201, 167, 0.10);
-  --color-accent-border: rgba(0, 201, 167, 0.22);
+  --color-accent:        #1aa88f;
+  --color-accent-hi:     #0f8b77;
+  --color-accent-muted:  rgba(26, 168, 143, 0.12);
+  --color-accent-border: rgba(26, 168, 143, 0.35);
 
-  --color-text:          #dde8f5;
-  --color-text-muted:    #5a7494;
-  --color-text-subtle:   #253347;
+  --color-text:          #15324a;
+  --color-text-muted:    #567086;
+  --color-text-subtle:   #8ba2b6;
 
-  --color-danger:        #e06060;
-  --color-success:       #4acc8f;
+  --color-danger:        #c94f5f;
+  --color-success:       #2f9e73;
 
-  --gradient-accent: linear-gradient(135deg, #009e84 0%, #33d9bd 100%);
+  --color-primary:       var(--color-accent);
+  --color-primary-rgb:   26, 168, 143;
+  --color-danger-rgb:    201, 79, 95;
+  --color-bg-hover:      #eef5fb;
+  --color-bg-card:       var(--color-card);
+
+  --gradient-accent: linear-gradient(135deg, #3ecfbc 0%, #99e6c8 100%);
 
   --f-display: 'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
   --f-body:    'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -38,24 +44,30 @@
 
 /* Light theme overrides — applied when <html class="theme-light"> */
 html.theme-light {
-  --color-bg:            #edf3f8;
+  --color-bg:            #f8fbff;
   --color-surface:       #ffffff;
-  --color-card:          #f5fafd;
-  --color-border:        rgba(0, 0, 0, 0.07);
+  --color-card:          #fdfefe;
+  --color-border:        rgba(43, 83, 124, 0.14);
 
-  --color-accent:        #00a88e;
-  --color-accent-hi:     #007a68;
-  --color-accent-muted:  rgba(0, 168, 142, 0.08);
-  --color-accent-border: rgba(0, 168, 142, 0.20);
+  --color-accent:        #18a58d;
+  --color-accent-hi:     #0d7f6d;
+  --color-accent-muted:  rgba(24, 165, 141, 0.10);
+  --color-accent-border: rgba(24, 165, 141, 0.30);
 
-  --color-text:          #0d1d2e;
-  --color-text-muted:    #4a6680;
-  --color-text-subtle:   #a0b8cc;
+  --color-text:          #143149;
+  --color-text-muted:    #5b7488;
+  --color-text-subtle:   #91a8ba;
 
-  --color-danger:        #c94040;
-  --color-success:       #1f8c5a;
+  --color-danger:        #c44a5b;
+  --color-success:       #2f9e73;
 
-  --gradient-accent: linear-gradient(135deg, #009e84 0%, #33d9bd 100%);
+  --color-primary:       var(--color-accent);
+  --color-primary-rgb:   24, 165, 141;
+  --color-danger-rgb:    196, 74, 91;
+  --color-bg-hover:      #f1f7fc;
+  --color-bg-card:       var(--color-card);
+
+  --gradient-accent: linear-gradient(135deg, #41cfbc 0%, #9be7c8 100%);
 }
 
 *,
@@ -68,8 +80,11 @@ html.theme-light {
 
 html,
 body {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(128, 203, 227, 0.14), transparent 38%),
+    radial-gradient(circle at 85% 10%, rgba(141, 230, 196, 0.18), transparent 34%),
+    var(--color-bg);
   height: 100%;
-  background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--f-body);
   font-size: 14px;
