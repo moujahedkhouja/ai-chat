@@ -21,7 +21,8 @@ export class MessageBubbleComponent implements OnChanges {
   constructor(private sanitizer: DomSanitizer) {}
 
   get userAvatar(): string | null {
-    return this.authService.getProfilePicturePath();
+    const user = this.authService.getCurrentUser();
+    return this.authService.getAvatarUrl(user?.userId, user?.profilePicturePath);
   }
 
   get username(): string {

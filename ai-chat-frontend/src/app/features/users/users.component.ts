@@ -28,14 +28,14 @@ export class UsersComponent implements OnInit {
   userToDelete: UserResponse | null = null;
   userToChangePassword: UserResponse | null = null;
 
-  userToEditUsername: UserResponse | null = null;
-  editUsernameValue = '';
-  editUsernameLoading = false;
-  editUsernameError = '';
+  userToEdit: UserResponse | null = null;
+  editValue = { username: '', firstName: '', lastName: '' };
+  editLoading = false;
+  editError = '';
 
   constructor(
-    private userService: UserService,
-    private authService: AuthService
+    public authService: AuthService,
+    private userService: UserService
   ) {}
 
   ngOnInit() {
