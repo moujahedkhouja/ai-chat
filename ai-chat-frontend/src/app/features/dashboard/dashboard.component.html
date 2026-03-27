@@ -1,16 +1,16 @@
 <div class="dashboard">
   <div class="page-header">
     <div class="page-header-text">
-      <h1 class="page-title">Dashboard</h1>
-      <p class="page-subtitle">Welcome back, {{ username }}</p>
+      <h1 class="page-title">{{ 'dashboard.title' | translate }}</h1>
+      <p class="page-subtitle">{{ 'dashboard.welcome' | translate }}, {{ username }}</p>
     </div>
-    <button class="logout-btn" type="button" (click)="logout()" title="Sign out">
+    <button class="logout-btn" type="button" (click)="logout()" [title]="'dashboard.signout' | translate">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
         <path d="M6 3H3.5A1.5 1.5 0 0 0 2 4.5v7A1.5 1.5 0 0 0 3.5 13H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
         <path d="M10 5l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M13 8H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       </svg>
-      <span>Sign out</span>
+      <span>{{ 'dashboard.signout' | translate }}</span>
     </button>
   </div>
 
@@ -26,7 +26,7 @@
           </svg>
         </div>
         <div class="stat-value">{{ totalUsers }}</div>
-        <div class="stat-label">Total Users</div>
+        <div class="stat-label">{{ 'dashboard.total_users' | translate }}</div>
       </div>
 
       <div class="stat-card">
@@ -39,21 +39,21 @@
           </svg>
         </div>
         <div class="stat-value">{{ role }}</div>
-        <div class="stat-label">Your Role</div>
+        <div class="stat-label">{{ 'users.col.role' | translate }}</div>
       </div>
     </div>
 
     @if (recentUsers.length > 0) {
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">Recent Users</h2>
-          <a routerLink="/users" class="btn-outline">View all</a>
+          <h2 class="card-title">{{ 'dashboard.recent_conversations' | translate }}</h2>
+          <a routerLink="/users" class="btn-outline">{{ 'dashboard.view_all' | translate }}</a>
         </div>
         <div class="user-table">
           <div class="table-header">
-            <span>User</span>
-            <span>Email</span>
-            <span>Role</span>
+            <span>{{ 'users.col.user' | translate }}</span>
+            <span>{{ 'users.col.email' | translate }}</span>
+            <span>{{ 'users.col.role' | translate }}</span>
           </div>
           @for (user of recentUsers; track user.id) {
             <div class="table-row">
@@ -70,8 +70,8 @@
     }
   } @else {
     <div class="card welcome-card">
-      <h2 class="card-title">Welcome to AI Chat</h2>
-      <p class="card-text">Your workspace is ready. Use the navigation to get started.</p>
+      <h2 class="card-title">{{ 'dashboard.welcome' | translate }}</h2>
+      <p class="card-text">{{ 'dashboard.start_chatting' | translate }}</p>
     </div>
   }
 </div>

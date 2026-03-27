@@ -5,11 +5,12 @@ import { AuthService } from '../../auth/auth.service';
 import { UserResponse } from '../../models/user.model';
 import { CreateUserDialogComponent } from './create-user-dialog/create-user-dialog.component';
 import { ChangePasswordDialogComponent } from './change-password-dialog/change-password-dialog.component';
+import { TranslatePipe } from '../../core/translate.pipe';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CreateUserDialogComponent, ChangePasswordDialogComponent, ReactiveFormsModule, FormsModule],
+  imports: [CreateUserDialogComponent, ChangePasswordDialogComponent, ReactiveFormsModule, FormsModule, TranslatePipe],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss'
 })

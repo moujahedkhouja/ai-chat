@@ -6,7 +6,7 @@
       [(ngModel)]="value"
       (keydown)="onKeydown($event)"
       (input)="onInput()"
-      placeholder="Message AI..."
+      [placeholder]="'chat.placeholder' | translate"
       rows="1"
     ></textarea>
     <button
@@ -14,7 +14,7 @@
       type="button"
       (click)="submit()"
       [disabled]="!value.trim()"
-      title="Send (Enter)"
+      [title]="'chat.send' | translate"
     >
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
         <path d="M14.5 1.5L1 6l5 2.5 2.5 5L14.5 1.5Z" fill="currentColor"/>

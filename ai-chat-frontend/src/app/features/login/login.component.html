@@ -69,36 +69,26 @@
 
       <!-- Headline -->
       <h2 class="hero-headline">
-        @if (isRtl) {
-          <span>مساحتك الذكية</span>
-          <span class="hero-accent">دائماً في متناول يدك</span>
-        } @else {
-          <span>Your intelligent</span>
-          <span class="hero-accent">workspace</span>
-        }
+        <span>{{ 'login.tagline' | translate }}</span>
       </h2>
 
-      <p class="hero-sub">
-        {{ isRtl
-          ? 'منصة محادثة مدعومة بالذكاء الاصطناعي — خاصة وآمنة'
-          : 'AI-powered conversations, seamlessly private.' }}
-      </p>
+      <p class="hero-sub">{{ 'login.sub' | translate }}</p>
 
       <!-- Stats row -->
       <div class="hero-stats">
         <div class="stat">
-          <span class="stat-val">{{ isRtl ? '٢٤/٧' : '24/7' }}</span>
-          <span class="stat-key">{{ isRtl ? 'متاح' : 'Available' }}</span>
+          <span class="stat-val">24/7</span>
+          <span class="stat-key">{{ langService.isArabic ? 'متاح' : 'Available' }}</span>
         </div>
         <span class="stat-sep"></span>
         <div class="stat">
           <span class="stat-val">E2E</span>
-          <span class="stat-key">{{ isRtl ? 'مشفّر' : 'Encrypted' }}</span>
+          <span class="stat-key">{{ langService.isArabic ? 'مشفّر' : 'Encrypted' }}</span>
         </div>
         <span class="stat-sep"></span>
         <div class="stat">
-          <span class="stat-val">{{ isRtl ? '١٠٠٪' : '100%' }}</span>
-          <span class="stat-key">{{ isRtl ? 'خاص' : 'Private' }}</span>
+          <span class="stat-val">100%</span>
+          <span class="stat-key">{{ langService.isArabic ? 'خاص' : 'Private' }}</span>
         </div>
       </div>
     </div>
@@ -109,11 +99,9 @@
   <main class="login-panel">
     <div class="login-card">
 
-      <p class="card-eyebrow">{{ isRtl ? 'مرحباً بك' : 'Welcome back' }}</p>
-      <h1 class="card-title">{{ isRtl ? 'تسجيل الدخول' : 'Sign in' }}</h1>
-      <p class="card-sub">
-        {{ isRtl ? 'أدخل بيانات حسابك للمتابعة' : 'Enter your credentials to continue' }}
-      </p>
+      <p class="card-eyebrow">{{ 'login.welcome' | translate }}</p>
+      <h1 class="card-title">{{ 'login.btn' | translate }}</h1>
+      <p class="card-sub">{{ 'login.subtitle' | translate }}</p>
 
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form" novalidate>
 
@@ -128,7 +116,7 @@
             autocomplete="username"
           />
           <label class="field-label" for="username">
-            {{ isRtl ? 'اسم المستخدم' : 'Username' }}
+            {{ 'login.username' | translate }}
           </label>
         </div>
 
@@ -143,14 +131,14 @@
             autocomplete="current-password"
           />
           <label class="field-label" for="password">
-            {{ isRtl ? 'كلمة المرور' : 'Password' }}
+            {{ 'login.password' | translate }}
           </label>
           <button
             class="field-eye-btn"
             type="button"
             (click)="togglePassword()"
-            [title]="showPassword ? (isRtl ? 'إخفاء كلمة المرور' : 'Hide password') : (isRtl ? 'إظهار كلمة المرور' : 'Show password')"
-            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+            [title]="showPassword ? ('login.hide_password' | translate) : ('login.show_password' | translate)"
+            [attr.aria-label]="showPassword ? ('login.hide_password' | translate) : ('login.show_password' | translate)"
           >
             @if (showPassword) {
               <!-- Eye-off (hide) -->
@@ -176,16 +164,16 @@
               <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.4"/>
               <path d="M7 4.5v2.5M7 9v.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
             </svg>
-            {{ isRtl ? 'اسم المستخدم أو كلمة المرور غير صحيحة' : error }}
+            {{ 'login.error.invalid' | translate }}
           </div>
         }
 
         <button class="btn-submit" type="submit" [disabled]="loading">
           @if (loading) {
             <span class="btn-spinner" aria-hidden="true"></span>
-            {{ isRtl ? 'جارٍ الدخول…' : 'Signing in…' }}
+            {{ langService.isArabic ? 'جارٍ الدخول…' : 'Signing in…' }}
           } @else {
-            {{ isRtl ? 'دخول' : 'Sign in' }}
+            {{ 'login.btn' | translate }}
             <svg class="btn-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path d="M3 8h10M9.5 4.5 13 8l-3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>

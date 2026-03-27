@@ -2,8 +2,8 @@
 
   <!-- Header -->
   <div class="page-header">
-    <h1 class="page-title">Profile</h1>
-    <p class="page-subtitle">Manage your account information</p>
+    <h1 class="page-title">{{ 'profile.title' | translate }}</h1>
+    <p class="page-subtitle">{{ 'profile.account_info' | translate }}</p>
   </div>
 
   <!-- Avatar card -->
@@ -14,7 +14,7 @@
       } @else {
         <div class="avatar-fallback">{{ user?.username?.charAt(0)?.toUpperCase() ?? '?' }}</div>
       }
-      <label class="avatar-edit-btn" title="Change photo">
+      <label class="avatar-edit-btn" [title]="'profile.save' | translate">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
           <path d="M2 12h10M9.5 2.5l2 2-6 6H3.5V9l6-6.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -27,7 +27,7 @@
       <span class="role-badge" [class]="user?.role?.toString()?.toLowerCase()">{{ user?.role }}</span>
     </div>
     @if (avatarUploading) {
-      <span class="uploading-hint">Uploading…</span>
+      <span class="uploading-hint">{{ 'common.loading' | translate }}</span>
     }
     @if (avatarError) {
       <p class="field-error">{{ avatarError }}</p>
@@ -36,17 +36,18 @@
 
   <!-- Account info form -->
   <div class="card">
-    <h2 class="card-title">Account Information</h2>
+    <h2 class="card-title">{{ 'profile.account_info' | translate }}</h2>
     <form [formGroup]="infoForm" (ngSubmit)="onSaveInfo()" class="form">
 
       <div class="field">
-        <label class="field-label" for="p-username">Username</label>
+        <label class="field-label" for="p-username">{{ 'profile.username' | translate }}</label>
         <input id="p-username" class="field-input" type="text"
-               formControlName="username" autocomplete="username" placeholder="Your username"/>
+               formControlName="username" autocomplete="username"
+               [placeholder]="'profile.username' | translate"/>
       </div>
 
       <div class="field">
-        <label class="field-label" for="p-email">Email address</label>
+        <label class="field-label" for="p-email">{{ 'profile.email' | translate }}</label>
         <input id="p-email" class="field-input" type="email"
                formControlName="email" autocomplete="email" placeholder="your@email.com"/>
       </div>
@@ -55,12 +56,12 @@
         <div class="alert alert-error">{{ infoError }}</div>
       }
       @if (infoSuccess) {
-        <div class="alert alert-success">{{ infoSuccess }}</div>
+        <div class="alert alert-success">{{ 'profile.saved' | translate }}</div>
       }
 
       <div class="form-actions">
         <button class="btn-primary" type="submit" [disabled]="infoLoading || infoForm.invalid">
-          @if (infoLoading) { Saving… } @else { Save Changes }
+          @if (infoLoading) { {{ 'profile.saving' | translate }} } @else { {{ 'profile.save' | translate }} }
         </button>
       </div>
     </form>
@@ -68,16 +69,17 @@
 
   <!-- Change password form -->
   <div class="card">
-    <h2 class="card-title">Change Password</h2>
+    <h2 class="card-title">{{ 'profile.change_password' | translate }}</h2>
     <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" class="form">
 
       <div class="field">
-        <label class="field-label" for="p-cur">Current Password</label>
+        <label class="field-label" for="p-cur">{{ 'profile.current_password' | translate }}</label>
         <div class="input-wrap">
           <input id="p-cur" class="field-input" [type]="showCurrentPassword ? 'text' : 'password'"
-                 formControlName="currentPassword" autocomplete="current-password" placeholder="Enter current password"/>
+                 formControlName="currentPassword" autocomplete="current-password"
+                 [placeholder]="'profile.current_password' | translate"/>
           <button type="button" class="eye-btn" (click)="showCurrentPassword = !showCurrentPassword"
-                  [attr.aria-label]="showCurrentPassword ? 'Hide password' : 'Show password'">
+                  [attr.aria-label]="showCurrentPassword ? ('login.hide_password' | translate) : ('login.show_password' | translate)">
             @if (showCurrentPassword) {
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
                 <path d="M2 2l12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -96,12 +98,13 @@
       </div>
 
       <div class="field">
-        <label class="field-label" for="p-new">New Password</label>
+        <label class="field-label" for="p-new">{{ 'profile.new_password' | translate }}</label>
         <div class="input-wrap">
           <input id="p-new" class="field-input" [type]="showNewPassword ? 'text' : 'password'"
-                 formControlName="newPassword" autocomplete="new-password" placeholder="Min. 8 characters"/>
+                 formControlName="newPassword" autocomplete="new-password"
+                 [placeholder]="'common.min8' | translate"/>
           <button type="button" class="eye-btn" (click)="showNewPassword = !showNewPassword"
-                  [attr.aria-label]="showNewPassword ? 'Hide password' : 'Show password'">
+                  [attr.aria-label]="showNewPassword ? ('login.hide_password' | translate) : ('login.show_password' | translate)">
             @if (showNewPassword) {
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
                 <path d="M2 2l12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -128,7 +131,7 @@
 
       <div class="form-actions">
         <button class="btn-primary" type="submit" [disabled]="passwordLoading || passwordForm.invalid">
-          @if (passwordLoading) { Saving… } @else { Change Password }
+          @if (passwordLoading) { {{ 'profile.updating' | translate }} } @else { {{ 'profile.change_password' | translate }} }
         </button>
       </div>
     </form>

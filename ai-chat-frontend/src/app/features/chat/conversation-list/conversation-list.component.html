@@ -11,10 +11,10 @@
         type="text"
         [(ngModel)]="searchQuery"
         (ngModelChange)="onSearch()"
-        placeholder="Search chats..."
+        [placeholder]="'chat.search' | translate"
       />
     </div>
-    <button class="new-btn" type="button" (click)="newChat.emit()" title="New chat">
+    <button class="new-btn" type="button" (click)="newChat.emit()" [title]="'chat.new' | translate">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
         <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
       </svg>
@@ -35,7 +35,7 @@
           <button
             class="conv-delete"
             type="button"
-            title="Delete"
+            [title]="'chat.delete' | translate"
             (click)="$event.stopPropagation(); delete.emit(conv.id)"
           >
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
@@ -48,7 +48,7 @@
     @if (groups.length === 0) {
       <div class="conv-empty">
         @if (searchQuery) { No results for "{{ searchQuery }}" }
-        @else { No conversations yet }
+        @else { {{ 'chat.no_conversations' | translate }} }
       </div>
     }
   </div>

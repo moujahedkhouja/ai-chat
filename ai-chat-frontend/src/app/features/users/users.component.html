@@ -1,15 +1,15 @@
 <div class="users-page">
   <div class="page-header">
     <div>
-      <h1 class="page-title">Users</h1>
-      <p class="page-subtitle">{{ totalElements }} total users</p>
+      <h1 class="page-title">{{ 'users.title' | translate }}</h1>
+      <p class="page-subtitle">{{ totalElements }} {{ 'users.total' | translate }}</p>
     </div>
     @if (isAdmin) {
       <button class="btn-primary" type="button" (click)="showCreateForm = true">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
           <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
-        New User
+        {{ 'users.new' | translate }}
       </button>
     }
   </div>
@@ -19,16 +19,16 @@
   }
 
   @if (loading) {
-    <div class="loading-state">Loading users...</div>
+    <div class="loading-state">{{ 'users.loading' | translate }}</div>
   } @else {
     <!-- Desktop table -->
     <div class="card desktop-table">
       <table>
         <thead>
           <tr>
-            <th>User</th>
-            <th>Email</th>
-            <th>Role</th>
+            <th>{{ 'users.col.user' | translate }}</th>
+            <th>{{ 'users.col.email' | translate }}</th>
+            <th>{{ 'users.col.role' | translate }}</th>
             <th></th>
           </tr>
         </thead>
@@ -46,13 +46,17 @@
               <td class="actions-cell">
                 @if (isAdmin) {
                   <div class="action-btns">
-                    <button class="btn-edit-icon" type="button" title="Edit username" aria-label="Edit username"
+                    <button class="btn-edit-icon" type="button"
+                      [title]="'users.edit_username' | translate"
+                      [attr.aria-label]="'users.edit_username' | translate"
                       (click)="onEditUsername(user)">
                       <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                         <path d="M9.5 2.5l2 2L4 12H2v-2L9.5 2.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                       </svg>
                     </button>
-                    <button class="btn-password-icon" type="button" title="Change password" aria-label="Change password"
+                    <button class="btn-password-icon" type="button"
+                      [title]="'users.change_password' | translate"
+                      [attr.aria-label]="'users.change_password' | translate"
                       (click)="userToChangePassword = user">
                       <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
                         <rect x="2" y="7" width="12" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/>
@@ -60,7 +64,9 @@
                         <circle cx="8" cy="11" r="1" fill="currentColor"/>
                       </svg>
                     </button>
-                    <button class="btn-danger-icon" type="button" title="Delete user" aria-label="Delete user"
+                    <button class="btn-danger-icon" type="button"
+                      [title]="'users.delete' | translate"
+                      [attr.aria-label]="'users.delete' | translate"
                       (click)="onDeleteUser(user)">
                       <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                         <path d="M1 3h12M5 3V2h4v1M2 3l1 9h8l1-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -87,13 +93,17 @@
           </div>
           @if (isAdmin) {
             <div class="action-btns">
-              <button class="btn-edit-icon" type="button" title="Edit username" aria-label="Edit username"
+              <button class="btn-edit-icon" type="button"
+                [title]="'users.edit_username' | translate"
+                [attr.aria-label]="'users.edit_username' | translate"
                 (click)="onEditUsername(user)">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                   <path d="M9.5 2.5l2 2L4 12H2v-2L9.5 2.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </button>
-              <button class="btn-password-icon" type="button" title="Change password" aria-label="Change password"
+              <button class="btn-password-icon" type="button"
+                [title]="'users.change_password' | translate"
+                [attr.aria-label]="'users.change_password' | translate"
                 (click)="userToChangePassword = user">
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
                   <rect x="2" y="7" width="12" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/>
@@ -101,7 +111,9 @@
                   <circle cx="8" cy="11" r="1" fill="currentColor"/>
                 </svg>
               </button>
-              <button class="btn-danger-icon" type="button" title="Delete user" aria-label="Delete user"
+              <button class="btn-danger-icon" type="button"
+                [title]="'users.delete' | translate"
+                [attr.aria-label]="'users.delete' | translate"
                 (click)="onDeleteUser(user)">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                   <path d="M1 3h12M5 3V2h4v1M2 3l1 9h8l1-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -115,9 +127,9 @@
 
     @if (totalPages > 1) {
       <div class="pagination">
-        <button class="page-btn" [disabled]="currentPage === 0" (click)="onPageChange(currentPage - 1)">← Prev</button>
+        <button class="page-btn" [disabled]="currentPage === 0" (click)="onPageChange(currentPage - 1)">{{ 'users.prev' | translate }}</button>
         <span class="page-info">{{ currentPage + 1 }} / {{ totalPages }}</span>
-        <button class="page-btn" [disabled]="currentPage === totalPages - 1" (click)="onPageChange(currentPage + 1)">Next →</button>
+        <button class="page-btn" [disabled]="currentPage === totalPages - 1" (click)="onPageChange(currentPage + 1)">{{ 'users.next' | translate }}</button>
       </div>
     }
   }
@@ -143,14 +155,14 @@
   @if (userToEditUsername) {
     <div class="confirm-overlay" (click)="userToEditUsername = null">
       <div class="confirm-dialog edit-username-dialog" (click)="$event.stopPropagation()">
-        <h3 class="confirm-title">Edit Username</h3>
-        <p class="confirm-text">Current: <strong>{{ userToEditUsername.username }}</strong></p>
+        <h3 class="confirm-title">{{ 'edit_username.title' | translate }}</h3>
+        <p class="confirm-text">{{ 'edit_username.current' | translate }} <strong>{{ userToEditUsername.username }}</strong></p>
         <div class="edit-field">
           <input
             class="edit-input"
             type="text"
             [(ngModel)]="editUsernameValue"
-            placeholder="New username"
+            [placeholder]="'edit_username.placeholder' | translate"
             autofocus
             (keydown.enter)="confirmEditUsername()"
             (keydown.escape)="userToEditUsername = null"
@@ -160,11 +172,11 @@
           }
         </div>
         <div class="confirm-actions">
-          <button class="btn-ghost" type="button" (click)="userToEditUsername = null">Cancel</button>
+          <button class="btn-ghost" type="button" (click)="userToEditUsername = null">{{ 'edit_username.cancel' | translate }}</button>
           <button class="btn-primary-sm" type="button"
             [disabled]="editUsernameLoading || !editUsernameValue.trim() || editUsernameValue.trim() === userToEditUsername!.username"
             (click)="confirmEditUsername()">
-            @if (editUsernameLoading) { Saving... } @else { Save }
+            @if (editUsernameLoading) { {{ 'edit_username.saving' | translate }} } @else { {{ 'edit_username.save' | translate }} }
           </button>
         </div>
       </div>
@@ -180,14 +192,14 @@
             <path d="M3 4h10M6 4V2.5h4V4M5 4v8.5h6V4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
-        <h3 class="confirm-title">Delete User</h3>
+        <h3 class="confirm-title">{{ 'delete.title' | translate }}</h3>
         <p class="confirm-text">
-          Are you sure you want to delete <strong>{{ userToDelete.username }}</strong>?
-          This action cannot be undone.
+          {{ 'delete.confirm' | translate }} <strong>{{ userToDelete.username }}</strong>?
+          {{ 'delete.warning' | translate }}
         </p>
         <div class="confirm-actions">
-          <button class="btn-ghost" type="button" (click)="userToDelete = null">Cancel</button>
-          <button class="btn-delete" type="button" (click)="confirmDelete()">Delete</button>
+          <button class="btn-ghost" type="button" (click)="userToDelete = null">{{ 'delete.cancel' | translate }}</button>
+          <button class="btn-delete" type="button" (click)="confirmDelete()">{{ 'delete.btn' | translate }}</button>
         </div>
       </div>
     </div>

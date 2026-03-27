@@ -5,11 +5,12 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
 import { LoginRequest } from '../../models/auth.model';
 import { LanguageService } from '../../core/language.service';
+import { TranslatePipe } from '../../core/translate.pipe';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TranslatePipe],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
