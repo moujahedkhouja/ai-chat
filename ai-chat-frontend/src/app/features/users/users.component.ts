@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../../core/user.service';
 import { AuthService } from '../../auth/auth.service';
@@ -10,7 +11,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CreateUserDialogComponent, ChangePasswordDialogComponent, ReactiveFormsModule, FormsModule, TranslateModule],
+  imports: [CommonModule, CreateUserDialogComponent, ChangePasswordDialogComponent, ReactiveFormsModule, FormsModule, TranslateModule],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss'
 })
@@ -25,6 +26,17 @@ export class UsersComponent implements OnInit {
   loading = false;
   errorMessage = '';
 
+  constructor(
+    public authService: AuthService,
+    private userService: UserService
+  ) {
+    this.isAdmin = this.authService.getRole() === 'ADMIN';
+  }
+
+  ngOnInit() {
+    this.loadUsers();
+  }
+
   userToDelete: UserResponse | null = null;
   userToChangePassword: UserResponse | null = null;
 
@@ -32,16 +44,6 @@ export class UsersComponent implements OnInit {
   editValue = { username: '', firstName: '', lastName: '' };
   editLoading = false;
   editError = '';
-
-  constructor(
-    public authService: AuthService,
-    private userService: UserService
-  ) {}
-
-  ngOnInit() {
-    this.isAdmin = this.authService.getRole() === 'ADMIN';
-    this.loadUsers();
-  }
 
   loadUsers() {
     this.loading = true;
@@ -88,7 +90,10 @@ export class UsersComponent implements OnInit {
     this.userToChangePassword = null;
   }
 
-  onEditUser(user: UserResponse): void {
+  onEditUser(user: UserResponse, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
     this.userToEdit = user;
     this.editValue = {
       username: user.username,

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { UserService } from '../../../core/user.service';
 import { UserResponse } from '../../../models/user.model';
@@ -15,7 +16,7 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-change-password-dialog',
   standalone: true,
-  imports: [ReactiveFormsModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './change-password-dialog.component.html',
   styleUrl: './change-password-dialog.component.scss'
 })
