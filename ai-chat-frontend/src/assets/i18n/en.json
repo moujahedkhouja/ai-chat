@@ -53,6 +53,8 @@
     "section_identity": "Account",
     "section_name": "Name",
     "username": "Username",
+    "password": "Password",
+    "password_placeholder": "Leave empty to keep the current password",
     "first_name": "First Name",
     "last_name": "Last Name",
     "change_password": "Change password",
@@ -142,5 +144,6 @@
     "loading": "Loading…",
     "error": "Something went wrong",
     "min8": "Min. 8 characters"
-  }
+  },
+  "change_password": "Change Password"
 }

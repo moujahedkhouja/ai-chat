@@ -53,6 +53,8 @@
     "section_identity": "الحساب",
     "section_name": "الاسم",
     "username": "اسم المستخدم",
+    "password": "كلمة المرور",
+    "password_placeholder": "اترك الحقل فارغًا للإبقاء على كلمة المرور الحالية",
     "first_name": "الاسم الأول",
     "last_name": "اسم العائلة",
     "change_password": "تغيير كلمة المرور",
@@ -142,5 +144,6 @@
     "loading": "جارٍ التحميل…",
     "error": "حدث خطأ ما",
     "min8": "الحد الأدنى 8 أحرف"
-  }
+  },
+  "change_password": "تغيير كلمة المرور"
 }
