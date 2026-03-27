@@ -244,4 +244,78 @@ class UserServiceTest {
         assertThat(response.role()).isEqualTo(Role.USER);
         assertThat(response.linkedinUrl()).isEqualTo("https://linkedin.com/in/john");
     }
+
+    @Test
+    void updateProfile_withNewUniqueUsernameAndEmail_updatesAndReturns() {
+        UUID id = UUID.randomUUID();
+        User user = new User();
+        user.setId(id);
+        user.setUsername("oldname");
+        user.setEmail("old@example.com");
+        UpdateProfileRequest request = new UpdateProfileRequest("newname", "new@example.com");
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.existsByUsername("newname")).thenReturn(false);
+        when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
+        when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        UserResponse result = userService.updateProfile(id, request);
+
+        assertThat(result.username()).isEqualTo("newname");
+        assertThat(result.email()).isEqualTo("new@example.com");
+        verify(userRepository).save(any(User.class));
+    }
+
+    @Test
+    void updateProfile_withSameUsernameAndEmail_doesNotCheckDuplicates() {
+        UUID id = UUID.randomUUID();
+        User user = new User();
+        user.setId(id);
+        user.setUsername("samename");
+        user.setEmail("same@example.com");
+        UpdateProfileRequest request = new UpdateProfileRequest("samename", "same@example.com");
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        UserResponse result = userService.updateProfile(id, request);
+
+        assertThat(result.username()).isEqualTo("samename");
+        verify(userRepository, never()).existsByUsername(any());
+        verify(userRepository, never()).existsByEmail(any());
+    }
+
+    @Test
+    void updateProfile_withTakenUsername_throwsUsernameAlreadyExistsException() {
+        UUID id = UUID.randomUUID();
+        User user = new User();
+        user.setId(id);
+        user.setUsername("oldname");
+        user.setEmail("old@example.com");
+        UpdateProfileRequest request = new UpdateProfileRequest("taken", "old@example.com");
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.existsByUsername("taken")).thenReturn(true);
+
+        assertThatThrownBy(() -> userService.updateProfile(id, request))
+                .isInstanceOf(UsernameAlreadyExistsException.class);
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void updateProfile_withTakenEmail_throwsEmailAlreadyExistsException() {
+        UUID id = UUID.randomUUID();
+        User user = new User();
+        user.setId(id);
+        user.setUsername("oldname");
+        user.setEmail("old@example.com");
+        UpdateProfileRequest request = new UpdateProfileRequest("oldname", "taken@example.com");
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.existsByEmail("taken@example.com")).thenReturn(true);
+
+        assertThatThrownBy(() -> userService.updateProfile(id, request))
+                .isInstanceOf(EmailAlreadyExistsException.class);
+        verify(userRepository, never()).save(any());
+    }
 }

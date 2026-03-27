@@ -97,4 +97,31 @@ public class UserService {
         User saved = userRepository.save(user);
         return UserResponse.from(saved);
     }
+
+    public UserResponse updateProfile(UUID userId, UpdateProfileRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        if (!user.getUsername().equals(request.username())) {
+            if (userRepository.existsByUsername(request.username())) {
+                throw new UsernameAlreadyExistsException(request.username());
+            }
+            user.setUsername(request.username());
+        }
+
+        if (!user.getEmail().equals(request.email())) {
+            if (userRepository.existsByEmail(request.email())) {
+                throw new EmailAlreadyExistsException(request.email());
+            }
+            user.setEmail(request.email());
+        }
+
+        return UserResponse.from(userRepository.save(user));
+    }
+
+    @Transactional(readOnly = true)
+    public User getRawUser(UUID id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+    }
 }
