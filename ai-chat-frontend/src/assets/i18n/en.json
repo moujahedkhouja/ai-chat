@@ -55,6 +55,7 @@
     "username": "Username",
     "password": "Password",
     "password_placeholder": "Leave empty to keep the current password",
+    "password_help": "Fill this only if you want to reset the password",
     "first_name": "First Name",
     "last_name": "Last Name",
     "change_password": "Change password",
