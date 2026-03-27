@@ -183,56 +183,84 @@
     </app-change-password-dialog>
   }
 
-  <!-- Edit user modal -->
+  <!-- Edit user dialog -->
   @if (userToEdit) {
-    <div class="confirm-overlay" (click)="userToEdit = null">
-      <div class="confirm-dialog edit-user-dialog" (click)="$event.stopPropagation()">
-        <h3 class="confirm-title">{{ 'users.edit_title' | translate }}</h3>
+    <div class="eu-overlay" (click)="userToEdit = null">
+      <div class="eu-dialog" (click)="$event.stopPropagation()">
 
-        <div class="edit-fields">
-          <div class="edit-field">
-            <label class="field-label">{{ 'users.username' | translate }}</label>
+        <!-- Header -->
+        <div class="eu-header">
+          <div class="eu-header-text">
+            <h2 class="eu-title">{{ 'users.edit_title' | translate }}</h2>
+            <p class="eu-subtitle">@{{ userToEdit.username }}</p>
+          </div>
+          <button class="eu-close" type="button" (click)="userToEdit = null" [attr.aria-label]="'common.cancel' | translate">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Form body -->
+        <div class="eu-body">
+
+          <!-- Section: Identity -->
+          <p class="eu-section-label">{{ 'users.section_identity' | translate }}</p>
+
+          <div class="eu-field">
+            <label class="eu-label" for="eu-username">{{ 'users.username' | translate }}</label>
             <input
-              class="edit-input"
+              id="eu-username"
+              class="eu-input"
               type="text"
               [(ngModel)]="editValue.username"
               [placeholder]="'users.username' | translate"
               autocomplete="off"/>
           </div>
 
-          <div class="edit-field">
-            <label class="field-label">{{ 'users.first_name' | translate }}</label>
-            <input
-              class="edit-input"
-              type="text"
-              [(ngModel)]="editValue.firstName"
-              [placeholder]="'users.first_name' | translate"
-              autocomplete="off"/>
-          </div>
+          <!-- Section: Name -->
+          <p class="eu-section-label eu-section-gap">{{ 'users.section_name' | translate }}</p>
 
-          <div class="edit-field">
-            <label class="field-label">{{ 'users.last_name' | translate }}</label>
-            <input
-              class="edit-input"
-              type="text"
-              [(ngModel)]="editValue.lastName"
-              [placeholder]="'users.last_name' | translate"
-              autocomplete="off"/>
+          <div class="eu-row">
+            <div class="eu-field">
+              <label class="eu-label" for="eu-firstname">{{ 'users.first_name' | translate }}</label>
+              <input
+                id="eu-firstname"
+                class="eu-input"
+                type="text"
+                [(ngModel)]="editValue.firstName"
+                [placeholder]="'users.first_name' | translate"
+                autocomplete="given-name"/>
+            </div>
+
+            <div class="eu-field">
+              <label class="eu-label" for="eu-lastname">{{ 'users.last_name' | translate }}</label>
+              <input
+                id="eu-lastname"
+                class="eu-input"
+                type="text"
+                [(ngModel)]="editValue.lastName"
+                [placeholder]="'users.last_name' | translate"
+                autocomplete="family-name"/>
+            </div>
           </div>
 
           @if (editError) {
-            <span class="field-error">{{ editError }}</span>
+            <p class="eu-error">{{ editError }}</p>
           }
+
         </div>
 
-        <div class="confirm-actions">
-          <button class="btn-ghost" type="button" (click)="userToEdit = null">{{ 'common.cancel' | translate }}</button>
-          <button class="btn-primary-sm" type="button"
+        <!-- Actions -->
+        <div class="eu-actions">
+          <button class="eu-btn-ghost" type="button" (click)="userToEdit = null">{{ 'common.cancel' | translate }}</button>
+          <button class="eu-btn-primary" type="button"
             [disabled]="editLoading || !editValue.username.trim()"
             (click)="confirmEditUser()">
             @if (editLoading) { {{ 'common.saving' | translate }} } @else { {{ 'common.save' | translate }} }
           </button>
         </div>
+
       </div>
     </div>
   }

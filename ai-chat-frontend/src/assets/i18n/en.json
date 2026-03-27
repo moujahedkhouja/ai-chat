@@ -50,6 +50,8 @@
     "error": "Failed to load users",
     "edit": "Edit user",
     "edit_title": "Edit User Details",
+    "section_identity": "Account",
+    "section_name": "Name",
     "username": "Username",
     "first_name": "First Name",
     "last_name": "Last Name",
