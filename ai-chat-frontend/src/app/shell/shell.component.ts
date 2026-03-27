@@ -2,6 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 import { SidebarComponent } from '../shared/components/sidebar/sidebar.component';
 import { BottomTabBarComponent } from '../shared/components/bottom-tab-bar/bottom-tab-bar.component';
 import { AuthService } from '../auth/auth.service';
@@ -9,7 +10,7 @@ import { AuthService } from '../auth/auth.service';
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterOutlet, SidebarComponent, BottomTabBarComponent],
+  imports: [RouterOutlet, SidebarComponent, BottomTabBarComponent, TranslateModule],
   templateUrl: './shell.component.html',
   styleUrl: './shell.component.scss'
 })
@@ -28,4 +29,11 @@ export class ShellComponent {
   );
 
   readonly isChatPage = computed(() => this.url()?.startsWith('/chat') ?? false);
+
+  logout(): void {
+    this.authService.logout().subscribe({
+      next: () => this.router.navigate(['/login']),
+      error: () => this.router.navigate(['/login'])
+    });
+  }
 }
