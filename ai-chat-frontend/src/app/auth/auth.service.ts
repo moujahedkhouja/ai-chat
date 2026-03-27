@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, catchError, of, tap } from 'rxjs';
 import { LoginRequest, ChangePasswordRequest, CurrentUser } from '../models/auth.model';
+import { UserResponse } from '../models/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -57,5 +58,12 @@ export class AuthService {
 
   getCurrentUser(): CurrentUser | null {
     return this.currentUserSubject.value;
+  }
+
+  refreshFromProfile(user: UserResponse): void {
+    const current = this.currentUserSubject.value;
+    if (current) {
+      this.currentUserSubject.next({ ...current, username: user.username });
+    }
   }
 }

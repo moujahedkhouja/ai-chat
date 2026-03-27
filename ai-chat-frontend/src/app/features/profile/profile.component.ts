@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
-
-import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../auth/auth.service';
 import { UserService } from '../../core/user.service';
 import { UserResponse } from '../../models/user.model';
@@ -14,60 +14,100 @@ import { UserResponse } from '../../models/user.model';
 })
 export class ProfileComponent implements OnInit {
   user: UserResponse | null = null;
-  form = inject(FormBuilder).group({
-    linkedinUrl: ['']
+
+  private fb = inject(FormBuilder);
+
+  infoForm = this.fb.group({
+    username: ['', [Validators.required, Validators.maxLength(50)]],
+    email: ['', [Validators.required, Validators.email]]
   });
-  loading = false;
+
+  passwordForm = this.fb.group({
+    currentPassword: ['', Validators.required],
+    newPassword: ['', [Validators.required, Validators.minLength(8)]]
+  });
+
+  infoLoading = false;
+  infoSuccess = '';
+  infoError = '';
+
+  passwordLoading = false;
+  passwordSuccess = '';
+  passwordError = '';
+
+  showCurrentPassword = false;
+  showNewPassword = false;
+
   avatarUploading = false;
-  successMessage = '';
-  errorMessage = '';
+  avatarError = '';
 
   constructor(
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
-    const userId = this.authService.getUserId();
-    if (userId) {
-      this.userService.getUser(userId).subscribe({
-        next: (user) => {
-          this.user = user;
-          this.form.patchValue({ linkedinUrl: user.linkedinUrl || '' });
-        },
-        error: () => this.errorMessage = 'Failed to load profile'
-      });
-    }
+    this.userService.getProfile().subscribe({
+      next: (user) => {
+        this.user = user;
+        this.infoForm.patchValue({ username: user.username, email: user.email });
+      },
+      error: () => this.infoError = 'Failed to load profile'
+    });
   }
 
-  onSave() {
-    if (!this.user) return;
-    this.loading = true;
-    this.userService.updateUser(this.user.id, { linkedinUrl: this.form.value.linkedinUrl })
-      .subscribe({
-        next: (updated) => {
-          this.user = updated;
-          this.successMessage = 'Profile updated successfully';
-          this.loading = false;
-        },
-        error: () => {
-          this.errorMessage = 'Failed to update profile';
-          this.loading = false;
-        }
-      });
+  onSaveInfo() {
+    if (this.infoForm.invalid) return;
+    this.infoLoading = true;
+    this.infoSuccess = '';
+    this.infoError = '';
+    const { username, email } = this.infoForm.value;
+    this.userService.updateProfile({ username: username!, email: email! }).subscribe({
+      next: (updated) => {
+        this.user = updated;
+        this.infoSuccess = 'Profile updated';
+        this.infoLoading = false;
+        this.authService.refreshFromProfile(updated);
+      },
+      error: (err) => {
+        this.infoError = err?.error?.error ?? 'Failed to update profile';
+        this.infoLoading = false;
+      }
+    });
+  }
+
+  onChangePassword() {
+    if (this.passwordForm.invalid) return;
+    this.passwordLoading = true;
+    this.passwordSuccess = '';
+    this.passwordError = '';
+    const { currentPassword, newPassword } = this.passwordForm.value;
+    this.http.post('/api/auth/change-password', { currentPassword, newPassword }).subscribe({
+      next: () => {
+        this.passwordSuccess = 'Password changed successfully';
+        this.passwordForm.reset();
+        this.passwordLoading = false;
+      },
+      error: (err) => {
+        this.passwordError = err?.error?.error ?? 'Failed to change password';
+        this.passwordLoading = false;
+      }
+    });
   }
 
   onAvatarChange(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file || !this.user) return;
     this.avatarUploading = true;
+    this.avatarError = '';
     this.userService.uploadAvatar(this.user.id, file).subscribe({
       next: (updated) => {
         this.user = updated;
         this.avatarUploading = false;
       },
       error: () => {
-        this.errorMessage = 'Failed to upload avatar';
+        this.avatarError = 'Failed to upload avatar';
         this.avatarUploading = false;
       }
     });
