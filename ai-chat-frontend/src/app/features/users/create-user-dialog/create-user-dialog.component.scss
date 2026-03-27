@@ -83,6 +83,60 @@
   gap: 14px;
 }
 
+.avatar-row {
+  display: flex;
+  justify-content: center;
+}
+
+.avatar-wrap {
+  position: relative;
+}
+
+.avatar-img,
+.avatar-fallback {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+}
+
+.avatar-img {
+  object-fit: cover;
+}
+
+.avatar-fallback {
+  background: var(--gradient-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--f-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: #0c0a06;
+}
+
+.avatar-edit-btn {
+  position: absolute;
+  bottom: 0;
+  inset-inline-end: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+
+  &:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent-border);
+  }
+}
+
 .field-row {
   display: flex;
   gap: 12px;

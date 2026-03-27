@@ -8,6 +8,22 @@
     </div>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="dialog-form">
+      <div class="avatar-row">
+        <div class="avatar-wrap">
+          @if (avatarPreviewUrl()) {
+            <img class="avatar-img" [src]="avatarPreviewUrl()!" alt="avatar preview"/>
+          } @else {
+            <div class="avatar-fallback">{{ avatarInitial() }}</div>
+          }
+          <label class="avatar-edit-btn" [title]="'users.edit' | translate">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+              <path d="M2 12h10M9.5 2.5l2 2-6 6H3.5V9l6-6.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <input type="file" accept="image/*" (change)="onAvatarChange($event)" style="display:none"/>
+          </label>
+        </div>
+      </div>
+
       <div class="field">
         <label class="field-label" for="d-username">{{ 'create_user.username' | translate }}</label>
         <input id="d-username" class="field-input" type="text" formControlName="username" placeholder="e.g. john_doe" autocomplete="off"/>
@@ -56,3 +72,11 @@
     </form>
   </div>
 </div>
+
+@if (showCropper()) {
+  <app-image-cropper-dialog
+    [imageChangedEvent]="imageChangedEvent()"
+    (cropped)="onImageCropped($event)"
+    (cancelled)="onCropperCancelled()">
+  </app-image-cropper-dialog>
+}
