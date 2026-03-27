@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { UserService } from '../../../core/user.service';
 import { UserResponse } from '../../../models/user.model';
-import { TranslatePipe } from '../../../core/translate.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 
 function passwordsMatch(control: AbstractControl): ValidationErrors | null {
   const newPassword = control.get('newPassword')?.value;
@@ -15,7 +15,7 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-change-password-dialog',
   standalone: true,
-  imports: [ReactiveFormsModule, TranslatePipe],
+  imports: [ReactiveFormsModule, TranslateModule],
   templateUrl: './change-password-dialog.component.html',
   styleUrl: './change-password-dialog.component.scss'
 })

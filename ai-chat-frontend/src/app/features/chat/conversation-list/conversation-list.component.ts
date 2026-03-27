@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Conversation } from '../../../models/chat.model';
-import { TranslatePipe } from '../../../core/translate.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface ConversationGroup {
   label: string;
@@ -12,7 +12,7 @@ interface ConversationGroup {
 @Component({
   selector: 'app-conversation-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslatePipe],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './conversation-list.component.html',
   styleUrl: './conversation-list.component.scss'
 })

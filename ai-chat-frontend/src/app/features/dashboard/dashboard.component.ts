@@ -4,12 +4,12 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
 import { UserService } from '../../core/user.service';
 import { UserResponse } from '../../models/user.model';
-import { TranslatePipe } from '../../core/translate.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, TranslatePipe],
+  imports: [CommonModule, RouterLink, TranslateModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })

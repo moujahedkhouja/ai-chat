@@ -1,11 +1,11 @@
 import { Component, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslatePipe } from '../../../core/translate.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-chat-input',
   standalone: true,
-  imports: [FormsModule, TranslatePipe],
+  imports: [FormsModule, TranslateModule],
   templateUrl: './chat-input.component.html',
   styleUrl: './chat-input.component.scss'
 })

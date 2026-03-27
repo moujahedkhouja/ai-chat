@@ -2,12 +2,12 @@ import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../../../core/user.service';
 import { UserResponse } from '../../../models/user.model';
-import { TranslatePipe } from '../../../core/translate.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-create-user-dialog',
   standalone: true,
-  imports: [ReactiveFormsModule, TranslatePipe],
+  imports: [ReactiveFormsModule, TranslateModule],
   templateUrl: './create-user-dialog.component.html',
   styleUrl: './create-user-dialog.component.scss'
 })

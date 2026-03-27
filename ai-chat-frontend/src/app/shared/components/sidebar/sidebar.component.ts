@@ -3,12 +3,12 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../auth/auth.service';
 import { ThemeService } from '../../../core/theme.service';
 import { LanguageService } from '../../../core/language.service';
-import { TranslatePipe } from '../../../core/translate.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, TranslatePipe],
+  imports: [RouterLink, RouterLinkActive, TranslateModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })

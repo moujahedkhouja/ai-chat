@@ -3,12 +3,12 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../auth/auth.service';
 import { UserService } from '../../core/user.service';
 import { UserResponse } from '../../models/user.model';
-import { TranslatePipe } from '../../core/translate.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [ReactiveFormsModule, TranslatePipe],
+  imports: [ReactiveFormsModule, TranslateModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })

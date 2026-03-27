@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
-import { TranslatePipe } from '../../core/translate.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 
 function confirmPasswordValidator(group: AbstractControl): ValidationErrors | null {
   const newPassword = group.get('newPassword')?.value;
@@ -13,7 +13,7 @@ function confirmPasswordValidator(group: AbstractControl): ValidationErrors | nu
 @Component({
   selector: 'app-change-password',
   standalone: true,
-  imports: [ReactiveFormsModule, TranslatePipe],
+  imports: [ReactiveFormsModule, TranslateModule],
   templateUrl: './change-password.component.html',
   styleUrl: './change-password.component.scss'
 })
