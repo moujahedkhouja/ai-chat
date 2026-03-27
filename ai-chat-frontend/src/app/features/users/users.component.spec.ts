@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { UsersComponent } from './users.component';
 import { AuthService } from '../../auth/auth.service';
 import { UserService } from '../../core/user.service';
@@ -97,5 +97,21 @@ describe('UsersComponent', () => {
       expect(component.userToEdit()).toBeNull();
       expect(userServiceSpy.listUsers).toHaveBeenCalledTimes(2);
     });
+
+    it('pressing escape closes edit dialog', () => {
+      component.onEditUser(mockUser);
+
+      component.onEscapePressed();
+
+      expect(component.userToEdit()).toBeNull();
+    });
+  });
+
+  it('pressing escape closes delete dialog', () => {
+    component.onDeleteUser(mockUser);
+
+    component.onEscapePressed();
+
+    expect(component.userToDelete()).toBeNull();
   });
 });
