@@ -83,8 +83,8 @@
         </svg>
       }
     </button>
-    <button class="avatar-btn" type="button" [title]="username + ' · ' + role" (click)="logout()">
+    <a class="avatar-btn" routerLink="/profile" [title]="username + ' · ' + role">
       <span class="avatar-initials">{{ username.charAt(0).toUpperCase() }}</span>
-    </button>
+    </a>
   </div>
 </aside>
