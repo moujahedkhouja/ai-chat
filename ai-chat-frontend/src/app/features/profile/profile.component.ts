@@ -170,7 +170,7 @@ export class ProfileComponent implements OnInit {
   }
 
   getAvatarUrl(): string | null {
-    if (!this.user?.profilePicturePath) return null;
-    return `/api/uploads/${this.user.profilePicturePath}`;
+    if (!this.user?.id || !this.user?.profilePicturePath) return null;
+    return this.authService.getAvatarUrl(this.user.id, this.user.profilePicturePath);
   }
 }

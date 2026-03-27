@@ -37,7 +37,8 @@ export class SidebarComponent {
   }
 
   get avatarUrl(): string | null {
-    return this.authService.getProfilePicturePath();
+    const user = this.authService.getCurrentUser();
+    return this.authService.getAvatarUrl(user?.userId, user?.profilePicturePath);
   }
 
   get isAdminOrModerator(): boolean {

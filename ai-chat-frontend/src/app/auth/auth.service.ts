@@ -68,6 +68,11 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
+  getAvatarUrl(userId?: string | null, path?: string | null): string | null {
+    if (!path || !userId) return null;
+    return `/api/users/${userId}/avatar`;
+  }
+
   refreshFromProfile(user: UserResponse): void {
     const current = this.currentUserSubject.value;
     if (current) {
