@@ -198,6 +198,44 @@ class ProfileControllerTest {
     }
 
     @Test
+    void updateProfile_withBlankUsername_returns400() {
+        Map<String, String> request = Map.of(
+                "username", "",
+                "email", "valid@example.com"
+        );
+        ResponseEntity<Map> response = restClient.put()
+                .uri("/api/profile")
+                .header("Cookie", userCookie)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(request)
+                .retrieve()
+                .toEntity(Map.class);
+        assertThat(response.getStatusCode().value()).isEqualTo(400);
+    }
+
+    @Test
+    void updateProfile_withUniqueValues_reissuesNewJwt() {
+        String originalToken = userCookie.replace("auth_token=", "");
+        Map<String, String> request = Map.of(
+                "username", "renameduser",
+                "email", "renamed@example.com"
+        );
+        ResponseEntity<UserResponse> response = restClient.put()
+                .uri("/api/profile")
+                .header("Cookie", userCookie)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(request)
+                .retrieve()
+                .toEntity(UserResponse.class);
+
+        assertThat(response.getStatusCode().value()).isEqualTo(200);
+        List<String> setCookieHeaders = response.getHeaders().get("Set-Cookie");
+        assertThat(setCookieHeaders).isNotNull().isNotEmpty();
+        String newToken = extractTokenFromCookie(setCookieHeaders.get(0));
+        assertThat(newToken).isNotNull().isNotEqualTo(originalToken);
+    }
+
+    @Test
     void updateProfile_unauthenticated_returns401() {
         Map<String, String> request = Map.of(
                 "username", "newname",
