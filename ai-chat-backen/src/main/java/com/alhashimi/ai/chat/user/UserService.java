@@ -59,6 +59,14 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
 
+        if (request.username() != null) {
+            String newUsername = request.username().trim();
+            if (!newUsername.equals(user.getUsername()) && userRepository.existsByUsername(newUsername)) {
+                throw new UsernameAlreadyExistsException(newUsername);
+            }
+            user.setUsername(newUsername);
+        }
+
         if (request.role() != null) {
             user.setRole(request.role());
         }

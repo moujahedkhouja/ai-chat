@@ -154,7 +154,7 @@ class UserServiceTest {
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        UpdateUserRequest request = new UpdateUserRequest(Role.MODERATOR, "newemail@example.com", false, "https://linkedin.com/in/bob");
+        UpdateUserRequest request = new UpdateUserRequest(null, Role.MODERATOR, "newemail@example.com", false, "https://linkedin.com/in/bob");
 
         UserResponse response = userService.updateUser(id, request);
 
@@ -232,7 +232,7 @@ class UserServiceTest {
         user.setId(id);
 
         // Only update linkedinUrl — all other fields are null
-        UpdateUserRequest request = new UpdateUserRequest(null, null, null, "https://linkedin.com/in/john");
+        UpdateUserRequest request = new UpdateUserRequest(null, null, null, null, "https://linkedin.com/in/john");
 
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -300,6 +300,49 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.updateProfile(id, request))
                 .isInstanceOf(UsernameAlreadyExistsException.class);
         verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void updateUser_withTakenUsername_throwsUsernameAlreadyExistsException() {
+        UUID id = UUID.randomUUID();
+        User user = buildUser(id, "alice", "alice@example.com", Role.USER);
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.existsByUsername("bob")).thenReturn(true);
+
+        assertThatThrownBy(() -> userService.updateUser(id, new UpdateUserRequest("bob", null, null, null, null)))
+                .isInstanceOf(UsernameAlreadyExistsException.class);
+
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void updateUser_withSameUsername_doesNotThrow() {
+        UUID id = UUID.randomUUID();
+        User user = buildUser(id, "alice", "alice@example.com", Role.USER);
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        userService.updateUser(id, new UpdateUserRequest("alice", null, null, null, null));
+
+        verify(userRepository, never()).existsByUsername(anyString());
+    }
+
+    @Test
+    void updateUser_withFreeUsername_updatesUsername() {
+        UUID id = UUID.randomUUID();
+        User user = buildUser(id, "alice", "alice@example.com", Role.USER);
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.existsByUsername("carol")).thenReturn(false);
+        when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        userService.updateUser(id, new UpdateUserRequest("carol", null, null, null, null));
+
+        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+        verify(userRepository).save(captor.capture());
+        assertThat(captor.getValue().getUsername()).isEqualTo("carol");
     }
 
     @Test
