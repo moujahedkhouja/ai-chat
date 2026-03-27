@@ -52,6 +52,13 @@
     -webkit-text-fill-color: var(--color-text-muted);
     opacity: 1;
   }
+
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--color-surface) inset;
+    -webkit-text-fill-color: var(--color-text);
+  }
 }
 
 :host-context([dir="rtl"]) .search-input {
