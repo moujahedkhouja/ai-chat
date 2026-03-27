@@ -66,7 +66,7 @@
                     <button class="btn-edit-icon" type="button"
                       [title]="'users.edit' | translate"
                       [attr.aria-label]="'users.edit' | translate"
-                      (click)="onEditUser(user)">
+                      (click)="onEditUser(user, $event)">
                       <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                         <path d="M9.5 2.5l2 2L4 12H2v-2L9.5 2.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                       </svg>
@@ -148,38 +148,44 @@
 
   <!-- Create user dialog -->
   @if (showCreateForm()) {
-    <app-create-user-dialog
-      (userCreated)="onUserCreated()"
-      (cancelled)="showCreateForm.set(false)">
-    </app-create-user-dialog>
+    <div class="dialog-wrapper">
+      <app-create-user-dialog
+        (userCreated)="onUserCreated()"
+        (cancelled)="showCreateForm.set(false)">
+      </app-create-user-dialog>
+    </div>
   }
 
   <!-- Edit user dialog -->
   @if (userToEdit()) {
-    <app-edit-user-dialog
-      [user]="userToEdit()!"
-      (userUpdated)="onUserUpdated()"
-      (cancelled)="userToEdit.set(null)">
-    </app-edit-user-dialog>
+    <div class="dialog-wrapper">
+      <app-edit-user-dialog
+        [user]="userToEdit()"
+        (userUpdated)="onUserUpdated()"
+        (cancelled)="userToEdit.set(null)">
+      </app-edit-user-dialog>
+    </div>
   }
 
   <!-- Delete confirmation modal -->
   @if (userToDelete()) {
-    <div class="confirm-overlay" (click)="userToDelete.set(null)">
-      <div class="confirm-dialog" (click)="$event.stopPropagation()">
-        <div class="confirm-icon">
-          <svg width="22" height="22" viewBox="0 0 16 16" fill="none">
-            <path d="M3 4h10M6 4V2.5h4V4M5 4v8.5h6V4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <h3 class="confirm-title">{{ 'delete.title' | translate }}</h3>
-        <p class="confirm-text">
-          {{ 'delete.confirm' | translate }} <strong>{{ userToDelete()?.username }}</strong>?
-          {{ 'delete.warning' | translate }}
-        </p>
-        <div class="confirm-actions">
-          <button class="btn-ghost" type="button" (click)="userToDelete.set(null)">{{ 'delete.cancel' | translate }}</button>
-          <button class="btn-delete" type="button" (click)="confirmDelete()">{{ 'delete.btn' | translate }}</button>
+    <div class="dialog-wrapper">
+      <div class="confirm-overlay" (click)="userToDelete.set(null)">
+        <div class="confirm-dialog" (click)="$event.stopPropagation()">
+          <div class="confirm-icon">
+            <svg width="22" height="22" viewBox="0 0 16 16" fill="none">
+              <path d="M3 4h10M6 4V2.5h4V4M5 4v8.5h6V4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="confirm-title">{{ 'delete.title' | translate }}</h3>
+          <p class="confirm-text">
+            {{ 'delete.confirm' | translate }} <strong>{{ userToDelete()?.username }}</strong>?
+            {{ 'delete.warning' | translate }}
+          </p>
+          <div class="confirm-actions">
+            <button class="btn-ghost" type="button" (click)="userToDelete.set(null)">{{ 'delete.cancel' | translate }}</button>
+            <button class="btn-delete" type="button" (click)="confirmDelete()">{{ 'delete.btn' | translate }}</button>
+          </div>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { Component, output, input, signal, OnInit } from '@angular/core';
+import { Component, output, input, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../../../core/user.service';
@@ -12,8 +12,8 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './edit-user-dialog.component.html',
   styleUrl: './edit-user-dialog.component.scss'
 })
-export class EditUserDialogComponent implements OnInit {
-  user = input.required<UserResponse>();
+export class EditUserDialogComponent {
+  user = input<UserResponse | null>(null);
   userUpdated = output<UserResponse>();
   cancelled = output<void>();
 
@@ -24,19 +24,21 @@ export class EditUserDialogComponent implements OnInit {
   editLoading = signal(false);
   editError = signal('');
 
-  constructor(private userService: UserService) {}
-
-  ngOnInit() {
-    const user = this.user();
-    this.editUsername.set(user.username);
-    this.editFirstName.set(user.firstName || '');
-    this.editLastName.set(user.lastName || '');
-    this.editPassword.set('');
-    this.editError.set('');
+  constructor(private userService: UserService) {
+    effect(() => {
+      const user = this.user();
+      if (!user) return;
+      this.editUsername.set(user.username);
+      this.editFirstName.set(user.firstName || '');
+      this.editLastName.set(user.lastName || '');
+      this.editPassword.set('');
+      this.editError.set('');
+    });
   }
 
   confirmEditUser(): void {
     const user = this.user();
+    if (!user) return;
     const username = this.editUsername();
     if (!username.trim()) return;
     this.editLoading.set(true);
