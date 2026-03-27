@@ -1,6 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../auth/auth.service';
 import { UserService } from '../../core/user.service';
 import { UserResponse } from '../../models/user.model';
@@ -43,8 +42,7 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private userService: UserService,
-    private http: HttpClient
+    private userService: UserService
   ) {}
 
   ngOnInit() {
@@ -83,7 +81,7 @@ export class ProfileComponent implements OnInit {
     this.passwordSuccess = '';
     this.passwordError = '';
     const { currentPassword, newPassword } = this.passwordForm.value;
-    this.http.post('/api/auth/change-password', { currentPassword, newPassword }).subscribe({
+    this.authService.changePassword({ currentPassword: currentPassword!, newPassword: newPassword! }).subscribe({
       next: () => {
         this.passwordSuccess = 'Password changed successfully';
         this.passwordForm.reset();
