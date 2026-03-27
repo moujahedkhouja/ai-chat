@@ -1,0 +1,26 @@
+<div class="confirm-overlay" (click)="onCancel()">
+  <div class="confirm-dialog cropper-dialog" (click)="$event.stopPropagation()">
+    <h3 class="confirm-title">{{ 'profile.crop_avatar' | translate }}</h3>
+
+    <div class="cropper-container">
+      <image-cropper
+        [imageChangedEvent]="imageChangedEvent"
+        [maintainAspectRatio]="true"
+        [aspectRatio]="1 / 1"
+        [format]="'png'"
+        [autoCrop]="false"
+        (imageCropped)="imageCropped($event)"
+        (imageLoaded)="imageLoaded($event)"
+        (cropperReady)="cropperReady()"
+        (loadImageFailed)="loadImageFailed()">
+      </image-cropper>
+    </div>
+
+    <div class="confirm-actions">
+      <button class="btn-ghost" type="button" (click)="onCancel()">{{ 'common.cancel' | translate }}</button>
+      <button class="btn-primary-sm" type="button" (click)="onSave()" [disabled]="loading || !croppedImage">
+        {{ 'common.save' | translate }}
+      </button>
+    </div>
+  </div>
+</div>
