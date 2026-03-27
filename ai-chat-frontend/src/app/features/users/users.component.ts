@@ -1,5 +1,4 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../../core/user.service';
 import { AuthService } from '../../auth/auth.service';
@@ -11,33 +10,30 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, CreateUserDialogComponent, EditUserDialogComponent, ReactiveFormsModule, FormsModule, TranslateModule],
+  imports: [CreateUserDialogComponent, EditUserDialogComponent, ReactiveFormsModule, FormsModule, TranslateModule],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss'
 })
 export class UsersComponent implements OnInit {
-  users = signal<UserResponse[]>([]);
-  totalElements = signal(0);
-  totalPages = signal(0);
-  currentPage = signal(0);
-  pageSize = signal(20);
-  isAdmin = computed(() => this.authService.role() === 'ADMIN');
-  showCreateForm = signal(false);
-  loading = signal(false);
-  errorMessage = signal('');
+  readonly authService = inject(AuthService);
+  private userService = inject(UserService);
 
-  constructor(
-    public authService: AuthService,
-    private userService: UserService
-  ) {}
+  readonly users = signal<UserResponse[]>([]);
+  readonly totalElements = signal(0);
+  readonly totalPages = signal(0);
+  readonly currentPage = signal(0);
+  readonly pageSize = signal(20);
+  readonly showCreateForm = signal(false);
+  readonly loading = signal(false);
+  readonly errorMessage = signal('');
+  readonly userToDelete = signal<UserResponse | null>(null);
+  readonly userToEdit = signal<UserResponse | null>(null);
+
+  readonly isAdmin = computed(() => this.authService.role() === 'ADMIN');
 
   ngOnInit() {
     this.loadUsers();
   }
-
-  userToDelete = signal<UserResponse | null>(null);
-
-  userToEdit = signal<UserResponse | null>(null);
 
   loadUsers() {
     this.loading.set(true);
@@ -68,9 +64,8 @@ export class UsersComponent implements OnInit {
   confirmDelete() {
     const user = this.userToDelete();
     if (!user) return;
-    const id = user.id;
     this.userToDelete.set(null);
-    this.userService.deleteUser(id).subscribe({
+    this.userService.deleteUser(user.id).subscribe({
       next: () => this.loadUsers(),
       error: () => this.errorMessage.set('Failed to delete user')
     });
@@ -86,12 +81,8 @@ export class UsersComponent implements OnInit {
     this.loadUsers();
   }
 
-  onEditUser(user: UserResponse): void {
+  onEditUser(user: UserResponse, event?: Event) {
+    event?.stopPropagation();
     this.userToEdit.set(user);
-  }
-
-  private finalizeEdit(): void {
-    this.userToEdit.set(null);
-    this.loadUsers();
   }
 }

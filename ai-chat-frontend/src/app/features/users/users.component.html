@@ -149,7 +149,7 @@
   <!-- Create user dialog -->
   @if (showCreateForm()) {
     <app-create-user-dialog
-      (userCreated)="onUserCreated($event)"
+      (userCreated)="onUserCreated()"
       (cancelled)="showCreateForm.set(false)">
     </app-create-user-dialog>
   }
