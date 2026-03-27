@@ -1,4 +1,4 @@
-import { Component, output, input, signal, effect } from '@angular/core';
+import { Component, output, input, signal, effect, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../../../core/user.service';
@@ -13,6 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './edit-user-dialog.component.scss'
 })
 export class EditUserDialogComponent {
+  private userService: UserService = inject(UserService);
   user = input<UserResponse | null>(null);
   userUpdated = output<UserResponse>();
   cancelled = output<void>();
@@ -24,7 +25,7 @@ export class EditUserDialogComponent {
   editLoading = signal(false);
   editError = signal('');
 
-  constructor(private userService: UserService) {
+  constructor() {
     effect(() => {
       const user = this.user();
       if (!user) return;
