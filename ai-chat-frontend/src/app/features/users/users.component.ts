@@ -85,4 +85,14 @@ export class UsersComponent implements OnInit {
     event?.stopPropagation();
     this.userToEdit.set(user);
   }
+
+  @HostListener('document:keydown.escape')
+  onEscapePressed() {
+    if (this.userToDelete()) {
+      this.userToDelete.set(null);
+    }
+    if (this.userToEdit()) {
+      this.userToEdit.set(null);
+    }
+  }
 }
