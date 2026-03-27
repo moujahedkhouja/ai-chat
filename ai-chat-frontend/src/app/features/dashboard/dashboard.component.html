@@ -53,15 +53,28 @@
           <div class="table-header">
             <span>{{ 'users.col.user' | translate }}</span>
             <span>{{ 'users.col.email' | translate }}</span>
+            <span>{{ 'users.first_name' | translate }}</span>
+            <span>{{ 'users.last_name' | translate }}</span>
             <span>{{ 'users.col.role' | translate }}</span>
           </div>
           @for (user of recentUsers(); track user.id) {
             <div class="table-row">
               <div class="user-cell">
-                <div class="user-avatar">{{ getInitial(user.username) }}</div>
+                <div class="user-avatar">
+                  @if (user.profilePicturePath) {
+                    <img
+                      class="user-avatar-img"
+                      [src]="authService.getAvatarUrl(user.id, user.profilePicturePath)"
+                      [alt]="user.username">
+                  } @else {
+                    {{ getInitial(user.username) }}
+                  }
+                </div>
                 <span class="user-name">{{ user.username }}</span>
               </div>
               <span class="user-email">{{ user.email }}</span>
+              <span class="user-meta">{{ user.firstName || '-' }}</span>
+              <span class="user-meta">{{ user.lastName || '-' }}</span>
               <span class="role-badge" [class]="getRoleBadgeClass(user.role)">{{ user.role }}</span>
             </div>
           }
