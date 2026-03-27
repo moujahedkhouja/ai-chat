@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { signal } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { UsersComponent } from './users.component';
 import { AuthService } from '../../auth/auth.service';
@@ -36,10 +37,12 @@ describe('UsersComponent', () => {
   let userServiceSpy: jasmine.SpyObj<UserService>;
 
   beforeEach(async () => {
-    authServiceSpy = jasmine.createSpyObj('AuthService', ['getRole', 'getAvatarUrl']);
+    authServiceSpy = jasmine.createSpyObj('AuthService', ['getAvatarUrl'], {
+      role: signal('ADMIN'),
+      username: signal('admin')
+    });
     userServiceSpy = jasmine.createSpyObj('UserService', ['listUsers', 'deleteUser', 'createUser', 'updateUser', 'adminResetPassword']);
 
-    authServiceSpy.getRole.and.returnValue('ADMIN');
     userServiceSpy.listUsers.and.returnValue(of(mockPage));
 
     await TestBed.configureTestingModule({
@@ -80,49 +83,19 @@ describe('UsersComponent', () => {
   });
 
   describe('edit flow', () => {
-    it('onEditUser opens modal with current user values', () => {
+    it('onEditUser sets userToEdit', () => {
       component.onEditUser(mockUser);
 
       expect(component.userToEdit()).toBe(mockUser);
-      expect(component.editUsername()).toBe(mockUser.username);
-      expect(component.editError()).toBe('');
     });
 
-    it('confirmEditUser success closes modal and reloads', () => {
-      userServiceSpy.updateUser.and.returnValue(of(mockUser));
+    it('onUserUpdated closes modal and reloads', () => {
       component.onEditUser(mockUser);
-      component.editUsername.set('newname');
 
-      component.confirmEditUser();
+      component.onUserUpdated();
 
-      expect(userServiceSpy.updateUser).toHaveBeenCalledWith(mockUser.id, jasmine.objectContaining({ username: 'newname' }));
       expect(component.userToEdit()).toBeNull();
-      expect(component.editLoading()).toBeFalse();
       expect(userServiceSpy.listUsers).toHaveBeenCalledTimes(2);
-    });
-
-    it('confirmEditUser 409 shows taken error', () => {
-      userServiceSpy.updateUser.and.returnValue(throwError(() => ({ status: 409 })));
-      component.onEditUser(mockUser);
-      component.editUsername.set('taken');
-
-      component.confirmEditUser();
-
-      expect(component.editError()).toBe('Username is already taken');
-      expect(component.editLoading()).toBeFalse();
-      expect(component.userToEdit()).toBe(mockUser);
-    });
-
-    it('confirmEditUser other error shows generic error', () => {
-      userServiceSpy.updateUser.and.returnValue(throwError(() => ({ status: 500 })));
-      component.onEditUser(mockUser);
-      component.editUsername.set('newname');
-
-      component.confirmEditUser();
-
-      expect(component.editError()).toBe('Failed to update user');
-      expect(component.editLoading()).toBeFalse();
-      expect(component.userToEdit()).toBe(mockUser);
     });
   });
 });

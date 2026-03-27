@@ -1,21 +1,21 @@
-<div class="bubble" [class.bubble--user]="message.role === 'user'" [class.bubble--assistant]="message.role === 'assistant'">
-  @if (message.role === 'assistant') {
+<div class="bubble" [class.bubble--user]="message().role === 'user'" [class.bubble--assistant]="message().role === 'assistant'">
+  @if (message().role === 'assistant') {
     <div class="bubble-avatar">A</div>
   } @else {
     <div class="bubble-avatar">
-      @if (userAvatar) {
-        <img [src]="userAvatar" [alt]="username" class="bubble-img">
+      @if (userAvatar()) {
+        <img [src]="userAvatar()" [alt]="username()" class="bubble-img">
       } @else {
-        {{ username.charAt(0).toUpperCase() }}
+        {{ username().charAt(0).toUpperCase() }}
       }
     </div>
   }
   <div class="bubble-body">
-    @if (message.role === 'assistant') {
-      <div class="bubble-markdown" [innerHTML]="renderedHtml"></div>
+    @if (message().role === 'assistant') {
+      <div class="bubble-markdown" [innerHTML]="renderedHtml()"></div>
     } @else {
-      <div class="bubble-text">{{ message.content }}</div>
+      <div class="bubble-text">{{ message().content }}</div>
     }
-    <div class="bubble-time">{{ message.timestamp | date:'HH:mm' }}</div>
+    <div class="bubble-time">{{ message().timestamp | date:'HH:mm' }}</div>
   </div>
 </div>

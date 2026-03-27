@@ -21,7 +21,7 @@
             </defs>
           </svg>
         </div>
-        <span class="top-bar-greeting">Welcome back, {{ username }}</span>
+        <span class="top-bar-greeting">Welcome back, {{ username() }}</span>
       </div>
       <div class="top-bar-right">
         <button class="icon-btn" type="button" title="Notifications">
@@ -33,7 +33,7 @@
       </div>
     </header>
 
-    <main class="shell-content" [class.shell-content--flush]="isChatPage">
+    <main class="shell-content" [class.shell-content--flush]="isChatPage()">
       <router-outlet></router-outlet>
     </main>
   </div>

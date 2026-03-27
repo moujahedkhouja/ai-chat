@@ -173,8 +173,8 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  getAvatarUrl(): string | null {
+  avatarUrl = computed(() => {
     const user = this.authService.currentUser();
     return this.authService.getAvatarUrl(user?.userId, user?.profilePicturePath);
-  }
+  });
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, inject, signal } from '@angular/core';
+import { Component, output, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../../../core/user.service';
@@ -13,8 +13,8 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './create-user-dialog.component.scss'
 })
 export class CreateUserDialogComponent {
-  @Output() userCreated = new EventEmitter<UserResponse>();
-  @Output() cancelled = new EventEmitter<void>();
+  userCreated = output<UserResponse>();
+  cancelled = output<void>();
 
   form = inject(FormBuilder).group({
     username: ['', [Validators.required, Validators.minLength(3)]],

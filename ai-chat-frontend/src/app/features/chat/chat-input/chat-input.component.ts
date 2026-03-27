@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, ViewChild, ElementRef, signal } from '@angular/core';
+import { Component, output, ViewChild, ElementRef, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -11,7 +11,7 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class ChatInputComponent {
   @ViewChild('textarea') textareaRef!: ElementRef<HTMLTextAreaElement>;
-  @Output() send = new EventEmitter<string>();
+  send = output<string>();
 
   value = signal('');
 

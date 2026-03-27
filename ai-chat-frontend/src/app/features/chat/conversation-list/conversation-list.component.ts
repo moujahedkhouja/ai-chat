@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, input, signal, computed } from '@angular/core';
+import { Component, output, input, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Conversation } from '../../../models/chat.model';
@@ -19,9 +19,9 @@ interface ConversationGroup {
 export class ConversationListComponent {
   conversations = input<Conversation[]>([]);
   activeId = input<string | null>(null);
-  @Output() select = new EventEmitter<string>();
-  @Output() newChat = new EventEmitter<void>();
-  @Output() delete = new EventEmitter<string>();
+  select = output<string>();
+  newChat = output<void>();
+  delete = output<string>();
 
   searchQuery = signal('');
 

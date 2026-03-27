@@ -9,8 +9,8 @@
   <!-- Avatar card -->
   <div class="card avatar-card">
     <div class="avatar-wrap">
-      @if (getAvatarUrl()) {
-        <img class="avatar-img" [src]="getAvatarUrl()" alt="avatar"/>
+      @if (avatarUrl()) {
+        <img class="avatar-img" [src]="avatarUrl()" alt="avatar"/>
       } @else {
         <div class="avatar-fallback">{{ user()?.username?.charAt(0)?.toUpperCase() ?? '?' }}</div>
       }

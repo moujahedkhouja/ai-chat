@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, input, signal } from '@angular/core';
+import { Component, output, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ImageCropperComponent, ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
 import { TranslateModule } from '@ngx-translate/core';
@@ -12,8 +12,8 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class ImageCropperDialogComponent {
   imageChangedEvent = input<Event | null>(null);
-  @Output() cropped = new EventEmitter<Blob>();
-  @Output() cancelled = new EventEmitter<void>();
+  cropped = output<Blob>();
+  cancelled = output<void>();
 
   croppedImage = signal<Blob | null>(null);
   loading = signal(true);

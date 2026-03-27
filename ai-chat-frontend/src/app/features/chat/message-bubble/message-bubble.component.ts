@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, inject } from '@angular/core';
+import { Component, input, computed, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { marked } from 'marked';
@@ -12,27 +12,27 @@ import { AuthService } from '../../../auth/auth.service';
   templateUrl: './message-bubble.component.html',
   styleUrl: './message-bubble.component.scss'
 })
-export class MessageBubbleComponent implements OnChanges {
-  @Input() message!: Message;
+export class MessageBubbleComponent {
+  message = input.required<Message>();
 
-  renderedHtml: SafeHtml = '';
   private authService = inject(AuthService);
+  private sanitizer = inject(DomSanitizer);
 
-  constructor(private sanitizer: DomSanitizer) {}
+  readonly renderedHtml = computed<SafeHtml>(() => {
+    const msg = this.message();
+    if (msg.role === 'assistant') {
+      const html = String(marked.parse(msg.content));
+      return this.sanitizer.bypassSecurityTrustHtml(html);
+    }
+    return '';
+  });
 
-  get userAvatar(): string | null {
+  readonly userAvatar = computed(() => {
     const user = this.authService.currentUser();
     return this.authService.getAvatarUrl(user?.userId, user?.profilePicturePath);
-  }
+  });
 
-  get username(): string {
+  readonly username = computed(() => {
     return this.authService.currentUser()?.username ?? 'User';
-  }
-
-  ngOnChanges(): void {
-    if (this.message.role === 'assistant') {
-      const html = String(marked.parse(this.message.content));
-      this.renderedHtml = this.sanitizer.bypassSecurityTrustHtml(html);
-    }
-  }
+  });
 }

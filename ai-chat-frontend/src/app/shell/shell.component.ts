@@ -1,5 +1,7 @@
-import { Component, computed } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Component, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
+import { filter, map, startWith } from 'rxjs';
 import { SidebarComponent } from '../shared/components/sidebar/sidebar.component';
 import { BottomTabBarComponent } from '../shared/components/bottom-tab-bar/bottom-tab-bar.component';
 import { AuthService } from '../auth/auth.service';
@@ -12,11 +14,18 @@ import { AuthService } from '../auth/auth.service';
   styleUrl: './shell.component.scss'
 })
 export class ShellComponent {
+  private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
+
   readonly username = computed(() => this.authService.username() ?? 'User');
 
-  constructor(private authService: AuthService, private router: Router) {}
+  readonly url = toSignal(
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd),
+      map(e => (e as NavigationEnd).urlAfterRedirects),
+      startWith(this.router.url)
+    )
+  );
 
-  get isChatPage(): boolean {
-    return this.router.url.startsWith('/chat');
-  }
+  readonly isChatPage = computed(() => this.url()?.startsWith('/chat') ?? false);
 }
