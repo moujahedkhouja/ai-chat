@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EditUserDialogComponent } from './edit-user-dialog.component';
 import { UserService } from '../../../core/user.service';
+import { AuthService } from '../../../auth/auth.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { UserResponse } from '../../../models/user.model';
-import { signal } from '@angular/core';
 
 const mockUser: UserResponse = {
   id: '1',
@@ -23,14 +23,18 @@ describe('EditUserDialogComponent', () => {
   let component: EditUserDialogComponent;
   let fixture: ComponentFixture<EditUserDialogComponent>;
   let userServiceSpy: jasmine.SpyObj<UserService>;
+  let authServiceSpy: jasmine.SpyObj<AuthService>;
 
   beforeEach(async () => {
-    userServiceSpy = jasmine.createSpyObj('UserService', ['updateUser', 'adminResetPassword']);
+    userServiceSpy = jasmine.createSpyObj('UserService', ['updateUser', 'adminResetPassword', 'uploadAvatar']);
+    authServiceSpy = jasmine.createSpyObj('AuthService', ['getAvatarUrl']);
+    authServiceSpy.getAvatarUrl.and.returnValue(null);
 
     await TestBed.configureTestingModule({
       imports: [EditUserDialogComponent, TranslateModule.forRoot()],
       providers: [
-        { provide: UserService, useValue: userServiceSpy }
+        { provide: UserService, useValue: userServiceSpy },
+        { provide: AuthService, useValue: authServiceSpy }
       ]
     }).compileComponents();
 
@@ -83,5 +87,18 @@ describe('EditUserDialogComponent', () => {
     spyOn(component.cancelled, 'emit');
     component.onCancel();
     expect(component.cancelled.emit).toHaveBeenCalled();
+  });
+
+  it('should upload avatar from cropped image and emit avatarUpdated', () => {
+    const updatedUser = { ...mockUser, profilePicturePath: 'avatar.png' };
+    userServiceSpy.uploadAvatar.and.returnValue(of(updatedUser));
+    spyOn(component.avatarUpdated, 'emit');
+
+    component.onImageCropped(new Blob(['x'], { type: 'image/png' }));
+
+    expect(userServiceSpy.uploadAvatar).toHaveBeenCalledWith(mockUser.id, jasmine.any(File));
+    expect(component.editedUser()).toEqual(updatedUser);
+    expect(component.avatarUpdated.emit).toHaveBeenCalled();
+    expect(component.avatarUploading()).toBeFalse();
   });
 });

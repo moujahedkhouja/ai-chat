@@ -161,6 +161,7 @@
     <div class="dialog-wrapper">
       <app-edit-user-dialog
         [user]="userToEdit()"
+        (avatarUpdated)="loadUsers()"
         (userUpdated)="onUserUpdated()"
         (cancelled)="userToEdit.set(null)">
       </app-edit-user-dialog>

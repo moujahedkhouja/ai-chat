@@ -16,6 +16,30 @@
 
     <!-- Form body -->
     <div class="eu-body">
+      <div class="eu-avatar-row">
+        <div class="eu-avatar-wrap">
+          @if (avatarUrl()) {
+            <img class="eu-avatar-img" [src]="avatarUrl()" [alt]="editedUser()?.username || 'avatar'">
+          } @else {
+            <div class="eu-avatar-fallback">{{ editedUser()?.username?.charAt(0)?.toUpperCase() ?? '?' }}</div>
+          }
+          <label class="eu-avatar-edit-btn" [title]="'users.edit' | translate">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+              <path d="M2 12h10M9.5 2.5l2 2-6 6H3.5V9l6-6.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <input type="file" accept="image/*" (change)="onAvatarChange($event)" style="display:none"/>
+          </label>
+        </div>
+        <div class="eu-avatar-meta">
+          <span class="eu-avatar-name">{{ editedUser()?.username }}</span>
+          @if (avatarUploading()) {
+            <span class="eu-avatar-loading">{{ 'common.loading' | translate }}</span>
+          }
+          @if (avatarError()) {
+            <span class="eu-avatar-error">{{ avatarError() }}</span>
+          }
+        </div>
+      </div>
 
       <!-- Section: Identity -->
       <p class="eu-section-label">{{ 'users.section_identity' | translate }}</p>
@@ -92,3 +116,11 @@
 
   </div>
 </div>
+
+@if (showCropper()) {
+  <app-image-cropper-dialog
+    [imageChangedEvent]="imageChangedEvent()"
+    (cropped)="onImageCropped($event)"
+    (cancelled)="onCropperCancelled()">
+  </app-image-cropper-dialog>
+}
