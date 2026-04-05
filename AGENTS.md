@@ -86,7 +86,7 @@ npm test
 | `UserService.listUsers` | `GET /api/users?page=&size=` (paginated, ADMIN/MODERATOR) |
 | `UserService.uploadAvatar` | `POST /api/users/{id}/avatar` (multipart) |
 | `UserService.updateProfile` | `PUT /api/profile` |
-| `ChatService.sendMessage` | ⚠️ **Not yet implemented** — returns a stub response |
+| `ChatService.sendMessage` | `POST /api/chat/message` → Spring AI → LM Studio |
 
 ## Initial Seed Data
 

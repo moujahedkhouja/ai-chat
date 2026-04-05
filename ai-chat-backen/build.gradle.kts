@@ -25,6 +25,7 @@ extra["springAiVersion"] = "2.0.0-M4"
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://repo.spring.io/milestone") }
 }
 
 dependencyManagement {
@@ -42,6 +43,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-flyway")
     implementation("org.flywaydb:flyway-core")
     implementation("org.flywaydb:flyway-database-postgresql")
+    implementation("org.springframework.ai:spring-ai-starter-model-openai")
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")

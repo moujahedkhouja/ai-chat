@@ -1,17 +1,28 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, delay } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Message } from '../models/chat.model';
+
+interface ChatApiResponse {
+  reply: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class ChatService {
+  constructor(private http: HttpClient) {}
+
   /**
-   * Stub: returns a placeholder reply after 1.5 s.
-   * Replace the body of this method with an HTTP call when the backend is ready:
-   *   return this.http.post<{reply: string}>('/api/chat/message', { conversationId, content })
-   *     .pipe(map(r => r.reply));
+   * Sends a message to POST /api/chat/message backed by Spring AI → LM Studio.
+   * Passes the full conversation history so the model has context.
    */
-  sendMessage(conversationId: string, content: string): Observable<string> {
-    const preview = content.length > 50 ? content.slice(0, 50) + '...' : content;
-    const reply = `This is a placeholder response to: *"${preview}"*\n\nThe AI backend is not yet connected. Once integrated, real responses will appear here.`;
-    return of(reply).pipe(delay(1500));
+  sendMessage(
+    conversationId: string,
+    content: string,
+    history: Pick<Message, 'role' | 'content'>[] = []
+  ): Observable<string> {
+    return this.http
+      .post<ChatApiResponse>('/api/chat/message', { conversationId, content, history })
+      .pipe(map(r => r.reply));
   }
 }

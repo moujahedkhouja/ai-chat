@@ -75,13 +75,26 @@ export class ChatComponent {
     const convId = active.id;
 
     this.historyService.addMessage(user, convId, 'user', content);
-    this.activeConversation.set(this.historyService.getConversation(user, convId)!);
+    const updatedConv = this.historyService.getConversation(user, convId)!;
+    this.activeConversation.set(updatedConv);
     this.isTyping.set(true);
 
-    this.chatService.sendMessage(convId, content).subscribe(reply => {
-      this.historyService.addMessage(user, convId, 'assistant', reply);
-      this.activeConversation.set(this.historyService.getConversation(user, convId)!);
-      this.isTyping.set(false);
+    // Pass conversation history (excluding the system greeting) for context
+    const history = updatedConv.messages
+      .filter(m => m.role === 'user' || m.role === 'assistant')
+      .map(m => ({ role: m.role, content: m.content }));
+
+    this.chatService.sendMessage(convId, content, history).subscribe({
+      next: reply => {
+        this.historyService.addMessage(user, convId, 'assistant', reply);
+        this.activeConversation.set(this.historyService.getConversation(user, convId)!);
+        this.isTyping.set(false);
+      },
+      error: () => {
+        this.historyService.addMessage(user, convId, 'assistant', '⚠️ The AI service is unavailable. Make sure LM Studio is running on port 1234.');
+        this.activeConversation.set(this.historyService.getConversation(user, convId)!);
+        this.isTyping.set(false);
+      }
     });
   }
 }
