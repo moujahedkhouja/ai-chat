@@ -106,10 +106,11 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public UserResponse updateAvatar(UUID id, String path) {
+    public UserResponse updateAvatar(UUID id, byte[] avatarData, String contentType) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
-        user.setProfilePicturePath(path);
+        user.setAvatarData(avatarData);
+        user.setAvatarContentType(contentType);
         User saved = userRepository.save(user);
         return UserResponse.from(saved);
     }

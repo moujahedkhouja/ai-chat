@@ -14,7 +14,7 @@ export class AuthService {
   readonly role = computed(() => this.currentUser()?.role ?? null);
   readonly userId = computed(() => this.currentUser()?.userId ?? null);
   readonly username = computed(() => this.currentUser()?.username ?? null);
-  readonly profilePicturePath = computed(() => this.currentUser()?.profilePicturePath ?? null);
+  readonly hasAvatar = computed(() => this.currentUser()?.hasAvatar ?? false);
   readonly forcePasswordChange = computed(() => this.currentUser()?.forcePasswordChange ?? false);
 
   get currentUserValue(): CurrentUser | null {
@@ -76,19 +76,14 @@ export class AuthService {
     return this.username();
   }
 
-  // Deprecated: prefer using `profilePicturePath()`
-  getProfilePicturePath(): string | null {
-    return this.profilePicturePath();
-  }
-
   // Deprecated: prefer using `currentUser()`
   getCurrentUser(): CurrentUser | null {
     return this.currentUser();
   }
 
-  getAvatarUrl(userId?: string | null, path?: string | null): string | null {
-    if (!path || !userId) return null;
-    return `/api/users/${userId}/avatar?v=${encodeURIComponent(path)}`;
+  getAvatarUrl(userId?: string | null, hasAvatar?: boolean | null): string | null {
+    if (!hasAvatar || !userId) return null;
+    return `/api/users/${userId}/avatar`;
   }
 
   refreshFromProfile(user: UserResponse): void {
@@ -99,7 +94,7 @@ export class AuthService {
         username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
-        profilePicturePath: user.profilePicturePath
+        hasAvatar: user.hasAvatar
       };
       this.currentUser.set(updated);
     }

@@ -59,15 +59,7 @@ public class AuthController {
         ResponseCookie cookie = buildAuthCookie(token, 86400);
         httpResponse.addHeader("Set-Cookie", cookie.toString());
 
-        return ResponseEntity.ok(new AuthResponse(
-            user.getId().toString(),
-            user.getUsername(),
-            user.getFirstName(),
-            user.getLastName(),
-            user.getRole().name(),
-            user.isForcePasswordChange(),
-            user.getProfilePicturePath()
-        ));
+        return ResponseEntity.ok(buildAuthResponse(user, user.isForcePasswordChange()));
     }
 
     @PostMapping("/change-password")
@@ -96,15 +88,7 @@ public class AuthController {
         ResponseCookie cookie = buildAuthCookie(token, 86400);
         httpResponse.addHeader("Set-Cookie", cookie.toString());
 
-        return ResponseEntity.ok(new AuthResponse(
-            user.getId().toString(),
-            user.getUsername(),
-            user.getFirstName(),
-            user.getLastName(),
-            user.getRole().name(),
-            false,
-            user.getProfilePicturePath()
-        ));
+        return ResponseEntity.ok(buildAuthResponse(user, false));
     }
 
     @PostMapping("/logout")
@@ -123,15 +107,21 @@ public class AuthController {
         if (user == null) {
             return ResponseEntity.status(401).build();
         }
-        return ResponseEntity.ok(new AuthResponse(
+        return ResponseEntity.ok(buildAuthResponse(user, user.isForcePasswordChange()));
+    }
+
+    // ── private helpers ────────────────────────────────────────────────────
+
+    private AuthResponse buildAuthResponse(User user, boolean forcePasswordChange) {
+        return new AuthResponse(
             user.getId().toString(),
             user.getUsername(),
             user.getFirstName(),
             user.getLastName(),
             user.getRole().name(),
-            user.isForcePasswordChange(),
-            user.getProfilePicturePath()
-        ));
+            forcePasswordChange,
+            user.getAvatarData() != null && user.getAvatarData().length > 0
+        );
     }
 
     private ResponseCookie buildAuthCookie(String token, int maxAge) {

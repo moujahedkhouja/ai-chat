@@ -16,7 +16,7 @@ export interface UserResponse {
   role: 'ADMIN' | 'MODERATOR' | 'USER';
   enabled: boolean;
   forcePasswordChange: boolean;
-  profilePicturePath: string | null;
+  hasAvatar: boolean;
   linkedinUrl: string | null;
   createdAt: string;
   updatedAt: string;

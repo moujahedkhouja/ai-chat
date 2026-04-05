@@ -1,42 +1,36 @@
 package com.alhashimi.ai.chat.user;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Map;
-import java.util.UUID;
+import java.util.Set;
 
+/**
+ * Validates avatar uploads before they are persisted as binary data in the database.
+ * All file I/O has been removed — the raw bytes are stored directly on the {@code User} entity.
+ */
 @Service
 public class AvatarStorageService {
 
-    private static final Map<String, String> MIME_TO_EXTENSION = Map.of(
-            "image/jpeg", "jpg",
-            "image/png",  "png",
-            "image/gif",  "gif",
-            "image/webp", "webp"
+    private static final Set<String> ALLOWED_MIME_TYPES = Set.of(
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/webp"
     );
 
     private static final long MAX_FILE_SIZE = 5L * 1024 * 1024; // 5 MB
 
-    private final Path uploadDir;
-
-    public AvatarStorageService(@Value("${app.upload.avatar-dir}") String avatarDir) {
-        this.uploadDir = Paths.get(avatarDir).toAbsolutePath().normalize();
-    }
-
     /**
-     * Stores the uploaded file on disk and returns the relative filename
-     * (e.g. "uuid-1712345678.png") that should be persisted in the database.
+     * Validates the uploaded file and returns its raw bytes.
+     *
+     * @throws IllegalArgumentException if the MIME type is not allowed or the file exceeds 5 MB
+     * @throws IOException              if the file bytes cannot be read
      */
-    public String store(UUID userId, MultipartFile file) throws IOException {
+    public byte[] validate(MultipartFile file) throws IOException {
         String contentType = file.getContentType();
-        if (contentType == null || !MIME_TO_EXTENSION.containsKey(contentType)) {
+        if (contentType == null || !ALLOWED_MIME_TYPES.contains(contentType)) {
             throw new IllegalArgumentException("Unsupported file type: " + contentType);
         }
 
@@ -45,50 +39,6 @@ public class AvatarStorageService {
                     "File size exceeds 5 MB limit. Actual: " + file.getSize() + " bytes");
         }
 
-        String ext      = MIME_TO_EXTENSION.get(contentType);
-        String filename = userId + "-" + System.currentTimeMillis() + "." + ext;
-
-        Files.createDirectories(uploadDir);
-
-        Path targetPath = uploadDir.resolve(filename);
-        Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
-
-        // Return only the filename — NOT the absolute path
-        return filename;
-    }
-
-    /**
-     * Deletes the file identified by its stored relative filename.
-     * Silently succeeds if the file does not exist.
-     */
-    public void delete(String filename) throws IOException {
-        if (filename == null || filename.isBlank()) return;
-        Path filePath = resolveAndValidate(filename);
-        Files.deleteIfExists(filePath);
-    }
-
-    /**
-     * Resolves a stored relative filename to an absolute {@link Path},
-     * with path-traversal protection.
-     */
-    public Path getFilePath(String filename) {
-        return resolveAndValidate(filename);
-    }
-
-    // ── private ──────────────────────────────────────────────────────────
-
-    private Path resolveAndValidate(String filename) {
-        if (filename == null || filename.isBlank()) {
-            throw new IllegalArgumentException("Filename must not be blank");
-        }
-        // Strip any leading directory components to prevent path traversal
-        // regardless of what was stored (absolute or relative).
-        String basename = Paths.get(filename).getFileName().toString();
-        Path resolved = uploadDir.resolve(basename).normalize();
-
-        if (!resolved.startsWith(uploadDir)) {
-            throw new IllegalArgumentException("Invalid file path");
-        }
-        return resolved;
+        return file.getBytes();
     }
 }

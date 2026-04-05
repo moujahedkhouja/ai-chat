@@ -7,5 +7,5 @@ public record AuthResponse(
     String lastName,
     String role,
     boolean forcePasswordChange,
-    String profilePicturePath
+    boolean hasAvatar
 ) {}

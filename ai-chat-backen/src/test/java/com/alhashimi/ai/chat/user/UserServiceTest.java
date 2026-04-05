@@ -177,21 +177,23 @@ class UserServiceTest {
     }
 
     @Test
-    void updateAvatar_withValidId_setsProfilePicturePathAndSaves() {
+    void updateAvatar_withValidId_savesAvatarDataAndContentType() {
         UUID id = UUID.randomUUID();
         User user = User.builder().username("john").email("john@example.com")
             .password("encoded").role(Role.USER).build();
         user.setId(id);
-        String newPath = "/uploads/avatars/john.jpg";
+        byte[] imageBytes = new byte[]{1, 2, 3};
+        String contentType = "image/png";
 
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        UserResponse response = userService.updateAvatar(id, newPath);
+        UserResponse response = userService.updateAvatar(id, imageBytes, contentType);
 
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(captor.capture());
-        assertThat(captor.getValue().getProfilePicturePath()).isEqualTo(newPath);
+        assertThat(captor.getValue().getAvatarData()).isEqualTo(imageBytes);
+        assertThat(captor.getValue().getAvatarContentType()).isEqualTo(contentType);
     }
 
     @Test

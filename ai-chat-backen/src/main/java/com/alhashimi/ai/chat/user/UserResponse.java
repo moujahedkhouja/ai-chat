@@ -13,7 +13,7 @@ public record UserResponse(
         Role role,
         boolean enabled,
         boolean forcePasswordChange,
-        String profilePicturePath,
+        boolean hasAvatar,
         String linkedinUrl,
         Instant createdAt,
         Instant updatedAt
@@ -28,7 +28,7 @@ public record UserResponse(
                 user.getRole(),
                 user.isEnabled(),
                 user.isForcePasswordChange(),
-                user.getProfilePicturePath(),
+                user.getAvatarData() != null && user.getAvatarData().length > 0,
                 user.getLinkedinUrl(),
                 user.getCreatedAt(),
                 user.getUpdatedAt()

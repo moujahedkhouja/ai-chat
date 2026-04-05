@@ -2,48 +2,54 @@ package com.alhashimi.ai.chat.user;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class AvatarStorageServiceTest {
 
-    @TempDir
-    Path tempDir;
-
     private AvatarStorageService avatarStorageService;
 
     @BeforeEach
     void setUp() {
-        avatarStorageService = new AvatarStorageService(tempDir.toString());
+        avatarStorageService = new AvatarStorageService();
     }
 
     @Test
-    void store_withValidJpegFile_returnsRelativePath() throws IOException {
-        UUID userId = UUID.randomUUID();
+    void validate_withValidJpegFile_returnsBytesMatchingInput() throws IOException {
+        byte[] content = "fake-jpeg-content".getBytes();
         MockMultipartFile file = new MockMultipartFile(
                 "file",
                 "avatar.jpg",
                 "image/jpeg",
-                "fake-jpeg-content".getBytes()
+                content
         );
 
-        String relativePath = avatarStorageService.store(userId, file);
+        byte[] result = avatarStorageService.validate(file);
 
-        assertThat(relativePath).contains(userId.toString());
-        assertThat(relativePath).endsWith(".jpg");
+        assertThat(result).isEqualTo(content);
     }
 
     @Test
-    void store_withInvalidMimeType_throwsIllegalArgumentException() {
-        UUID userId = UUID.randomUUID();
+    void validate_withValidPngFile_returnsBytesMatchingInput() throws IOException {
+        byte[] content = "fake-png-content".getBytes();
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "avatar.png",
+                "image/png",
+                content
+        );
+
+        byte[] result = avatarStorageService.validate(file);
+
+        assertThat(result).isEqualTo(content);
+    }
+
+    @Test
+    void validate_withInvalidMimeType_throwsIllegalArgumentException() {
         MockMultipartFile file = new MockMultipartFile(
                 "file",
                 "malicious.exe",
@@ -51,68 +57,52 @@ class AvatarStorageServiceTest {
                 "fake-binary-content".getBytes()
         );
 
-        assertThatThrownBy(() -> avatarStorageService.store(userId, file))
+        assertThatThrownBy(() -> avatarStorageService.validate(file))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Unsupported file type");
     }
 
     @Test
-    void store_createsDirectoryIfNotExists() throws IOException {
-        Path subDir = tempDir.resolve("new-subdir/avatars");
-        AvatarStorageService serviceWithSubDir = new AvatarStorageService(subDir.toString());
-
-        UUID userId = UUID.randomUUID();
+    void validate_withNullContentType_throwsIllegalArgumentException() {
         MockMultipartFile file = new MockMultipartFile(
                 "file",
-                "avatar.png",
+                "avatar.jpg",
+                null,
+                "some-content".getBytes()
+        );
+
+        assertThatThrownBy(() -> avatarStorageService.validate(file))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Unsupported file type");
+    }
+
+    @Test
+    void validate_withFileThatExceedsMaxSize_throwsIllegalArgumentException() {
+        byte[] oversizedContent = new byte[6 * 1024 * 1024]; // 6 MB
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "big.png",
                 "image/png",
-                "fake-png-content".getBytes()
+                oversizedContent
         );
 
-        serviceWithSubDir.store(userId, file);
-
-        assertThat(subDir).isDirectory();
+        assertThatThrownBy(() -> avatarStorageService.validate(file))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("5 MB");
     }
 
     @Test
-    void store_withExistingFile_replacesIt() throws IOException {
-        UUID userId = UUID.randomUUID();
-        MockMultipartFile firstFile = new MockMultipartFile(
-                "file",
-                "avatar.jpg",
-                "image/jpeg",
-                "original-content".getBytes()
-        );
-        MockMultipartFile secondFile = new MockMultipartFile(
-                "file",
-                "avatar.jpg",
-                "image/jpeg",
-                "updated-content".getBytes()
-        );
-
-        String firstPath = avatarStorageService.store(userId, firstFile);
-        String secondPath = avatarStorageService.store(userId, secondFile);
-
-        Path resolvedPath = avatarStorageService.getFilePath(secondPath);
-        assertThat(Files.readString(resolvedPath)).isEqualTo("updated-content");
-    }
-
-    @Test
-    void delete_removesFileFromDisk() throws IOException {
-        UUID userId = UUID.randomUUID();
+    void validate_withWebpFile_returnsBytesMatchingInput() throws IOException {
+        byte[] content = "fake-webp-content".getBytes();
         MockMultipartFile file = new MockMultipartFile(
                 "file",
                 "avatar.webp",
                 "image/webp",
-                "fake-webp-content".getBytes()
+                content
         );
 
-        String relativePath = avatarStorageService.store(userId, file);
-        Path storedPath = avatarStorageService.getFilePath(relativePath);
-        assertThat(storedPath).exists();
+        byte[] result = avatarStorageService.validate(file);
 
-        avatarStorageService.delete(relativePath);
-
-        assertThat(storedPath).doesNotExist();
+        assertThat(result).isEqualTo(content);
     }
 }

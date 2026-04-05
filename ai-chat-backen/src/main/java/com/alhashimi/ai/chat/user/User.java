@@ -46,8 +46,12 @@ public class User {
     @Column(nullable = false)
     private boolean enabled = true;
 
-    @Column(length = 512)
-    private String profilePicturePath;
+    @Lob
+    @Column(name = "avatar_data")
+    private byte[] avatarData;
+
+    @Column(name = "avatar_content_type", length = 50)
+    private String avatarContentType;
 
     @Column(length = 512)
     private String linkedinUrl;
