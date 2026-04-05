@@ -11,7 +11,7 @@ const mockUser: UserResponse = {
   role: 'USER',
   enabled: true,
   forcePasswordChange: false,
-  profilePicturePath: null,
+  hasAvatar: false,
   linkedinUrl: null,
   createdAt: '2024-01-01T00:00:00Z',
   updatedAt: '2024-01-01T00:00:00Z'
@@ -64,13 +64,13 @@ describe('UserService', () => {
     const file = new File([''], 'avatar.png', { type: 'image/png' });
 
     service.uploadAvatar('1', file).subscribe(user => {
-      expect(user).toEqual({ ...mockUser, profilePicturePath: 'avatars/avatar.png' });
+      expect(user).toEqual({ ...mockUser, hasAvatar: true });
     });
 
     const req = httpMock.expectOne('/api/users/1/avatar');
     expect(req.request.method).toBe('POST');
     expect(req.request.body instanceof FormData).toBeTrue();
-    req.flush({ ...mockUser, profilePicturePath: 'avatars/avatar.png' });
+    req.flush({ ...mockUser, hasAvatar: true });
   });
 
   it('should list users with pagination', () => {

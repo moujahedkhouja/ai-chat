@@ -13,7 +13,7 @@ const mockUser: UserResponse = {
   role: 'USER',
   enabled: true,
   forcePasswordChange: false,
-  profilePicturePath: null,
+  hasAvatar: false,
   linkedinUrl: null,
   createdAt: '2024-01-01T00:00:00Z',
   updatedAt: '2024-01-01T00:00:00Z'
@@ -90,7 +90,7 @@ describe('EditUserDialogComponent', () => {
   });
 
   it('should upload avatar from cropped image and emit avatarUpdated', () => {
-    const updatedUser = { ...mockUser, profilePicturePath: 'avatar.png' };
+    const updatedUser = { ...mockUser, hasAvatar: true };
     userServiceSpy.uploadAvatar.and.returnValue(of(updatedUser));
     spyOn(component.avatarUpdated, 'emit');
 

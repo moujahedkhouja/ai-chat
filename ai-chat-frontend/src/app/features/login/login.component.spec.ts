@@ -40,7 +40,7 @@ describe('LoginComponent', () => {
   });
 
   it('should navigate to dashboard on successful login (forcePasswordChange=false)', () => {
-    const response: CurrentUser = { userId: '1', username: 'user', role: 'USER', forcePasswordChange: false, profilePicturePath: null };
+    const response: CurrentUser = { userId: '1', username: 'user', role: 'USER', forcePasswordChange: false, hasAvatar: false };
     authServiceSpy.login.and.returnValue(of(response));
 
     component.form.setValue({ username: 'user', password: 'pass' });

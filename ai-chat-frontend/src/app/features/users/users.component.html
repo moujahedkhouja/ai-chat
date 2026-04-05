@@ -38,8 +38,8 @@
               <td>
                 <div class="user-cell">
                   <div class="user-avatar">
-                    @if (user.profilePicturePath) {
-                      <img [src]="authService.getAvatarUrl(user.id, user.profilePicturePath)" [alt]="user.username" class="table-avatar">
+                    @if (user.hasAvatar) {
+                      <img [src]="authService.getAvatarUrl(user.id, user.hasAvatar)" [alt]="user.username" class="table-avatar">
                     } @else {
                       {{ user.username.charAt(0).toUpperCase() }}
                     }
@@ -93,8 +93,8 @@
       @for (user of users(); track user.id) {
         <div class="user-card">
           <div class="user-card-avatar">
-            @if (user.profilePicturePath) {
-              <img [src]="authService.getAvatarUrl(user.id, user.profilePicturePath)" [alt]="user.username" class="card-avatar">
+            @if (user.hasAvatar) {
+              <img [src]="authService.getAvatarUrl(user.id, user.hasAvatar)" [alt]="user.username" class="card-avatar">
             } @else {
               {{ user.username.charAt(0).toUpperCase() }}
             }

@@ -42,7 +42,7 @@ describe('ChangePasswordComponent', () => {
   });
 
   it('should navigate to dashboard on success', () => {
-    const response: CurrentUser = { userId: '1', username: 'testuser', role: 'USER', forcePasswordChange: false, profilePicturePath: null };
+    const response: CurrentUser = { userId: '1', username: 'testuser', role: 'USER', forcePasswordChange: false, hasAvatar: false };
     authServiceSpy.changePassword.and.returnValue(of(response));
 
     component.form.setValue({

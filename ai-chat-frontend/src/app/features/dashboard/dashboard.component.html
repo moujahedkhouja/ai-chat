@@ -53,10 +53,10 @@
             <div class="table-row">
               <div class="user-cell">
                 <div class="user-avatar">
-                  @if (user.profilePicturePath) {
+                  @if (user.hasAvatar) {
                     <img
                       class="user-avatar-img"
-                      [src]="authService.getAvatarUrl(user.id, user.profilePicturePath)"
+                      [src]="authService.getAvatarUrl(user.id, user.hasAvatar)"
                       [alt]="user.username">
                   } @else {
                     {{ getInitial(user.username) }}

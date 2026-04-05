@@ -36,7 +36,7 @@ export class EditUserDialogComponent {
 
   avatarUrl = computed(() => {
     const user = this.editedUser();
-    return this.authService.getAvatarUrl(user?.id, user?.profilePicturePath);
+    return this.authService.getAvatarUrl(user?.id, user?.hasAvatar);
   });
 
   constructor() {

@@ -25,7 +25,7 @@ export class MessageBubbleComponent {
 
   readonly userAvatar = computed(() => {
     const user = this.authService.currentUser();
-    return this.authService.getAvatarUrl(user?.userId, user?.profilePicturePath);
+    return this.authService.getAvatarUrl(user?.userId, user?.hasAvatar);
   });
 
   readonly username = computed(() => {

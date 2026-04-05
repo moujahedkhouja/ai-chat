@@ -13,7 +13,7 @@ describe('AuthService', () => {
     username: 'testuser',
     role: 'USER',
     forcePasswordChange: false,
-    profilePicturePath: null
+    hasAvatar: false
   };
 
   beforeEach(() => {
