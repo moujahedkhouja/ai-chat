@@ -166,8 +166,8 @@ export class ProfileComponent implements OnInit {
         this.avatarUploading.set(false);
         this.authService.refreshFromProfile(updated);
       },
-      error: () => {
-        this.avatarError.set('Failed to upload avatar');
+      error: (err) => {
+        this.avatarError.set(err?.error?.error ?? 'Failed to upload avatar');
         this.avatarUploading.set(false);
       }
     });

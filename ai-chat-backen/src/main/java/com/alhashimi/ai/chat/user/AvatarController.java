@@ -31,8 +31,27 @@ public class AvatarController {
     public ResponseEntity<UserResponse> uploadAvatar(
             @PathVariable UUID id,
             @RequestParam("file") MultipartFile file) throws IOException {
-        String relativePath = avatarStorageService.store(id, file);
-        UserResponse response = userService.updateAvatar(id, relativePath);
+
+        // Capture the old path before overwriting so we can delete the old file
+        UserResponse existing = userService.getUser(id);
+        String oldPath = existing.profilePicturePath();
+
+        // Store the new file — returns a relative filename
+        String newFilename = avatarStorageService.store(id, file);
+
+        // Persist the new path in the database
+        UserResponse response = userService.updateAvatar(id, newFilename);
+
+        // Delete the previous file only after the DB update succeeded
+        if (oldPath != null && !oldPath.isBlank()) {
+            try {
+                avatarStorageService.delete(oldPath);
+            } catch (IOException e) {
+                // Log but don't fail the request — the DB is already consistent
+                System.err.println("Warning: could not delete old avatar file: " + oldPath + " — " + e.getMessage());
+            }
+        }
+
         return ResponseEntity.ok(response);
     }
 
@@ -40,7 +59,7 @@ public class AvatarController {
     public ResponseEntity<Resource> getAvatar(@PathVariable UUID id) {
         UserResponse user = userService.getUser(id);
 
-        if (user.profilePicturePath() == null) {
+        if (user.profilePicturePath() == null || user.profilePicturePath().isBlank()) {
             return ResponseEntity.notFound().build();
         }
 
@@ -57,6 +76,7 @@ public class AvatarController {
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION,
                             "inline; filename=\"" + resource.getFilename() + "\"")
+                    .header(HttpHeaders.CACHE_CONTROL, "max-age=31536000, immutable")
                     .contentType(MediaType.parseMediaType(contentType))
                     .body(resource);
         } catch (MalformedURLException e) {
@@ -68,8 +88,8 @@ public class AvatarController {
         if (filename == null) return "application/octet-stream";
         String lower = filename.toLowerCase();
         if (lower.endsWith(".jpg") || lower.endsWith(".jpeg")) return "image/jpeg";
-        if (lower.endsWith(".png")) return "image/png";
-        if (lower.endsWith(".gif")) return "image/gif";
+        if (lower.endsWith(".png"))  return "image/png";
+        if (lower.endsWith(".gif"))  return "image/gif";
         if (lower.endsWith(".webp")) return "image/webp";
         return "application/octet-stream";
     }
