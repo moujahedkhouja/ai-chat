@@ -3,6 +3,8 @@ package com.alhashimi.ai.chat.user;
 import com.alhashimi.ai.chat.role.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -46,7 +48,7 @@ public class User {
     @Column(nullable = false)
     private boolean enabled = true;
 
-    @Lob
+    @JdbcTypeCode(SqlTypes.VARBINARY)
     @Column(name = "avatar_data")
     private byte[] avatarData;
 
