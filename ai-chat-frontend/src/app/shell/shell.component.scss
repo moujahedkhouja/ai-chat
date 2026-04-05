@@ -38,13 +38,14 @@
   top: 0;
   z-index: 50;
   height: var(--topbar-height);
-  background: var(--color-bg);
+  background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
   flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
 }
 
 .top-bar-left {
@@ -65,7 +66,13 @@
 .top-bar-greeting {
   font-size: 13px;
   font-family: var(--f-body);
+  font-weight: 500;
   color: var(--color-text-muted);
+
+  strong {
+    color: var(--color-text);
+    font-weight: 600;
+  }
 }
 
 :host-context([dir="rtl"]) .top-bar-greeting {
@@ -79,8 +86,8 @@
 }
 
 .icon-btn {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   background: transparent;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -89,25 +96,18 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: color 0.15s, border-color 0.15s;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
 
   &:hover {
     color: var(--color-accent);
     border-color: var(--color-accent-border);
-  }
-}
-
-.icon-btn--danger {
-  &:hover {
-    color: var(--color-danger);
-    border-color: rgba(var(--color-danger-rgb), 0.45);
-    background: rgba(var(--color-danger-rgb), 0.08);
+    background: var(--color-accent-muted);
   }
 }
 
 .logout-header-btn {
-  height: 32px;
-  padding: 0 10px;
+  height: 34px;
+  padding: 0 12px;
   background: transparent;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -116,12 +116,13 @@
   align-items: center;
   gap: 6px;
   cursor: pointer;
+  font-family: var(--f-body);
   transition: color 0.15s, border-color 0.15s, background 0.15s;
 
   &:hover {
     color: var(--color-danger);
-    border-color: rgba(var(--color-danger-rgb), 0.45);
-    background: rgba(var(--color-danger-rgb), 0.08);
+    border-color: rgba(var(--color-danger-rgb), 0.38);
+    background: rgba(var(--color-danger-rgb), 0.07);
   }
 }
 
@@ -142,11 +143,11 @@
 .shell-content {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
-  padding-bottom: calc(var(--bottombar-height) + 20px);
+  padding: 24px;
+  padding-bottom: calc(var(--bottombar-height) + 24px);
 
   @media (min-width: 1024px) {
-    padding-bottom: 20px;
+    padding-bottom: 24px;
   }
 }
 

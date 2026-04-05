@@ -9,18 +9,19 @@
 }
 
 .bubble-avatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
   background: var(--gradient-accent);
-  color: #0c0a06;
-  font-size: 11px;
+  color: #fff;
+  font-size: 12px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .bubble-img {
@@ -33,71 +34,144 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  max-width: 72%;
+  max-width: 75%;
+
+  @media (max-width: 600px) {
+    max-width: 90%;
+  }
 }
 
-/* User message bubble — gold-tinted */
+/* Assistant bubble */
 .bubble-markdown {
   background: var(--color-card);
   border: 1px solid var(--color-border);
-  border-radius: 4px 14px 14px 14px;
-  padding: 10px 14px;
+  border-radius: 2px 14px 14px 14px;
+  padding: 12px 16px;
   font-size: 14px;
   font-family: var(--f-body);
-  line-height: 1.6;
+  line-height: 1.65;
   color: var(--color-text);
   word-break: break-word;
+  box-shadow: var(--shadow-sm);
 
-  p { margin: 0 0 8px; &:last-child { margin-bottom: 0; } }
-  strong { font-weight: 600; }
-  em { font-style: italic; }
-  ul, ol { padding-inline-start: 20px; margin: 6px 0; }
-  li { margin: 2px 0; }
+  p { margin: 0 0 10px; &:last-child { margin-bottom: 0; } }
+  strong { font-weight: 600; color: var(--color-text); }
+  em { font-style: italic; color: var(--color-text-muted); }
+  ul, ol { padding-inline-start: 22px; margin: 8px 0; }
+  li { margin: 3px 0; color: var(--color-text); }
+  h1, h2, h3 {
+    font-family: var(--f-display);
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 14px 0 6px;
+    &:first-child { margin-top: 0; }
+  }
+  h1 { font-size: 18px; }
+  h2 { font-size: 16px; }
+  h3 { font-size: 14px; }
+  blockquote {
+    border-inline-start: 3px solid var(--color-accent-border);
+    padding-inline-start: 12px;
+    margin: 8px 0;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+  a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  hr {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin: 12px 0;
+  }
 
   code {
-    background: var(--color-bg);
+    background: var(--color-bg-hover);
     border: 1px solid var(--color-border);
-    border-radius: 4px;
-    padding: 1px 5px;
-    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    border-radius: var(--radius-xs);
+    padding: 2px 6px;
+    font-family: var(--f-mono);
     font-size: 12px;
+    color: var(--color-accent-hi);
   }
 
   pre {
     background: var(--color-bg);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
-    padding: 12px;
+    padding: 14px 16px;
     overflow-x: auto;
-    margin: 8px 0;
+    margin: 10px 0;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
 
     code {
       background: none;
       border: none;
       padding: 0;
-      font-size: 12px;
+      font-size: 12.5px;
+      color: var(--color-text);
+      line-height: 1.7;
+    }
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 13px;
+
+    th {
+      background: var(--color-bg-hover);
+      font-weight: 600;
+      text-align: start;
+    }
+    th, td {
+      padding: 8px 12px;
+      border: 1px solid var(--color-border);
+    }
+    tr:nth-child(even) td {
+      background: var(--color-bg-hover);
     }
   }
 }
 
+/* User bubble */
 .bubble-markdown--user {
-  background: rgba(0, 201, 167, 0.13);
-  border: 1px solid rgba(0, 201, 167, 0.22);
-  border-radius: 14px 14px 4px 14px;
+  background: var(--color-accent-muted);
+  border: 1px solid var(--color-accent-border);
+  border-radius: 14px 14px 2px 14px;
+  color: var(--color-text);
+
+  code {
+    background: rgba(var(--color-primary-rgb), 0.12);
+    border-color: var(--color-accent-border);
+    color: var(--color-accent-hi);
+  }
+
+  pre {
+    background: rgba(var(--color-primary-rgb), 0.07);
+    border-color: var(--color-accent-border);
+  }
 }
 
 :host-context([dir="rtl"]) .bubble-markdown {
   font-family: var(--f-arabic);
-  border-radius: 14px 4px 14px 14px;
+  border-radius: 14px 2px 14px 14px;
 }
 
 :host-context([dir="rtl"]) .bubble-markdown--user {
-  border-radius: 14px 14px 14px 4px;
+  border-radius: 14px 14px 14px 2px;
 }
 
 .bubble-time {
   font-size: 10px;
   color: var(--color-text-subtle);
-  align-self: flex-end;
   font-family: var(--f-body);
+  padding-inline: 2px;
+
+  .bubble--user & {
+    text-align: end;
+  }
 }

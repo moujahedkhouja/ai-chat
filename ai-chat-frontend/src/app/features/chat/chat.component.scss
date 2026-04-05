@@ -16,7 +16,8 @@
 .drawer-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(2px);
   z-index: 298;
 
   @media (min-width: 768px) {
@@ -26,13 +27,14 @@
 
 /* Conversation list panel */
 .conv-panel {
-  width: 260px;
+  width: 272px;
   flex-shrink: 0;
   border-inline-end: 1px solid var(--color-border);
-  background: #0d1620;
+  background: var(--color-surface);
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 
   @media (max-width: 767px) {
     position: fixed;
@@ -41,7 +43,8 @@
     bottom: 0;
     z-index: 299;
     transform: translateX(-100%);
-    transition: transform 0.25s ease;
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-lg);
 
     &.open {
       transform: translateX(0);
@@ -74,39 +77,44 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 48px;
-  padding: 0 16px;
+  height: 52px;
+  padding: 0 20px;
   border-bottom: 1px solid var(--color-border);
-  background: var(--color-bg);
+  background: var(--color-surface);
   flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
 }
 
 .menu-btn {
   display: none;
   background: none;
-  border: none;
+  border: 1px solid var(--color-border);
   color: var(--color-text-muted);
   cursor: pointer;
-  padding: 4px;
+  padding: 0;
+  width: 34px;
+  height: 34px;
   border-radius: var(--radius-md);
   line-height: 0;
-  transition: color 0.15s, background 0.15s;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
 
   &:hover {
     color: var(--color-accent);
     background: var(--color-accent-muted);
+    border-color: var(--color-accent-border);
   }
 
   @media (max-width: 767px) {
     display: flex;
-    align-items: center;
-    justify-content: center;
   }
 }
 
 .chat-title {
-  font-family: var(--f-display);
-  font-size: 16px;
+  font-family: var(--f-body);
+  font-size: 15px;
   font-weight: 600;
   color: var(--color-text);
   white-space: nowrap;
@@ -125,24 +133,34 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 20px;
   color: var(--color-text-muted);
-  font-size: 14px;
+  font-size: 15px;
+  padding: 40px 20px;
+  text-align: center;
+
+  p {
+    color: var(--color-text-muted);
+    font-size: 15px;
+    line-height: 1.6;
+  }
 
   button {
-    padding: 10px 24px;
+    padding: 11px 28px;
     background: var(--gradient-accent);
     border: none;
-    border-radius: var(--radius-md);
-    color: #0c0a06;
+    border-radius: var(--radius-lg);
+    color: #fff;
     font-size: 14px;
     font-weight: 600;
+    font-family: var(--f-body);
     cursor: pointer;
     transition: box-shadow 0.2s, transform 0.15s;
+    box-shadow: var(--shadow-sm);
 
     &:hover {
-      box-shadow: 0 4px 16px rgba(0, 201, 167, 0.35);
-      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
     }
   }
 }

@@ -19,6 +19,7 @@ export class ChatInputComponent {
   value = signal('');
   richMode = signal(true);
   previewMode = signal(false);
+  isFocused = signal(false);
 
   previewHtml = computed<SafeHtml>(() => {
     const html = String(marked.parse(this.value() || ''));

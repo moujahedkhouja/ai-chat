@@ -4,76 +4,80 @@
   inset-inline-start: 0;
   width: var(--sidebar-width);
   height: 100dvh;
-  background: #091422;
-  border-inline-end: 1px solid rgba(0, 201, 167, 0.10);
+  background: var(--color-surface);
+  border-inline-end: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 16px 0;
-  gap: 8px;
+  padding: 14px 0 16px;
+  gap: 6px;
   z-index: 200;
+  box-shadow: var(--shadow-sm);
 }
 
 .sidebar-logo {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   flex: 1;
+  width: 100%;
+  padding: 0 10px;
 }
 
 .nav-item {
-  width: 40px;
-  height: 40px;
+  width: 100%;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-md);
-  color: rgba(240, 232, 216, 0.32);
+  color: var(--color-text-subtle);
   text-decoration: none;
-  transition: color 0.15s, background 0.15s;
+  transition: color 0.15s, background 0.15s, box-shadow 0.15s;
   position: relative;
 
   &:hover {
-    color: rgba(240, 232, 216, 0.75);
-    background: rgba(0, 201, 167, 0.08);
+    color: var(--color-accent);
+    background: var(--color-accent-muted);
   }
 
   &.active {
     color: var(--color-accent);
     background: var(--color-accent-muted);
-    box-shadow: inset 2px 0 0 var(--color-accent);
+    box-shadow: inset 3px 0 0 var(--color-accent);
   }
 }
 
 :host-context([dir="rtl"]) .nav-item.active {
-  box-shadow: inset -2px 0 0 var(--color-accent);
+  box-shadow: inset -3px 0 0 var(--color-accent);
 }
 
 .sidebar-footer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   margin-top: auto;
-  padding-top: 8px;
+  padding: 8px 10px 0;
+  width: 100%;
 }
 
 .lang-btn {
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   border-radius: var(--radius-md);
-  background: rgba(0, 201, 167, 0.08);
-  border: 1px solid rgba(0, 201, 167, 0.16);
-  color: rgba(221, 232, 245, 0.55);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-subtle);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -82,8 +86,8 @@
 
   &:hover {
     color: var(--color-accent);
-    background: rgba(0, 201, 167, 0.14);
-    border-color: rgba(0, 201, 167, 0.30);
+    background: var(--color-accent-muted);
+    border-color: var(--color-accent-border);
   }
 }
 
@@ -95,42 +99,46 @@
 }
 
 .theme-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(0, 201, 167, 0.08);
-  border: 1px solid rgba(0, 201, 167, 0.12);
-  color: rgba(240, 232, 216, 0.40);
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-subtle);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: color 0.15s, background 0.15s;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
 
   &:hover {
     color: var(--color-accent);
-    background: rgba(0, 201, 167, 0.14);
+    background: var(--color-accent-muted);
+    border-color: var(--color-accent-border);
   }
 }
 
 .avatar-btn {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: var(--gradient-accent);
-  border: 2px solid rgba(0, 201, 167, 0.25);
-  color: #04100d;
+  border: 2px solid var(--color-accent-border);
+  color: #fff;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: border-color 0.15s, transform 0.15s;
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+  overflow: hidden;
+  text-decoration: none;
 
   &:hover {
     border-color: var(--color-accent);
-    transform: scale(1.05);
+    transform: scale(1.06);
+    box-shadow: 0 0 0 3px var(--color-accent-muted);
   }
 }
 
