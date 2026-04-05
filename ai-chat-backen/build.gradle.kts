@@ -1,6 +1,6 @@
 plugins {
     java
-    id("org.springframework.boot") version "4.0.4"
+    id("org.springframework.boot") version "4.0.5"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.hibernate.orm") version "7.2.7.Final"
     id("org.graalvm.buildtools.native") version "0.11.5"
@@ -21,9 +21,18 @@ configurations {
     }
 }
 
+extra["springAiVersion"] = "2.0.0-M4"
+
 repositories {
     mavenCentral()
 }
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.ai:spring-ai-bom:${property("springAiVersion")}")
+    }
+}
+
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
