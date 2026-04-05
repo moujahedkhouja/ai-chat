@@ -87,6 +87,7 @@
     margin: 12px 0;
   }
 
+  /* Inline code */
   code {
     background: var(--color-bg-hover);
     border: 1px solid var(--color-border);
@@ -97,24 +98,80 @@
     color: var(--color-accent-hi);
   }
 
-  pre {
-    background: var(--color-bg);
+  /* Fenced code block wrapper injected by the custom marked renderer */
+  .code-block {
+    margin: 10px 0;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
-    padding: 14px 16px;
-    overflow-x: auto;
-    margin: 10px 0;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
 
-    code {
-      background: none;
-      border: none;
-      padding: 0;
-      font-size: 12.5px;
-      color: var(--color-text);
-      line-height: 1.7;
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    background: var(--color-bg-hover);
+    border-bottom: 1px solid var(--color-border);
+    gap: 8px;
+  }
+
+  .code-lang {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    color: var(--color-text-muted);
+    text-transform: lowercase;
+    letter-spacing: 0.03em;
+  }
+
+  .code-copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-family: var(--f-body);
+    color: var(--color-text-muted);
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xs);
+    padding: 2px 8px;
+    cursor: pointer;
+    line-height: 1.6;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+
+    &:hover {
+      color: var(--color-accent);
+      border-color: var(--color-accent-border);
+      background: var(--color-accent-muted);
+    }
+
+    &--done {
+      color: var(--color-success);
+      border-color: var(--color-success);
     }
   }
+
+  /* Override hljs default padding — the wrapper provides the box */
+  pre {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    overflow-x: auto;
+
+    code.hljs {
+      padding: 14px 16px;
+      font-family: var(--f-mono);
+      font-size: 12.5px;
+      line-height: 1.7;
+      display: block;
+      background: transparent; /* hljs bg comes from .code-block */
+    }
+  }
+
+  /* The outer background of a code block matches the hljs theme bg */
+  .code-block pre { background: #f6f8fa; }  /* github light bg */
 
   table {
     width: 100%;
