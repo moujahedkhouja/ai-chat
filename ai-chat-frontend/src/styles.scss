@@ -29,6 +29,38 @@ html.theme-dark {
   .hljs-deletion                                     { color: #ffdcd7; background: #67060c }
 }
 
+/* ─── Chat message markdown content styles ───────────────────
+   All rules targeting [innerHTML] content MUST be global.
+   Angular's ViewEncapsulation.Emulated scopes component rules
+   with an attribute selector that never matches injected HTML.
+   ──────────────────────────────────────────────────────────── */
+
+/* Lists — restore indentation killed by the * { padding:0; margin:0 } reset */
+.bubble-markdown ul,
+.bubble-markdown ol {
+  padding-inline-start: 1.5em;
+  margin: 6px 0;
+}
+
+.bubble-markdown li {
+  margin: 3px 0;
+  line-height: 1.55;
+}
+
+/* Nested lists */
+.bubble-markdown li > ul,
+.bubble-markdown li > ol {
+  margin: 2px 0;
+}
+
+/* Paragraphs */
+.bubble-markdown p {
+  margin: 0 0 8px;
+}
+.bubble-markdown p:last-child {
+  margin-bottom: 0;
+}
+
 /* ─── Chat message code block styles ─────────────────────────
    These MUST live in the global stylesheet, NOT in the component
    SCSS, because Angular's ViewEncapsulation.Emulated adds an
