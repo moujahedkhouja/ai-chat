@@ -139,12 +139,20 @@
   min-height: 24px;
   max-height: 160px;
   overflow-y: auto;
+  /* Let alignment follow the element's own dir attribute, not the document */
+  text-align: start;
 
   &::placeholder {
     color: var(--color-text-subtle);
   }
+
+  /* Arabic font when the element itself is RTL */
+  &[dir="rtl"] {
+    font-family: var(--f-arabic);
+  }
 }
 
+/* Keep legacy rule as fallback for any context that sets dir on a parent */
 :host-context([dir="rtl"]) .input-textarea {
   font-family: var(--f-arabic);
 }

@@ -91,8 +91,8 @@
     margin: 8px 0;
   }
 
-  /* Inline code */
-  code {
+  /* Inline code — explicitly exclude code.hljs so hljs token colours are not overridden */
+  code:not(.hljs) {
     background: var(--color-bg-hover);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-xs);
@@ -102,81 +102,7 @@
     color: var(--color-accent-hi);
   }
 
-  /* Fenced code block wrapper injected by the custom marked renderer */
-  .code-block {
-    margin: 8px 0;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-  }
-
-  .code-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 4px 10px;
-    background: var(--color-bg-hover);
-    border-bottom: 1px solid var(--color-border);
-    gap: 8px;
-    min-height: 28px;
-  }
-
-  .code-lang {
-    font-family: var(--f-mono);
-    font-size: 11px;
-    color: var(--color-text-muted);
-    text-transform: lowercase;
-    letter-spacing: 0.03em;
-  }
-
-  .code-copy {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 11px;
-    font-family: var(--f-body);
-    color: var(--color-text-muted);
-    background: none;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-xs);
-    padding: 1px 7px;
-    cursor: pointer;
-    line-height: 1.6;
-    transition: color 0.15s, border-color 0.15s, background 0.15s;
-
-    &:hover {
-      color: var(--color-accent);
-      border-color: var(--color-accent-border);
-      background: var(--color-accent-muted);
-    }
-
-    &--done {
-      color: var(--color-success);
-      border-color: var(--color-success);
-    }
-  }
-
-  /* Override hljs default padding — the wrapper provides the box */
-  pre {
-    margin: 0;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    overflow-x: auto;
-
-    code.hljs {
-      padding: 12px 14px;
-      font-family: var(--f-mono);
-      font-size: 12.5px;
-      line-height: 1.65;
-      display: block;
-      background: transparent;
-    }
-  }
-
-  /* Light-mode code block background matches github theme */
-  .code-block pre { background: #f6f8fa; }
+  /* pre/code-block styles live in global styles.scss to escape Angular encapsulation */
 
   table {
     width: 100%;

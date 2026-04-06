@@ -29,6 +29,98 @@ html.theme-dark {
   .hljs-deletion                                     { color: #ffdcd7; background: #67060c }
 }
 
+/* ─── Chat message code block styles ─────────────────────────
+   These MUST live in the global stylesheet, NOT in the component
+   SCSS, because Angular's ViewEncapsulation.Emulated adds an
+   attribute selector to all component rules — which never matches
+   elements injected via [innerHTML].
+   ──────────────────────────────────────────────────────────── */
+
+/* Fenced code block wrapper */
+.bubble-markdown .code-block {
+  margin: 8px 0;
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Header bar: language label + copy button */
+.bubble-markdown .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 10px;
+  background: var(--color-bg-hover);
+  border-bottom: 1px solid var(--color-border);
+  gap: 8px;
+  min-height: 28px;
+}
+
+.bubble-markdown .code-lang {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  text-transform: lowercase;
+  letter-spacing: 0.03em;
+}
+
+.bubble-markdown .code-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 1px 7px;
+  cursor: pointer;
+  line-height: 1.6;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.bubble-markdown .code-copy:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent-border);
+  background: var(--color-accent-muted);
+}
+.bubble-markdown .code-copy.code-copy--done {
+  color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+/* <pre> inside the wrapper: reset everything hljs adds,
+   then set the correct background per theme */
+.bubble-markdown .code-block pre {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  overflow-x: auto;
+  /* Light-mode: github theme background */
+  background: #f6f8fa;
+}
+
+html.theme-dark .bubble-markdown .code-block pre {
+  /* Dark-mode: github-dark theme background */
+  background: #0d1117;
+}
+
+/* <code class="hljs"> — strip the padding github.css adds to
+   pre code.hljs (1em) and use tighter values; keep background
+   transparent so the <pre> colour shows through */
+.bubble-markdown .code-block pre code.hljs {
+  display: block;
+  padding: 12px 14px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+  font-size: 12.5px;
+  line-height: 1.65;
+  /* Must be transparent — colour comes from the parent <pre> */
+  background: transparent;
+  /* Ensure text is never invisible: fall back to github token colours */
+  color: inherit;
+}
+
 /* ─── Meridian Design System ──────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Figtree:wght@300;400;500;600;700&family=Cairo:wght@300;400;500;600;700&display=swap');
 
