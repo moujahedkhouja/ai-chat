@@ -48,6 +48,7 @@
     "write": "Write",
     "input_rich": "Rich Input",
     "input_plain": "Plain Input",
+    "rich_hint": "Markdown · Enter to send · Shift+Enter for new line",
     "plain_hint": "Plain text mode · Enter to send · Shift+Enter for new line"
   },
   "users": {

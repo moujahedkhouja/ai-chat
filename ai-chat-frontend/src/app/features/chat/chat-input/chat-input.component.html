@@ -104,6 +104,7 @@
         <textarea
           #textarea
           class="input-textarea"
+          [attr.dir]="textDir()"
           [ngModel]="value()"
           (ngModelChange)="value.set($event)"
           (keydown)="onKeydown($event)"
@@ -114,7 +115,7 @@
           rows="1"
         ></textarea>
       } @else {
-        <div class="input-preview" [innerHTML]="previewHtml()"></div>
+        <div class="input-preview" [attr.dir]="textDir()" [innerHTML]="previewHtml()"></div>
       }
 
       <button
@@ -135,7 +136,7 @@
       @if (richMode()) {
         <span class="input-hint">
           <span class="hint-badge">MD</span>
-          Markdown · Enter to send · Shift+Enter for newline
+          {{ 'chat.rich_hint' | translate }}
         </span>
       } @else {
         <span class="input-hint">{{ 'chat.plain_hint' | translate }}</span>

@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { marked } from 'marked';
+import { LanguageService } from '../../../core/language.service';
 
 @Component({
   selector: 'app-chat-input',
@@ -15,6 +16,10 @@ export class ChatInputComponent {
   @ViewChild('textarea') textareaRef?: ElementRef<HTMLTextAreaElement>;
   send = output<string>();
   private sanitizer = inject(DomSanitizer);
+  private langService = inject(LanguageService);
+
+  readonly isArabic = this.langService.isArabic;
+  readonly textDir   = computed(() => this.isArabic() ? 'rtl' : 'ltr');
 
   value = signal('');
   richMode = signal(true);

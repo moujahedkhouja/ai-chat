@@ -48,6 +48,7 @@
     "write": "تحرير",
     "input_rich": "تحرير غني",
     "input_plain": "تحرير عادي",
+    "rich_hint": "ماركداون · Enter للإرسال · Shift+Enter لسطر جديد",
     "plain_hint": "وضع النص العادي · Enter للإرسال · Shift+Enter لسطر جديد"
   },
   "users": {
