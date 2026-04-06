@@ -12,6 +12,6 @@
   }
   <div class="bubble-body">
     <div class="bubble-markdown" [class.bubble-markdown--user]="message().role === 'user'" [innerHTML]="renderedHtml()"></div>
-    <div class="bubble-time">{{ message().timestamp | date:'HH:mm' }}</div>
+    <div class="bubble-time">{{ message().createdAt | date:'HH:mm' }}</div>
   </div>
 </div>

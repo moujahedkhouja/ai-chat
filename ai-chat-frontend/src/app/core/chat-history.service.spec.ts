@@ -1,65 +1,111 @@
 import { TestBed } from '@angular/core/testing';
-import { ChatHistoryService } from './chat-history.service';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
+import { ChatHistoryService, ConversationSummary } from './chat-history.service';
+import { Conversation } from '../models/chat.model';
+
+const mockSummary: ConversationSummary = {
+  id: 'conv-1',
+  title: 'New Chat',
+  createdAt: '2024-01-01T10:00:00Z',
+  updatedAt: '2024-01-01T10:00:00Z'
+};
+
+const mockConversation: Conversation = {
+  id: 'conv-1',
+  title: 'New Chat',
+  createdAt: '2024-01-01T10:00:00Z',
+  updatedAt: '2024-01-01T10:00:00Z',
+  messages: [{
+    id: 'msg-1',
+    role: 'assistant',
+    content: "Hello! I'm your AI assistant. How can I help you today?",
+    createdAt: '2024-01-01T10:00:00Z'
+  }]
+};
 
 describe('ChatHistoryService', () => {
   let service: ChatHistoryService;
+  let httpMock: HttpTestingController;
 
   beforeEach(() => {
     localStorage.clear();
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [
+        ChatHistoryService,
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
+    });
     service = TestBed.inject(ChatHistoryService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('returns empty array for a new user', () => {
-    expect(service.getConversations('alice')).toEqual([]);
+  afterEach(() => httpMock.verify());
+
+  it('loadConversations() calls GET /api/chat/conversations and updates signal', () => {
+    service.loadConversations();
+    const req = httpMock.expectOne('/api/chat/conversations');
+    expect(req.request.method).toBe('GET');
+    req.flush([mockSummary]);
+    expect(service.conversations()).toEqual([mockSummary]);
   });
 
-  it('createConversation() creates a conversation with a welcome message', () => {
-    const conv = service.createConversation('alice');
-    expect(conv.title).toBe('New Chat');
-    expect(conv.messages.length).toBe(1);
-    expect(conv.messages[0].role).toBe('assistant');
-    expect(conv.id).toBeTruthy();
+  it('loadConversations() sets empty array on error', () => {
+    service.loadConversations();
+    const req = httpMock.expectOne('/api/chat/conversations');
+    req.flush('Server error', { status: 500, statusText: 'Internal Server Error' });
+    expect(service.conversations()).toEqual([]);
   });
 
-  it('createConversation() persists to localStorage', () => {
-    service.createConversation('alice');
-    expect(service.getConversations('alice').length).toBe(1);
+  it('getConversation() calls GET /api/chat/conversations/{id}', () => {
+    service.getConversation('conv-1').subscribe(conv => {
+      expect(conv).toEqual(mockConversation);
+    });
+    const req = httpMock.expectOne('/api/chat/conversations/conv-1');
+    expect(req.request.method).toBe('GET');
+    req.flush(mockConversation);
   });
 
-  it('addMessage() appends a message and derives title from first user message', () => {
-    const conv = service.createConversation('alice');
-    service.addMessage('alice', conv.id, 'user', 'Write me a poem');
-    const updated = service.getConversation('alice', conv.id)!;
-    expect(updated.messages.length).toBe(2);
-    expect(updated.title).toBe('Write me a poem');
+  it('createConversation() calls POST and prepends to conversations signal', () => {
+    service.createConversation().subscribe(conv => {
+      expect(conv).toEqual(mockConversation);
+    });
+    const req = httpMock.expectOne('/api/chat/conversations');
+    expect(req.request.method).toBe('POST');
+    req.flush(mockConversation);
+    expect(service.conversations()[0].id).toBe('conv-1');
   });
 
-  it('addMessage() truncates title at 40 chars', () => {
-    const conv = service.createConversation('alice');
-    service.addMessage('alice', conv.id, 'user', 'A'.repeat(50));
-    const updated = service.getConversation('alice', conv.id)!;
-    expect(updated.title).toBe('A'.repeat(40) + '...');
+  it('deleteConversation() calls DELETE and removes from conversations signal', () => {
+    service.conversations.set([mockSummary]);
+    service.deleteConversation('conv-1').subscribe();
+    const req = httpMock.expectOne('/api/chat/conversations/conv-1');
+    expect(req.request.method).toBe('DELETE');
+    req.flush(null);
+    expect(service.conversations().length).toBe(0);
   });
 
-  it('addMessage() does not override title if already set', () => {
-    const conv = service.createConversation('alice');
-    service.addMessage('alice', conv.id, 'user', 'First message');
-    service.addMessage('alice', conv.id, 'user', 'Second message');
-    const updated = service.getConversation('alice', conv.id)!;
-    expect(updated.title).toBe('First message');
+  it('refreshSummary() updates title and re-sorts conversations', () => {
+    const older: ConversationSummary = { id: 'conv-2', title: 'Old', createdAt: '2024-01-01T09:00:00Z', updatedAt: '2024-01-01T09:00:00Z' };
+    service.conversations.set([mockSummary, older]);
+    service.refreshSummary('conv-2', 'Updated', '2024-01-01T12:00:00Z');
+    expect(service.conversations()[0].id).toBe('conv-2'); // now newest
+    expect(service.conversations()[0].title).toBe('Updated');
   });
 
-  it('deleteConversation() removes conversation by id', () => {
-    const conv = service.createConversation('alice');
-    service.deleteConversation('alice', conv.id);
-    expect(service.getConversations('alice').length).toBe(0);
-  });
-
-  it('getConversations() returns results sorted by updatedAt descending', () => {
-    const c1 = service.createConversation('alice');
-    const c2 = service.createConversation('alice');
-    const list = service.getConversations('alice');
-    expect(list[0].id).toBe(c2.id); // newest first
+  it('constructor clears legacy localStorage keys', () => {
+    localStorage.setItem('chat_history_alice', '[]');
+    localStorage.setItem('chat_history_bob', '[]');
+    localStorage.setItem('other_key', 'keep');
+    // Re-create service to trigger constructor
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [ChatHistoryService, provideHttpClient(), provideHttpClientTesting()]
+    });
+    TestBed.inject(ChatHistoryService);
+    expect(localStorage.getItem('chat_history_alice')).toBeNull();
+    expect(localStorage.getItem('chat_history_bob')).toBeNull();
+    expect(localStorage.getItem('other_key')).toBe('keep');
   });
 });

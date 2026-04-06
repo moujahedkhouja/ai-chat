@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../auth/auth.service';
 import { ChatHistoryService } from '../../core/chat-history.service';
 import { ChatService } from '../../core/chat.service';
-import { Conversation } from '../../models/chat.model';
+import { Conversation, Message } from '../../models/chat.model';
 import { ConversationListComponent } from './conversation-list/conversation-list.component';
 import { MessageThreadComponent } from './message-thread/message-thread.component';
 import { ChatInputComponent } from './chat-input/chat-input.component';
@@ -16,84 +16,113 @@ import { ChatInputComponent } from './chat-input/chat-input.component';
   styleUrl: './chat.component.scss'
 })
 export class ChatComponent {
-  private readonly authService = inject(AuthService);
-  private readonly historyService = inject(ChatHistoryService);
-  private readonly chatService = inject(ChatService);
+  private readonly authService    = inject(AuthService);
+  readonly historyService         = inject(ChatHistoryService);
+  private readonly chatService    = inject(ChatService);
 
-  readonly username = computed(() => this.authService.username() ?? '');
-  readonly conversations = this.historyService.conversations;
-  readonly activeConversation = signal<Conversation | null>(null);
-  readonly isTyping = signal(false);
-  readonly showDrawer = signal(false);
+  readonly conversations          = this.historyService.conversations;
+  readonly activeConversation     = signal<Conversation | null>(null);
+  readonly isTyping               = signal(false);
+  readonly showDrawer             = signal(false);
 
   constructor() {
-    // When username changes, load conversations
+    // Load conversations once the user is known
     effect(() => {
-      const user = this.username();
+      const user = this.authService.currentUser();
       if (!user) return;
-      this.historyService.loadConversations(user);
-      const convs = this.conversations();
-      if (convs.length > 0) {
-        if (!this.activeConversation()) this.activeConversation.set(convs[0]);
-      } else {
-        this.startNewChat();
-      }
+
+      this.historyService.loadConversations();
+
+      // After list loads, auto-select or create
+      effect(() => {
+        const list = this.conversations();
+        if (list.length > 0 && !this.activeConversation()) {
+          this._loadConversation(list[0].id);
+        } else if (list.length === 0) {
+          this.startNewChat();
+        }
+      }, { allowSignalWrites: true });
+
     }, { allowSignalWrites: true });
   }
 
+  // ── Actions ────────────────────────────────────────────────────────────────
+
   startNewChat(): void {
-    const user = this.username();
-    if (!user) return;
-    const conv = this.historyService.createConversation(user);
-    this.activeConversation.set(conv);
-    this.showDrawer.set(false);
+    this.historyService.createConversation().subscribe({
+      next: conv => {
+        this.activeConversation.set(conv);
+        this.showDrawer.set(false);
+      }
+    });
   }
 
   selectConversation(id: string): void {
-    const user = this.username();
-    if (!user) return;
-    this.activeConversation.set(this.historyService.getConversation(user, id) ?? null);
+    this._loadConversation(id);
     this.showDrawer.set(false);
   }
 
   deleteConversation(id: string): void {
-    const user = this.username();
-    if (!user) return;
     const wasActive = this.activeConversation()?.id === id;
-    this.historyService.deleteConversation(user, id);
-    if (wasActive) {
-      const current = this.conversations();
-      this.activeConversation.set(current[0] ?? null);
-      if (!this.activeConversation()) this.startNewChat();
-    }
+    this.historyService.deleteConversation(id).subscribe({
+      next: () => {
+        if (!wasActive) return;
+        const remaining = this.conversations();
+        if (remaining.length > 0) {
+          this._loadConversation(remaining[0].id);
+        } else {
+          this.startNewChat();
+        }
+      }
+    });
   }
 
   sendMessage(content: string): void {
-    const user = this.username();
     const active = this.activeConversation();
-    if (!user || !active || this.isTyping()) return;
+    if (!active || this.isTyping()) return;
+
     const convId = active.id;
 
-    this.historyService.addMessage(user, convId, 'user', content);
-    const updatedConv = this.historyService.getConversation(user, convId)!;
-    this.activeConversation.set(updatedConv);
+    // Optimistically append the user message locally so the UI is instant
+    const optimisticMsg: Message = {
+      id: crypto.randomUUID(),
+      role: 'user',
+      content,
+      createdAt: new Date().toISOString()
+    };
+    this.activeConversation.set({
+      ...active,
+      messages: [...active.messages, optimisticMsg]
+    });
     this.isTyping.set(true);
 
-    // Pass conversation history (excluding the system greeting) for context
-    const history = updatedConv.messages
-      .filter(m => m.role === 'user' || m.role === 'assistant')
+    // Build history for AI context (all messages including the one just appended)
+    const history = this.activeConversation()!.messages
       .map(m => ({ role: m.role, content: m.content }));
 
     this.chatService.sendMessage(convId, content, history).subscribe({
-      next: reply => {
-        this.historyService.addMessage(user, convId, 'assistant', reply);
-        this.activeConversation.set(this.historyService.getConversation(user, convId)!);
+      next: () => {
+        // Reload the full conversation from the server to get authoritative
+        // IDs, timestamps, and the persisted assistant reply
+        this._loadConversation(convId);
         this.isTyping.set(false);
       },
       error: () => {
-        this.historyService.addMessage(user, convId, 'assistant', '⚠️ The AI service is unavailable. Make sure LM Studio is running on port 1234.');
-        this.activeConversation.set(this.historyService.getConversation(user, convId)!);
+        // Server already persisted the error message — reload to show it
+        this._loadConversation(convId);
         this.isTyping.set(false);
+      }
+    });
+  }
+
+  // ── Private helpers ────────────────────────────────────────────────────────
+
+  private _loadConversation(id: string): void {
+    this.historyService.getConversation(id).subscribe({
+      next: conv => {
+        this.activeConversation.set(conv);
+        // Keep the summary list title / updatedAt in sync
+        this.historyService.refreshSummary(conv.id, conv.title, conv.updatedAt);
       }
     });
   }
