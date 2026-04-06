@@ -26,23 +26,23 @@ export class ChatComponent {
   readonly showDrawer             = signal(false);
 
   constructor() {
-    // Load conversations once the user is known
+    // Load conversations once the user is known, then auto-select or create.
+    // We do this imperatively (HTTP subscribe) rather than with a nested effect
+    // to avoid the race where the conversations signal updates before
+    // activeConversation is set, causing a duplicate load.
     effect(() => {
       const user = this.authService.currentUser();
       if (!user) return;
 
-      this.historyService.loadConversations();
-
-      // After list loads, auto-select or create
-      effect(() => {
-        const list = this.conversations();
-        if (list.length > 0 && !this.activeConversation()) {
-          this._loadConversation(list[0].id);
-        } else if (list.length === 0) {
-          this.startNewChat();
+      this.historyService.listConversations().subscribe({
+        next: list => {
+          if (list.length > 0) {
+            this._loadConversation(list[0].id);
+          } else {
+            this.startNewChat();
+          }
         }
-      }, { allowSignalWrites: true });
-
+      });
     }, { allowSignalWrites: true });
   }
 
