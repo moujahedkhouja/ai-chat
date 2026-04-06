@@ -26,11 +26,19 @@ export class ChatHistoryService {
 
   // ── Load list ──────────────────────────────────────────────────────────────
 
+  /** Returns the list and also updates the conversations signal. */
+  listConversations(): Observable<ConversationSummary[]> {
+    return this.http.get<ConversationSummary[]>('/api/chat/conversations').pipe(
+      tap({
+        next: list => this.conversations.set(list),
+        error: () => this.conversations.set([])
+      })
+    );
+  }
+
+  /** Fire-and-forget convenience wrapper. */
   loadConversations(): void {
-    this.http.get<ConversationSummary[]>('/api/chat/conversations').subscribe({
-      next: list => this.conversations.set(list),
-      error: () => this.conversations.set([])
-    });
+    this.listConversations().subscribe();
   }
 
   // ── Get detail (with messages) ─────────────────────────────────────────────
