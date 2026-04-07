@@ -10,6 +10,13 @@ export class AuthService {
   readonly currentUser = signal<CurrentUser | null>(null);
   currentUser$ = toObservable(this.currentUser);
 
+  /**
+   * Incremented every time the avatar is successfully changed.
+   * Consumers append this as ?v= to the avatar URL so the browser
+   * discards its cached copy and fetches the new image.
+   */
+  readonly avatarVersion = signal<number>(Date.now());
+
   readonly isLoggedIn = computed(() => this.currentUser() !== null);
   readonly role = computed(() => this.currentUser()?.role ?? null);
   readonly userId = computed(() => this.currentUser()?.userId ?? null);
@@ -83,7 +90,7 @@ export class AuthService {
 
   getAvatarUrl(userId?: string | null, hasAvatar?: boolean | null): string | null {
     if (!hasAvatar || !userId) return null;
-    return `/api/users/${userId}/avatar`;
+    return `/api/users/${userId}/avatar?v=${this.avatarVersion()}`;
   }
 
   refreshFromProfile(user: UserResponse): void {
@@ -97,6 +104,11 @@ export class AuthService {
         hasAvatar: user.hasAvatar
       };
       this.currentUser.set(updated);
+      // Bump the version whenever the avatar state changes so every
+      // consumer's computed URL changes and the browser re-fetches.
+      if (user.hasAvatar !== current.hasAvatar || user.hasAvatar) {
+        this.avatarVersion.set(Date.now());
+      }
     }
   }
 }
